@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "default_profile": "b2b-conference-sales-marketing",
+  "profiles": {
+    "b2b-conference-sales-marketing": {
+      "status": "active",
+      "owner": "sales-marketing",
+      "mode": "supervised-pilot",
+      "purpose": "Turn public conference evidence into sales and marketing actions without mass scraping or unsourced outreach.",
+      "source_priority": [
+        "official-event-page",
+        "official-agenda",
+        "official-sponsor-or-exhibitor-page",
+        "official-company-site",
+        "organizer-news-or-blog",
+        "trusted-news",
+        "public-social-post"
+      ],
+      "required_outputs": [
+        "event-brief",
+        "company-participation-map",
+        "speaker-and-executive-map",
+        "topic-signal-summary",
+        "target-account-candidates",
+        "sales-actions",
+        "marketing-actions",
+        "coverage-gaps"
+      ],
+      "event_fields": [
+        "name",
+        "dates",
+        "location",
+        "website",
+        "audience",
+        "scale",
+        "main-themes",
+        "sales-relevance",
+        "marketing-relevance",
+        "sources"
+      ],
+      "participation_fields": [
+        "company",
+        "person",
+        "role",
+        "session-or-booth",
+        "topic",
+        "evidence-url",
+        "confidence",
+        "recommended-action"
+      ],
+      "company_enrichment_fields": [
+        "homepage",
+        "positioning",
+        "event-topic-fit",
+        "likely-buyer-or-partner-angle",
+        "source"
+      ],
+      "action_rules": {
+        "create_outreach_task_only_when": [
+          "participation evidence is official or corroborated",
+          "company is a target account, competitor, partner candidate or strong ICP match",
+          "recommended action has owner and due date"
+        ],
+        "marketing_content_candidate_when": [
+          "topic appears across at least two companies or sessions",
+          "topic maps to campaign, content brief, use case or objection",
+          "source confidence is medium or high"
+        ],
+        "block_action_when": [
+          "source is low-confidence only",
+          "participation is inferred from attendee-list vendor pages",
+          "source access is restricted, paid or licensed without approval",
+          "personal data would be copied into broad pages"
+        ]
+      },
+      "pilot_limits": {
+        "max_event_sources": 8,
+        "max_companies": 8,
+        "max_people": 12,
+        "max_company_sources": 2,
+        "default_output": "staged-report",
+        "production_card_creation_requires_approval": true
+      },
+      "collection_method_comparison": {
+        "status": "available-for-supervised-pilots",
+        "methods": [
+          {
+            "id": "web-fetch",
+            "role": "baseline text extraction",
+            "expected_strength": "fast source discovery and citation capture",
+            "expected_gap": "may miss JavaScript-rendered filters, sessions and hidden cards"
+          },
+          {
+            "id": "playwright-cli",
+            "role": "manual browser collection",
+            "expected_strength": "can inspect dynamic pages, filters, tabs and screenshots",
+            "expected_gap": "manual and session-state dependent; less reusable"
+          },
+          {
+            "id": "webwright",
+            "role": "repeatable browser-agent script",
+            "expected_strength": "can turn long-horizon browser tasks into scripts, logs and repeatable artifacts",
+            "expected_gap": "requires local setup, isolated workspace, dependency review and approval before real runs"
+          }
+        ],
+        "production_write_policy": "never during method comparison; staged report only"
+      },
+      "verification": [
+        "processed-sources-ledger",
+        "ingest-run-ledger",
+        "privacy-review-if-personal-data",
+        "health-check-if-files-changed"
+      ]
+    }
+  }
+}

@@ -1,0 +1,6 @@
+# Runtime dependencies for the permissioned-knowledge MCP server.
+# The vault itself, health_check, indexes and the core service use only the
+# Python standard library. The MCP gateway uses the official Model Context
+# Protocol SDK. Install into a venv: python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+# Keep <2.0 until saleswiki_mcp/server.py migrates away from FastMCP import paths.
+mcp>=1.27,<2.0

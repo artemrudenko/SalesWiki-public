@@ -1,0 +1,11 @@
+graph TD
+    A[User asks or proposes] --> B[Server-side identity]
+    B --> C[RBAC and ABAC policy]
+    C --> D[Access-filtered retrieval]
+    D --> E[Extract-only answer with citations]
+    C --> F[Proposal queue]
+    F --> G[Curator approval]
+    G --> H[Single-writer worker]
+    H --> I[Transactional card update]
+    H --> J[Append-only audit chain]
+    B -. client cannot choose role .-> A

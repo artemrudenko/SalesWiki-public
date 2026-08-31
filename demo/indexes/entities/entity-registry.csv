@@ -1,0 +1,40 @@
+entity_id,type,canonical_name,normalized_name,path,aliases,external_ids,deletion_status,access,updated
+demo-call-atlas-robotics-discovery,call,Call - Atlas Robotics - 2026-05-29 - Discovery,call - atlas robotics - 2026-05-29 - discovery,wiki/entities/calls/Call - Atlas Robotics - 2026-05-29 - Discovery.md,,demo-call-atlas-robotics,active,sales-confidential,2026-07-03
+demo-call-orion-foods-discovery,call,Call - Orion Foods - 2026-05-29 - Discovery,call - orion foods - 2026-05-29 - discovery,wiki/entities/calls/Call - Orion Foods - 2026-05-29 - Discovery.md,,demo-call-orion-foods,active,sales-confidential,2026-07-03
+demo-campaign-abm-sprint,campaign,Campaign - Demo ABM Sprint,campaign - demo abm sprint,wiki/entities/campaigns/Campaign - Demo ABM Sprint.md,,,active,internal,2026-07-03
+demo-company-atlas-robotics,company,Company - Atlas Robotics,company - atlas robotics,wiki/entities/companies/Company - Atlas Robotics.md,,,active,internal,2026-07-03
+demo-company-helio-retail,company,Company - Helio Retail,company - helio retail,wiki/entities/companies/Company - Helio Retail.md,,,active,internal,2026-07-03
+demo-company-nimbus-health,company,Company - Nimbus Health,company - nimbus health,wiki/entities/companies/Company - Nimbus Health.md,,,active,internal,2026-07-03
+demo-company-orion-foods,company,Company - Orion Foods,company - orion foods,wiki/entities/companies/Company - Orion Foods.md,,,active,internal,2026-07-03
+demo-company-vector-finance,company,Company - Vector Finance,company - vector finance,wiki/entities/companies/Company - Vector Finance.md,,,active,internal,2026-07-03
+demo-content-brief-dashboard-story,content-brief,Content Brief - SalesWiki Dashboard Story,content brief - saleswiki dashboard story,wiki/entities/content-briefs/Content Brief - SalesWiki Dashboard Story.md,,,active,internal,2026-07-03
+demo-deal-atlas-robotics-pilot,deal,Deal - Atlas Robotics - Pilot,deal - atlas robotics - pilot,wiki/entities/deals/Deal - Atlas Robotics - Pilot.md,,demo-hs-deal-atlas-robotics,active,sales-confidential,2026-07-03
+demo-deal-orion-foods-pilot,deal,Deal - Orion Foods - Pilot,deal - orion foods - pilot,wiki/entities/deals/Deal - Orion Foods - Pilot.md,,demo-hs-deal-orion-foods,active,sales-confidential,2026-07-03
+demo-lead-atlas-robotics-1,lead,Lead - Atlas Robotics - Primary Buyer 1,lead - atlas robotics - primary buyer 1,wiki/entities/leads/Lead - Atlas Robotics - Primary Buyer 1.md,,,active,sales-confidential,2026-07-03
+demo-lead-atlas-robotics-2,lead,Lead - Atlas Robotics - Primary Buyer 2,lead - atlas robotics - primary buyer 2,wiki/entities/leads/Lead - Atlas Robotics - Primary Buyer 2.md,,,active,sales-confidential,2026-07-03
+demo-lead-helio-retail-1,lead,Lead - Helio Retail - Primary Buyer 1,lead - helio retail - primary buyer 1,wiki/entities/leads/Lead - Helio Retail - Primary Buyer 1.md,,,active,sales-confidential,2026-07-03
+demo-lead-helio-retail-2,lead,Lead - Helio Retail - Primary Buyer 2,lead - helio retail - primary buyer 2,wiki/entities/leads/Lead - Helio Retail - Primary Buyer 2.md,,,active,sales-confidential,2026-07-03
+demo-lead-nimbus-health-1,lead,Lead - Nimbus Health - Primary Buyer 1,lead - nimbus health - primary buyer 1,wiki/entities/leads/Lead - Nimbus Health - Primary Buyer 1.md,,,active,sales-confidential,2026-07-03
+demo-lead-nimbus-health-2,lead,Lead - Nimbus Health - Primary Buyer 2,lead - nimbus health - primary buyer 2,wiki/entities/leads/Lead - Nimbus Health - Primary Buyer 2.md,,,active,sales-confidential,2026-07-03
+demo-lead-orion-foods-1,lead,Lead - Orion Foods - Primary Buyer 1,lead - orion foods - primary buyer 1,wiki/entities/leads/Lead - Orion Foods - Primary Buyer 1.md,,,active,sales-confidential,2026-07-03
+demo-lead-orion-foods-2,lead,Lead - Orion Foods - Primary Buyer 2,lead - orion foods - primary buyer 2,wiki/entities/leads/Lead - Orion Foods - Primary Buyer 2.md,,,active,sales-confidential,2026-07-03
+demo-lead-vector-finance-1,lead,Lead - Vector Finance - Primary Buyer 1,lead - vector finance - primary buyer 1,wiki/entities/leads/Lead - Vector Finance - Primary Buyer 1.md,,,active,sales-confidential,2026-07-03
+demo-lead-vector-finance-2,lead,Lead - Vector Finance - Primary Buyer 2,lead - vector finance - primary buyer 2,wiki/entities/leads/Lead - Vector Finance - Primary Buyer 2.md,,,active,sales-confidential,2026-07-03
+demo-objection-manual-work,objection,Objection - Too Much Manual Work,objection - too much manual work,wiki/entities/objections/Objection - Too Much Manual Work.md,,,active,internal,2026-07-03
+demo-pain-slow-handoff,pain-point,Pain Point - Slow Handoff,pain point - slow handoff,wiki/entities/pain-points/Pain Point - Slow Handoff.md,,,active,internal,2026-07-03
+demo-person-atlas-robotics-buyer,person,Person - Atlas Robotics Buyer,person - atlas robotics buyer,wiki/entities/people/Person - Atlas Robotics Buyer.md,,,active,sales-confidential,2026-07-03
+demo-person-helio-retail-buyer,person,Person - Helio Retail Buyer,person - helio retail buyer,wiki/entities/people/Person - Helio Retail Buyer.md,,,active,sales-confidential,2026-07-03
+demo-person-nimbus-health-buyer,person,Person - Nimbus Health Buyer,person - nimbus health buyer,wiki/entities/people/Person - Nimbus Health Buyer.md,,,active,sales-confidential,2026-07-03
+demo-person-orion-foods-buyer,person,Person - Orion Foods Buyer,person - orion foods buyer,wiki/entities/people/Person - Orion Foods Buyer.md,,,active,sales-confidential,2026-07-03
+demo-person-vector-finance-buyer,person,Person - Vector Finance Buyer,person - vector finance buyer,wiki/entities/people/Person - Vector Finance Buyer.md,,,active,sales-confidential,2026-07-03
+demo-private-case-sanitized-implementation,private-case,Private Case - Demo Sanitized Implementation,private case - demo sanitized implementation,wiki/entities/private-cases/Private Case - Demo Sanitized Implementation.md,,,active,internal,2026-07-03
+demo-source-market-signal-sales-knowledge,source,Source - Demo Market Signal - Sales Knowledge,source - demo market signal - sales knowledge,wiki/entities/sources/Source - Demo Market Signal - Sales Knowledge.md,,demo-source-market-signal-sales-knowledge,active,internal,2026-07-03
+demo-source-news-operations-automation,source,Source - Demo News - Operations Automation,source - demo news - operations automation,wiki/entities/sources/Source - Demo News - Operations Automation.md,,demo-source-news-operations-automation,active,internal,2026-07-03
+demo-source-research-dashboard-adoption,source,Source - Demo Research - Dashboard Adoption,source - demo research - dashboard adoption,wiki/entities/sources/Source - Demo Research - Dashboard Adoption.md,,demo-source-research-dashboard-adoption,active,internal,2026-07-03
+demo-task-clean-demo-quality,task,Task - Clean Demo Low Confidence Items,task - clean demo low confidence items,wiki/entities/tasks/Task - Clean Demo Low Confidence Items.md,,,active,internal,2026-07-03
+demo-task-deal-next-orion-foods,task,Task - Deal Next Step - Orion Foods,task - deal next step - orion foods,wiki/entities/tasks/Task - Deal Next Step - Orion Foods.md,,,active,internal,2026-07-03
+demo-task-follow-up-atlas-robotics,task,Task - Follow Up - Atlas Robotics,task - follow up - atlas robotics,wiki/entities/tasks/Task - Follow Up - Atlas Robotics.md,,,active,internal,2026-07-03
+demo-task-follow-up-orion-foods,task,Task - Follow Up - Orion Foods,task - follow up - orion foods,wiki/entities/tasks/Task - Follow Up - Orion Foods.md,,,active,internal,2026-07-03
+demo-task-review-marketing-operations-pain,task,Task - Review Marketing Insight - Operations Pain,task - review marketing insight - operations pain,wiki/entities/tasks/Task - Review Marketing Insight - Operations Pain.md,,,active,internal,2026-07-03
+demo-topic-revops-workflow,topic,Topic - RevOps Workflow,topic - revops workflow,wiki/entities/topics/Topic - RevOps Workflow.md,,,active,internal,2026-07-03
+demo-use-case-daily-sales-priority,use-case,Use Case - Daily Sales Priority,use case - daily sales priority,wiki/entities/use-cases/Use Case - Daily Sales Priority.md,,,active,internal,2026-07-03

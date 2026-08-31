@@ -1,0 +1,97 @@
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-call-atlas-robotics-discovery", "path": "wiki/entities/calls/Call - Atlas Robotics - 2026-05-29 - Discovery.md", "type": "call"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-call-atlas-robotics-discovery", "path": "wiki/entities/calls/Call - Atlas Robotics - 2026-05-29 - Discovery.md", "type": "call"}
+{"date": "2026-05-29", "date_field": "date", "entity_id": "demo-call-atlas-robotics-discovery", "path": "wiki/entities/calls/Call - Atlas Robotics - 2026-05-29 - Discovery.md", "type": "call"}
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-call-orion-foods-discovery", "path": "wiki/entities/calls/Call - Orion Foods - 2026-05-29 - Discovery.md", "type": "call"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-call-orion-foods-discovery", "path": "wiki/entities/calls/Call - Orion Foods - 2026-05-29 - Discovery.md", "type": "call"}
+{"date": "2026-05-29", "date_field": "date", "entity_id": "demo-call-orion-foods-discovery", "path": "wiki/entities/calls/Call - Orion Foods - 2026-05-29 - Discovery.md", "type": "call"}
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-campaign-abm-sprint", "path": "wiki/entities/campaigns/Campaign - Demo ABM Sprint.md", "type": "campaign"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-campaign-abm-sprint", "path": "wiki/entities/campaigns/Campaign - Demo ABM Sprint.md", "type": "campaign"}
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-company-atlas-robotics", "path": "wiki/entities/companies/Company - Atlas Robotics.md", "type": "company"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-company-atlas-robotics", "path": "wiki/entities/companies/Company - Atlas Robotics.md", "type": "company"}
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-company-helio-retail", "path": "wiki/entities/companies/Company - Helio Retail.md", "type": "company"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-company-helio-retail", "path": "wiki/entities/companies/Company - Helio Retail.md", "type": "company"}
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-company-nimbus-health", "path": "wiki/entities/companies/Company - Nimbus Health.md", "type": "company"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-company-nimbus-health", "path": "wiki/entities/companies/Company - Nimbus Health.md", "type": "company"}
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-company-orion-foods", "path": "wiki/entities/companies/Company - Orion Foods.md", "type": "company"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-company-orion-foods", "path": "wiki/entities/companies/Company - Orion Foods.md", "type": "company"}
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-company-vector-finance", "path": "wiki/entities/companies/Company - Vector Finance.md", "type": "company"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-company-vector-finance", "path": "wiki/entities/companies/Company - Vector Finance.md", "type": "company"}
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-content-brief-dashboard-story", "path": "wiki/entities/content-briefs/Content Brief - SalesWiki Dashboard Story.md", "type": "content-brief"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-content-brief-dashboard-story", "path": "wiki/entities/content-briefs/Content Brief - SalesWiki Dashboard Story.md", "type": "content-brief"}
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-deal-atlas-robotics-pilot", "path": "wiki/entities/deals/Deal - Atlas Robotics - Pilot.md", "type": "deal"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-deal-atlas-robotics-pilot", "path": "wiki/entities/deals/Deal - Atlas Robotics - Pilot.md", "type": "deal"}
+{"date": "2026-08-04", "date_field": "close_date", "entity_id": "demo-deal-atlas-robotics-pilot", "path": "wiki/entities/deals/Deal - Atlas Robotics - Pilot.md", "type": "deal"}
+{"date": "2026-07-03", "date_field": "scored_at", "entity_id": "demo-deal-atlas-robotics-pilot", "path": "wiki/entities/deals/Deal - Atlas Robotics - Pilot.md", "type": "deal"}
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-deal-orion-foods-pilot", "path": "wiki/entities/deals/Deal - Orion Foods - Pilot.md", "type": "deal"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-deal-orion-foods-pilot", "path": "wiki/entities/deals/Deal - Orion Foods - Pilot.md", "type": "deal"}
+{"date": "2026-08-18", "date_field": "close_date", "entity_id": "demo-deal-orion-foods-pilot", "path": "wiki/entities/deals/Deal - Orion Foods - Pilot.md", "type": "deal"}
+{"date": "2026-07-03", "date_field": "scored_at", "entity_id": "demo-deal-orion-foods-pilot", "path": "wiki/entities/deals/Deal - Orion Foods - Pilot.md", "type": "deal"}
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-lead-atlas-robotics-1", "path": "wiki/entities/leads/Lead - Atlas Robotics - Primary Buyer 1.md", "type": "lead"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-lead-atlas-robotics-1", "path": "wiki/entities/leads/Lead - Atlas Robotics - Primary Buyer 1.md", "type": "lead"}
+{"date": "2026-07-03", "date_field": "scored_at", "entity_id": "demo-lead-atlas-robotics-1", "path": "wiki/entities/leads/Lead - Atlas Robotics - Primary Buyer 1.md", "type": "lead"}
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-lead-atlas-robotics-2", "path": "wiki/entities/leads/Lead - Atlas Robotics - Primary Buyer 2.md", "type": "lead"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-lead-atlas-robotics-2", "path": "wiki/entities/leads/Lead - Atlas Robotics - Primary Buyer 2.md", "type": "lead"}
+{"date": "2026-07-03", "date_field": "scored_at", "entity_id": "demo-lead-atlas-robotics-2", "path": "wiki/entities/leads/Lead - Atlas Robotics - Primary Buyer 2.md", "type": "lead"}
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-lead-helio-retail-1", "path": "wiki/entities/leads/Lead - Helio Retail - Primary Buyer 1.md", "type": "lead"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-lead-helio-retail-1", "path": "wiki/entities/leads/Lead - Helio Retail - Primary Buyer 1.md", "type": "lead"}
+{"date": "2026-07-03", "date_field": "scored_at", "entity_id": "demo-lead-helio-retail-1", "path": "wiki/entities/leads/Lead - Helio Retail - Primary Buyer 1.md", "type": "lead"}
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-lead-helio-retail-2", "path": "wiki/entities/leads/Lead - Helio Retail - Primary Buyer 2.md", "type": "lead"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-lead-helio-retail-2", "path": "wiki/entities/leads/Lead - Helio Retail - Primary Buyer 2.md", "type": "lead"}
+{"date": "2026-07-03", "date_field": "scored_at", "entity_id": "demo-lead-helio-retail-2", "path": "wiki/entities/leads/Lead - Helio Retail - Primary Buyer 2.md", "type": "lead"}
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-lead-nimbus-health-1", "path": "wiki/entities/leads/Lead - Nimbus Health - Primary Buyer 1.md", "type": "lead"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-lead-nimbus-health-1", "path": "wiki/entities/leads/Lead - Nimbus Health - Primary Buyer 1.md", "type": "lead"}
+{"date": "2026-07-03", "date_field": "scored_at", "entity_id": "demo-lead-nimbus-health-1", "path": "wiki/entities/leads/Lead - Nimbus Health - Primary Buyer 1.md", "type": "lead"}
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-lead-nimbus-health-2", "path": "wiki/entities/leads/Lead - Nimbus Health - Primary Buyer 2.md", "type": "lead"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-lead-nimbus-health-2", "path": "wiki/entities/leads/Lead - Nimbus Health - Primary Buyer 2.md", "type": "lead"}
+{"date": "2026-07-03", "date_field": "scored_at", "entity_id": "demo-lead-nimbus-health-2", "path": "wiki/entities/leads/Lead - Nimbus Health - Primary Buyer 2.md", "type": "lead"}
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-lead-orion-foods-1", "path": "wiki/entities/leads/Lead - Orion Foods - Primary Buyer 1.md", "type": "lead"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-lead-orion-foods-1", "path": "wiki/entities/leads/Lead - Orion Foods - Primary Buyer 1.md", "type": "lead"}
+{"date": "2026-07-03", "date_field": "scored_at", "entity_id": "demo-lead-orion-foods-1", "path": "wiki/entities/leads/Lead - Orion Foods - Primary Buyer 1.md", "type": "lead"}
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-lead-orion-foods-2", "path": "wiki/entities/leads/Lead - Orion Foods - Primary Buyer 2.md", "type": "lead"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-lead-orion-foods-2", "path": "wiki/entities/leads/Lead - Orion Foods - Primary Buyer 2.md", "type": "lead"}
+{"date": "2026-07-03", "date_field": "scored_at", "entity_id": "demo-lead-orion-foods-2", "path": "wiki/entities/leads/Lead - Orion Foods - Primary Buyer 2.md", "type": "lead"}
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-lead-vector-finance-1", "path": "wiki/entities/leads/Lead - Vector Finance - Primary Buyer 1.md", "type": "lead"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-lead-vector-finance-1", "path": "wiki/entities/leads/Lead - Vector Finance - Primary Buyer 1.md", "type": "lead"}
+{"date": "2026-07-03", "date_field": "scored_at", "entity_id": "demo-lead-vector-finance-1", "path": "wiki/entities/leads/Lead - Vector Finance - Primary Buyer 1.md", "type": "lead"}
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-lead-vector-finance-2", "path": "wiki/entities/leads/Lead - Vector Finance - Primary Buyer 2.md", "type": "lead"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-lead-vector-finance-2", "path": "wiki/entities/leads/Lead - Vector Finance - Primary Buyer 2.md", "type": "lead"}
+{"date": "2026-07-03", "date_field": "scored_at", "entity_id": "demo-lead-vector-finance-2", "path": "wiki/entities/leads/Lead - Vector Finance - Primary Buyer 2.md", "type": "lead"}
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-objection-manual-work", "path": "wiki/entities/objections/Objection - Too Much Manual Work.md", "type": "objection"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-objection-manual-work", "path": "wiki/entities/objections/Objection - Too Much Manual Work.md", "type": "objection"}
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-pain-slow-handoff", "path": "wiki/entities/pain-points/Pain Point - Slow Handoff.md", "type": "pain-point"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-pain-slow-handoff", "path": "wiki/entities/pain-points/Pain Point - Slow Handoff.md", "type": "pain-point"}
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-person-atlas-robotics-buyer", "path": "wiki/entities/people/Person - Atlas Robotics Buyer.md", "type": "person"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-person-atlas-robotics-buyer", "path": "wiki/entities/people/Person - Atlas Robotics Buyer.md", "type": "person"}
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-person-helio-retail-buyer", "path": "wiki/entities/people/Person - Helio Retail Buyer.md", "type": "person"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-person-helio-retail-buyer", "path": "wiki/entities/people/Person - Helio Retail Buyer.md", "type": "person"}
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-person-nimbus-health-buyer", "path": "wiki/entities/people/Person - Nimbus Health Buyer.md", "type": "person"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-person-nimbus-health-buyer", "path": "wiki/entities/people/Person - Nimbus Health Buyer.md", "type": "person"}
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-person-orion-foods-buyer", "path": "wiki/entities/people/Person - Orion Foods Buyer.md", "type": "person"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-person-orion-foods-buyer", "path": "wiki/entities/people/Person - Orion Foods Buyer.md", "type": "person"}
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-person-vector-finance-buyer", "path": "wiki/entities/people/Person - Vector Finance Buyer.md", "type": "person"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-person-vector-finance-buyer", "path": "wiki/entities/people/Person - Vector Finance Buyer.md", "type": "person"}
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-private-case-sanitized-implementation", "path": "wiki/entities/private-cases/Private Case - Demo Sanitized Implementation.md", "type": "private-case"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-private-case-sanitized-implementation", "path": "wiki/entities/private-cases/Private Case - Demo Sanitized Implementation.md", "type": "private-case"}
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-source-market-signal-sales-knowledge", "path": "wiki/entities/sources/Source - Demo Market Signal - Sales Knowledge.md", "type": "source"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-source-market-signal-sales-knowledge", "path": "wiki/entities/sources/Source - Demo Market Signal - Sales Knowledge.md", "type": "source"}
+{"date": "2026-07-03", "date_field": "date_collected", "entity_id": "demo-source-market-signal-sales-knowledge", "path": "wiki/entities/sources/Source - Demo Market Signal - Sales Knowledge.md", "type": "source"}
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-source-news-operations-automation", "path": "wiki/entities/sources/Source - Demo News - Operations Automation.md", "type": "source"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-source-news-operations-automation", "path": "wiki/entities/sources/Source - Demo News - Operations Automation.md", "type": "source"}
+{"date": "2026-07-03", "date_field": "date_collected", "entity_id": "demo-source-news-operations-automation", "path": "wiki/entities/sources/Source - Demo News - Operations Automation.md", "type": "source"}
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-source-research-dashboard-adoption", "path": "wiki/entities/sources/Source - Demo Research - Dashboard Adoption.md", "type": "source"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-source-research-dashboard-adoption", "path": "wiki/entities/sources/Source - Demo Research - Dashboard Adoption.md", "type": "source"}
+{"date": "2026-07-03", "date_field": "date_collected", "entity_id": "demo-source-research-dashboard-adoption", "path": "wiki/entities/sources/Source - Demo Research - Dashboard Adoption.md", "type": "source"}
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-task-clean-demo-quality", "path": "wiki/entities/tasks/Task - Clean Demo Low Confidence Items.md", "type": "task"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-task-clean-demo-quality", "path": "wiki/entities/tasks/Task - Clean Demo Low Confidence Items.md", "type": "task"}
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-task-deal-next-orion-foods", "path": "wiki/entities/tasks/Task - Deal Next Step - Orion Foods.md", "type": "task"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-task-deal-next-orion-foods", "path": "wiki/entities/tasks/Task - Deal Next Step - Orion Foods.md", "type": "task"}
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-task-follow-up-atlas-robotics", "path": "wiki/entities/tasks/Task - Follow Up - Atlas Robotics.md", "type": "task"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-task-follow-up-atlas-robotics", "path": "wiki/entities/tasks/Task - Follow Up - Atlas Robotics.md", "type": "task"}
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-task-follow-up-orion-foods", "path": "wiki/entities/tasks/Task - Follow Up - Orion Foods.md", "type": "task"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-task-follow-up-orion-foods", "path": "wiki/entities/tasks/Task - Follow Up - Orion Foods.md", "type": "task"}
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-task-review-marketing-operations-pain", "path": "wiki/entities/tasks/Task - Review Marketing Insight - Operations Pain.md", "type": "task"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-task-review-marketing-operations-pain", "path": "wiki/entities/tasks/Task - Review Marketing Insight - Operations Pain.md", "type": "task"}
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-topic-revops-workflow", "path": "wiki/entities/topics/Topic - RevOps Workflow.md", "type": "topic"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-topic-revops-workflow", "path": "wiki/entities/topics/Topic - RevOps Workflow.md", "type": "topic"}
+{"date": "2026-07-03", "date_field": "created", "entity_id": "demo-use-case-daily-sales-priority", "path": "wiki/entities/use-cases/Use Case - Daily Sales Priority.md", "type": "use-case"}
+{"date": "2026-07-03", "date_field": "updated", "entity_id": "demo-use-case-daily-sales-priority", "path": "wiki/entities/use-cases/Use Case - Daily Sales Priority.md", "type": "use-case"}

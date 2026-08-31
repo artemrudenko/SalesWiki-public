@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SalesWiki · коротко о проекте</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F0E9; --surface:#FFFFFF; --surface-2:#FBF8F2; --surface-3:#F2ECE1;
+  --ink:#2B2622; --ink-soft:#4A4238; --ink-muted:#6E6454;
+  --line:#E6DECF; --line-soft:#EFE8DB;
+  --c1:#A35E42; --c1-deep:#8A4A30; --c1-soft:#F3E0D8;
+  --c2:#5D6850; --c2-soft:#E4E9DB;
+  --c3:#174C55; --c3-soft:#D6E7EA;
+  --c4:#B0852F; --c4-soft:#F4E9CC;
+  --ink-invert:#EFE8DB; --panel-dark-1:#2B2622; --panel-dark-2:#3A332C;
+  --ok:var(--c2); --ok-soft:var(--c2-soft); --info:var(--c3); --info-soft:var(--c3-soft);
+  --font-sans:'Manrope',system-ui,-apple-system,sans-serif;
+  --font-serif:'Fraunces',Georgia,serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+  --radius:14px; --radius-sm:10px;
+  --shadow:0 1px 2px rgba(20,18,16,.04),0 8px 24px rgba(20,18,16,.05);
+  --shadow-hover:0 2px 6px rgba(20,18,16,.06),0 14px 38px rgba(20,18,16,.09);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.num{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+.wrap{max-width:1160px;margin:0 auto;padding:0 24px 64px}
+a{color:var(--c1);text-decoration:none}
+
+.topbar{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.topbar-inner{max-width:1160px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:11px;margin-right:auto}
+.brand-mark{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--c1),var(--c1-deep));display:grid;place-items:center;color:#fff;flex:none;box-shadow:0 4px 12px color-mix(in srgb,var(--c1) 28%,transparent)}
+.brand-name{font-weight:800;letter-spacing:-.02em;font-size:16px;line-height:1}
+.brand-sub{font-size:11.5px;color:var(--ink-muted);font-weight:600;letter-spacing:.02em}
+.topnav{display:flex;gap:4px;flex-wrap:wrap}
+.topnav a{font-size:12.5px;font-weight:700;color:var(--ink-soft);padding:6px 11px;border-radius:999px}
+.topnav a:hover{background:var(--surface);color:var(--c1)}
+.period-pill{display:inline-flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:12.5px;font-weight:600;color:var(--ink-soft);box-shadow:var(--shadow)}
+.period-pill .dot{width:7px;height:7px;border-radius:50%;background:var(--c1)}
+@media(max-width:860px){.topnav{display:none}}
+
+.hero{padding:44px 0 8px}
+.eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--c1);margin-bottom:14px}
+.hero h1{margin:0;font-size:clamp(30px,5vw,50px);line-height:1.07;letter-spacing:-.025em;font-weight:800;max-width:19ch}
+.hero h1 em{font-family:var(--font-serif);font-style:italic;font-weight:400;color:var(--c1)}
+.hero .lede{margin:18px 0 0;max-width:64ch;color:var(--ink-soft);font-size:16.5px}
+.hero .lede b{color:var(--ink);font-weight:700}
+.hero-tags{margin-top:22px;display:flex;flex-wrap:wrap;gap:8px}
+.htag{font-size:12.5px;font-weight:700;color:var(--ink-soft);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:7px 13px;box-shadow:var(--shadow);display:inline-flex;align-items:center;gap:7px}
+.htag .d{width:7px;height:7px;border-radius:50%;background:var(--c2)}
+
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:30px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s}
+.kpi:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover)}
+.kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent,var(--c1))}
+.kpi-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}
+.kpi-ico{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;background:var(--accent-soft,var(--surface-3));color:var(--accent,var(--c1))}
+.kpi-ico svg{width:17px;height:17px}
+.kpi-label{font-size:11.5px;font-weight:700;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.05em;line-height:1.3}
+.kpi-val{font-size:30px;font-weight:700;letter-spacing:-.02em;line-height:1;color:var(--ink)}
+.kpi-val .u{font-size:14px;color:var(--ink-muted);font-weight:600;margin-left:3px}
+.kpi-meta{margin-top:9px;font-size:12px;color:var(--ink-muted);font-weight:600}
+.kpi.total{background:linear-gradient(150deg,var(--panel-dark-1),var(--panel-dark-2));border-color:var(--panel-dark-2)}
+.kpi.total .kpi-label{color:#C7BBA8}.kpi.total .kpi-val{color:#fff}.kpi.total .kpi-val .u{color:#C7BBA8}
+.kpi.total .kpi-meta{color:#B7A992}.kpi.total .kpi-ico{background:rgba(255,255,255,.1);color:var(--c1-soft)}
+.kpi.total::before{background:var(--c1)}
+@media(max-width:1080px){.kpis{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}.kpi-val{font-size:25px}}
+
+.section{margin-top:46px;scroll-margin-top:80px}
+.sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.sec-no{font-family:var(--font-mono);font-size:12px;font-weight:700;color:var(--c1)}
+.sec-head h2{margin:0;font-size:clamp(20px,3vw,26px);font-weight:800;letter-spacing:-.02em}
+.sec-head .hint{font-size:12.5px;color:var(--ink-muted);font-weight:600;margin-left:auto;text-align:right}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.card-pad{padding:22px 24px}
+.card-title{font-size:14px;font-weight:800;color:var(--ink);letter-spacing:-.01em}
+.card-sub{font-size:12.5px;color:var(--ink-muted);font-weight:600;margin-top:2px}
+.lead-para{max-width:72ch;color:var(--ink-soft);font-size:15.5px;margin:0 0 20px}
+.band-note{font-size:12.5px;color:var(--ink-muted);font-weight:600;line-height:1.5}
+
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:980px){.cols{grid-template-columns:1fr}}
+
+.feat{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 22px;transition:transform .2s,box-shadow .2s}
+.feat:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover)}
+.feat-h{display:flex;align-items:center;gap:11px;margin-bottom:12px}
+.feat-ic{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;flex:none;background:var(--accent-soft,var(--surface-3));color:var(--accent,var(--c1))}
+.feat-ic svg{width:18px;height:18px}
+.feat-h h3{margin:0;font-size:15px;font-weight:800;letter-spacing:-.01em}
+.feat ul{list-style:none;margin:0;padding:0}
+.feat li{position:relative;padding:7px 0 7px 22px;font-size:13.5px;color:var(--ink-soft);font-weight:500;border-top:1px solid var(--line-soft);line-height:1.5}
+.feat li:first-child{border-top:0}
+.feat li::before{content:"";position:absolute;left:2px;top:13px;width:7px;height:7px;border-radius:2px;background:var(--accent,var(--c1))}
+.feat li b{color:var(--ink);font-weight:700}
+
+.loop{display:flex;align-items:stretch;gap:0;flex-wrap:wrap;margin-top:4px}
+.lnode{flex:1;min-width:130px;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:14px 13px;text-align:center}
+.lnode .lt{font-size:13px;font-weight:800;color:var(--ink)}
+.lnode .lp{font-size:11.5px;font-weight:600;color:var(--ink-muted);margin-top:5px;line-height:1.4}
+.larrow{display:flex;align-items:center;color:var(--c1);font-weight:800;font-size:18px;padding:0 8px}
+@media(max-width:760px){.larrow{transform:rotate(90deg);padding:5px 0;width:100%;justify-content:center}.lnode{min-width:0;width:100%}}
+
+.skgroups{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+@media(max-width:880px){.skgroups{grid-template-columns:1fr}}
+.skg{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 20px}
+.skg h4{margin:0 0 13px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--accent,var(--c1));display:flex;align-items:center;gap:8px}
+.skg h4 .d{width:9px;height:9px;border-radius:50%;background:var(--accent,var(--c1))}
+.skg h4 .ct{margin-left:auto;font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);font-weight:700}
+.skchips{display:flex;flex-wrap:wrap;gap:8px}
+.skchip{font-size:12.5px;font-weight:600;color:var(--ink-soft);background:var(--surface-2);border:1px solid var(--line);border-radius:7px;padding:6px 11px;transition:border-color .15s,color .15s,transform .15s}
+.skchip:hover{border-color:var(--accent,var(--c1));color:var(--accent,var(--c1));transform:translateY(-2px)}
+
+.kg-svg{width:100%;height:auto;display:block;border-radius:var(--radius-sm);background:linear-gradient(160deg,var(--surface-2),var(--surface))}
+.kg-edge{stroke:var(--line);stroke-width:1.4;fill:none}
+.kg-edge.hot{stroke:var(--c1);stroke-width:1.8;stroke-dasharray:4 4;animation:dash 4s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-32}}
+.kg-c{fill:var(--c2)}.kg-c.teal{fill:var(--c3)}.kg-c.hot{fill:var(--c1)}
+.kg-lbl{font-family:var(--font-mono);font-size:9px;font-weight:600;fill:var(--ink-muted)}
+.kg-legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;font-size:12px;font-weight:600;color:var(--ink-muted)}
+.kg-legend span{display:inline-flex;align-items:center;gap:7px}
+.kg-legend .lc{width:11px;height:11px;border-radius:50%}
+
+.banner{margin-top:16px;display:flex;gap:13px;align-items:flex-start;padding:16px 18px;border-radius:var(--radius-sm);background:var(--info-soft);border:1px solid color-mix(in srgb,var(--info) 30%,white);color:var(--ink-soft);font-size:13.5px;font-weight:600;line-height:1.5}
+.banner strong{color:var(--c3)}
+.banner .bi{width:30px;height:30px;flex:none;border-radius:8px;background:var(--surface);color:var(--c3);display:grid;place-items:center}
+.banner .bi svg{width:17px;height:17px}
+
+.gl-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:760px){.gl-grid{grid-template-columns:1fr}}
+.gl{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);box-shadow:var(--shadow);padding:14px 16px;border-left:3px solid var(--accent,var(--c1))}
+.gl .t{font-weight:800;font-size:13.5px;color:var(--ink);letter-spacing:-.01em}
+.gl .d{font-size:13px;color:var(--ink-soft);font-weight:500;margin-top:4px;line-height:1.5}
+
+.close{margin-top:48px;background:linear-gradient(150deg,var(--panel-dark-1),var(--panel-dark-2));border-radius:var(--radius);padding:40px;color:var(--ink-invert);position:relative;overflow:hidden}
+.close::after{content:"";position:absolute;right:-60px;top:-60px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--c1) 28%,transparent),transparent 68%)}
+.close .q{font-family:var(--font-serif);font-style:italic;font-size:clamp(20px,3.2vw,30px);line-height:1.35;max-width:34ch;position:relative;z-index:1}
+.close .q b{color:var(--c1-soft);font-style:normal;font-weight:700}
+.close .meta{margin-top:22px;display:flex;flex-wrap:wrap;gap:8px 16px;font-size:12.5px;color:#B7A992;font-weight:600;position:relative;z-index:1}
+.close .meta b{color:var(--c1-soft)}
+footer{margin-top:40px;padding-top:22px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-muted);font-weight:600}
+footer em{font-family:var(--font-serif);font-style:italic;color:var(--c1);font-weight:400}
+@media(max-width:640px){.wrap{padding:0 16px 48px}.topbar-inner{padding:12px 16px}.close{padding:30px 24px}}
+
+.js .reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
+.js .reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}.js .reveal{opacity:1!important;transform:none!important;transition:none}html{scroll-behavior:auto}}
+@media print{.topbar{position:static}.reveal{opacity:1!important;transform:none!important}body{background:#fff}.card,.kpi,.feat{box-shadow:none;break-inside:avoid}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="19" cy="18" r="2"/><path d="M7 6.8 9.6 11M17 6.8 14.4 11M7 17.2 9.6 13M17 17.2 14.4 13"/></svg>
+      </div>
+      <div>
+        <div class="brand-name">SalesWiki</div>
+        <div class="brand-sub">умная база знаний о продажах и клиентах</div>
+      </div>
+    </div>
+    <nav class="topnav">
+      <a href="#value">что это даёт</a>
+      <a href="#knows">что знает</a>
+      <a href="#words">простыми словами</a>
+    </nav>
+    <span class="period-pill"><span class="dot"></span>статус: готов к демо</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="eyebrow reveal">—— живая база знаний для отдела продаж и маркетинга</div>
+    <h1 class="reveal">Спросите обычными словами — получите ответ <em>по вашей роли</em>, без утечек.</h1>
+    <p class="lede reveal">SalesWiki хранит знания о компаниях, людях, сделках и рынке как связанные карточки
+      и отвечает на вопросы простым текстом. Каждый сотрудник видит <b>только то, что ему положено</b>;
+      приватное не утекает, а каждый факт — <b>со ссылкой на источник</b> и ничего не выдумано.</p>
+    <div class="hero-tags reveal">
+      <span class="htag"><span class="d"></span>спрашивайте в чате</span>
+      <span class="htag"><span class="d" style="background:var(--c3)"></span>ответы по роли</span>
+      <span class="htag"><span class="d" style="background:var(--c4)"></span>только проверенные факты</span>
+      <span class="htag"><span class="d" style="background:var(--c1)"></span>приватное не утекает</span>
+    </div>
+  </header>
+
+  <!-- KPI ROW — каждая цифра проверена в проекте -->
+  <div class="kpis">
+    <div class="kpi total reveal" style="--accent:var(--c1)">
+      <div class="kpi-top"><span class="kpi-label">Видов<br>карточек знаний</span>
+        <span class="kpi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/></svg></span></div>
+      <div class="kpi-val num">34<span class="u">типа</span></div>
+      <div class="kpi-meta">компании, сделки, звонки, кампании…</div>
+    </div>
+    <div class="kpi reveal" style="--accent:var(--c2);--accent-soft:var(--c2-soft)">
+      <div class="kpi-top"><span class="kpi-label">Готовых<br>ответов по ролям</span>
+        <span class="kpi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span></div>
+      <div class="kpi-val num">17<span class="u">шт</span></div>
+      <div class="kpi-meta">спросить · предложить · согласовать</div>
+    </div>
+    <div class="kpi reveal" style="--accent:var(--c3);--accent-soft:var(--c3-soft)">
+      <div class="kpi-top"><span class="kpi-label">Ролей<br>доступа</span>
+        <span class="kpi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/></svg></span></div>
+      <div class="kpi-val num">9<span class="u">ролей</span></div>
+      <div class="kpi-meta">каждый видит своё</div>
+    </div>
+    <div class="kpi reveal" style="--accent:var(--c1);--accent-soft:var(--c1-soft)">
+      <div class="kpi-top"><span class="kpi-label">Уровней<br>доступа</span>
+        <span class="kpi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span></div>
+      <div class="kpi-val num">7<span class="u">уровней</span></div>
+      <div class="kpi-meta">по умолчанию — закрыто, не «всем»</div>
+    </div>
+    <div class="kpi reveal" style="--accent:var(--c4);--accent-soft:var(--c4-soft)">
+      <div class="kpi-top"><span class="kpi-label">Автопроверок<br>пройдено</span>
+        <span class="kpi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span></div>
+      <div class="kpi-val num">326<span class="u">зелёных</span></div>
+      <div class="kpi-meta">проверка структуры — 0 ошибок</div>
+    </div>
+  </div>
+
+  <!-- 01 · ЧТО ЭТО ДАЁТ -->
+  <section class="section" id="value">
+    <div class="sec-head reveal"><span class="sec-no">01</span><h2>Что это даёт сотруднику</h2>
+      <span class="hint">вопрос обычными словами → безопасный ответ со ссылкой</span></div>
+    <p class="lead-para reveal">Не нужно ничего настраивать или изучать. Сотрудник задаёт вопрос в чате, а система
+      сама проверяет, что ему можно показать, и отвечает только тем, что есть в проверенных данных. Если данных
+      нет — честно скажет, что нет, и не придумает.</p>
+
+    <div class="card card-pad reveal">
+      <div class="card-title">Как рождается ответ — четыре шага</div>
+      <div class="card-sub" style="margin-bottom:14px">роль определяет система, а не сам пользователь — обойти нельзя</div>
+      <div class="loop">
+        <div class="lnode"><div class="lt">Вопрос</div><div class="lp">обычными словами, в чате Rocket.Chat</div></div>
+        <div class="larrow">→</div>
+        <div class="lnode"><div class="lt">Проверка роли</div><div class="lp">что этому человеку можно видеть</div></div>
+        <div class="larrow">→</div>
+        <div class="lnode"><div class="lt">Ответ</div><div class="lp">только из проверенных данных; приватное скрыто</div></div>
+        <div class="larrow">→</div>
+        <div class="lnode"><div class="lt">Источник</div><div class="lp">ссылка, откуда взят каждый факт</div></div>
+      </div>
+    </div>
+
+    <div class="cols reveal" style="margin-top:18px">
+      <div class="feat" style="--accent:var(--c3);--accent-soft:var(--c3-soft)">
+        <div class="feat-h"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span><h3>Ничего лишнего не покажет</h3></div>
+        <ul>
+          <li><b>Каждый видит только своё</b> — менеджер по продажам не увидит чужих сделок, маркетинг не увидит цен и сумм</li>
+          <li><b>По умолчанию закрыто</b> — если система сомневается, она скорее скроет, чем покажет лишнее</li>
+          <li><b>Приватные данные людей</b> доступны только администратору</li>
+          <li><b>Без выдумок</b> — ответ собирается из реальных карточек; нет данных — честный «не найдено»</li>
+        </ul>
+      </div>
+      <div class="feat" style="--accent:var(--c2);--accent-soft:var(--c2-soft)">
+        <div class="feat-h"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h12l4 4v12H4z"/><path d="M14 4v4h4M8 13h8M8 17h6"/></svg></span><h3>Ничего не теряется</h3></div>
+        <ul>
+          <li><b>Источники хранятся как есть</b> — звонки, письма, экспорты не переписываются</li>
+          <li><b>Любая правка — через согласование</b>: сначала предложение, потом одобрение, и только затем применяется</li>
+          <li><b>Историю изменений видно</b> — кто, что и когда поменял</li>
+          <li><b>Можно откатить</b> назад, если что-то применили зря</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 · ЧТО СИСТЕМА ЗНАЕТ -->
+  <section class="section" id="knows">
+    <div class="sec-head reveal"><span class="sec-no">02</span><h2>Что система знает</h2>
+      <span class="hint">34 вида карточек · связаны между собой</span></div>
+    <p class="lead-para reveal">Знания разложены по карточкам разных видов, и карточки <b>связаны между собой</b>:
+      от компании можно перейти к её людям, сделкам, звонкам и кампаниям. Поэтому на вопрос про клиента система
+      собирает полную картину, а не один разрозненный факт.</p>
+
+    <div class="card card-pad reveal">
+      <div class="card-title">Связи вокруг клиента — схема</div>
+      <div class="card-sub" style="margin-bottom:14px">в центре компания, вокруг — всё, что с ней связано</div>
+      <svg class="kg-svg" viewBox="0 0 460 290" role="img" aria-label="Схема связей: в центре компания, вокруг неё — люди, лиды, сделки, звонки, кампании и события, соединённые линиями">
+        <g>
+          <path class="kg-edge" d="M210 145 L140 78"/><path class="kg-edge" d="M210 145 L250 58"/>
+          <path class="kg-edge" d="M210 145 L100 160"/><path class="kg-edge" d="M210 145 L160 232"/>
+          <path class="kg-edge hot" d="M210 145 L312 172"/><path class="kg-edge hot" d="M210 145 L338 96"/>
+          <path class="kg-edge" d="M312 172 L394 156"/><path class="kg-edge" d="M312 172 L370 236"/>
+          <path class="kg-edge" d="M338 96 L312 172"/><path class="kg-edge" d="M250 58 L338 96"/>
+        </g>
+        <g>
+          <circle class="kg-c hot" cx="210" cy="145" r="12"/>
+          <circle class="kg-c" cx="140" cy="78" r="8"/>
+          <circle class="kg-c" cx="250" cy="58" r="8"/>
+          <circle class="kg-c" cx="100" cy="160" r="8"/>
+          <circle class="kg-c" cx="160" cy="232" r="8"/>
+          <circle class="kg-c teal" cx="312" cy="172" r="9"/>
+          <circle class="kg-c" cx="338" cy="96" r="8"/>
+          <circle class="kg-c teal" cx="394" cy="156" r="8"/>
+          <circle class="kg-c teal" cx="370" cy="236" r="8"/>
+          <text class="kg-lbl" x="210" y="168" text-anchor="middle">Компания</text>
+          <text class="kg-lbl" x="140" y="69" text-anchor="middle">Люди</text>
+          <text class="kg-lbl" x="250" y="49" text-anchor="middle">Лиды</text>
+          <text class="kg-lbl" x="100" y="180" text-anchor="middle">Звонки</text>
+          <text class="kg-lbl" x="160" y="252" text-anchor="middle">Задачи</text>
+          <text class="kg-lbl" x="312" y="192" text-anchor="middle">Сделки</text>
+          <text class="kg-lbl" x="338" y="87" text-anchor="middle">Контакты</text>
+          <text class="kg-lbl" x="394" y="147" text-anchor="middle">События</text>
+          <text class="kg-lbl" x="370" y="255" text-anchor="middle">Кампании</text>
+        </g>
+      </svg>
+      <div class="kg-legend">
+        <span><span class="lc" style="background:var(--c1)"></span>центр — компания</span>
+        <span><span class="lc" style="background:var(--c2)"></span>связанная карточка</span>
+        <span><svg width="20" height="8" aria-hidden="true"><line x1="0" y1="4" x2="20" y2="4" stroke="#A35E42" stroke-width="1.8" stroke-dasharray="4 4"/></svg>конфиденциальная связь (видна не всем)</span>
+      </div>
+    </div>
+
+    <div class="card-sub reveal" style="margin:22px 0 12px;font-size:13px;color:var(--ink-soft);font-weight:700">34 вида карточек — по четырём областям</div>
+    <div class="skgroups reveal">
+      <div class="skg" style="--accent:var(--c1)">
+        <h4><span class="d"></span>Аккаунты и люди<span class="ct">6</span></h4>
+        <div class="skchips">
+          <span class="skchip">Компании</span><span class="skchip">Люди</span><span class="skchip">Лиды</span>
+          <span class="skchip">Идеальный клиент</span><span class="skchip">Портреты покупателей</span><span class="skchip">Планы по аккаунтам</span>
+        </div>
+      </div>
+      <div class="skg" style="--accent:var(--c2)">
+        <h4><span class="d"></span>Сделки и разговоры<span class="ct">6</span></h4>
+        <div class="skchips">
+          <span class="skchip">Сделки</span><span class="skchip">Звонки</span><span class="skchip">Задачи</span>
+          <span class="skchip">Цепочки касаний</span><span class="skchip">Пост-продажа</span><span class="skchip">Обогащение из CRM</span>
+        </div>
+      </div>
+      <div class="skg" style="--accent:var(--c3)">
+        <h4><span class="d"></span>Маркетинг и контент<span class="ct">8</span></h4>
+        <div class="skchips">
+          <span class="skchip">Кампании</span><span class="skchip">Каналы</span><span class="skchip">Брифы на контент</span>
+          <span class="skchip">Контент-план</span><span class="skchip">Материалы</span><span class="skchip">Эксперименты</span>
+          <span class="skchip">Публичные кейсы</span><span class="skchip">Сценарии применения</span>
+        </div>
+      </div>
+      <div class="skg" style="--accent:var(--c4)">
+        <h4><span class="d"></span>Рынок и доказательства<span class="ct">14</span></h4>
+        <div class="skchips">
+          <span class="skchip">События</span><span class="skchip">Участие в событиях</span><span class="skchip">Продукты</span>
+          <span class="skchip">Конкуренты</span><span class="skchip">Темы</span><span class="skchip">Боли клиентов</span>
+          <span class="skchip">Возражения</span><span class="skchip">Факты</span><span class="skchip">Статьи</span>
+          <span class="skchip">Новости</span><span class="skchip">Источники</span><span class="skchip">Внутренние кейсы</span>
+          <span class="skchip">Отчёты</span><span class="skchip">Модель скоринга</span>
+        </div>
+      </div>
+    </div>
+    <div class="banner reveal">
+      <span class="bi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><path d="M12 16h.01"/></svg></span>
+      <div><strong>Это обычные текстовые файлы.</strong> Вся база — это связанные заметки, которые открываются
+        в бесплатном Obsidian. Нет ни сервера, ни базы данных, которые надо обслуживать — данные всегда под рукой
+        и их легко перенести.</div>
+    </div>
+  </section>
+
+  <!-- 03 · ПРОСТЫМИ СЛОВАМИ -->
+  <section class="section" id="words">
+    <div class="sec-head reveal"><span class="sec-no">03</span><h2>Простыми словами</h2>
+      <span class="hint">если встретили незнакомый термин</span></div>
+    <div class="gl-grid reveal">
+      <div class="gl" style="--accent:var(--c2)"><div class="t">Карточка знаний</div><div class="d">Одна заметка про что-то одно: компанию, сделку, звонок. Из таких карточек и состоит вся база.</div></div>
+      <div class="gl" style="--accent:var(--c3)"><div class="t">Роль доступа</div><div class="d">Кем человек работает (продажи, маркетинг, руководитель…). Роль определяет, какие карточки ему видно.</div></div>
+      <div class="gl" style="--accent:var(--c1)"><div class="t">Без утечек</div><div class="d">При любом сомнении система скорее скроет данные, чем покажет лишнее. Приватное не попадёт не в те руки.</div></div>
+      <div class="gl" style="--accent:var(--c4)"><div class="t">Со ссылкой на источник</div><div class="d">Под каждым фактом видно, откуда он взят — звонок, письмо, статья. Можно проверить, ничего не выдумано.</div></div>
+      <div class="gl" style="--accent:var(--c3)"><div class="t">Согласование правок</div><div class="d">Изменить карточку нельзя «втихую»: сначала предложение, потом одобрение, и только затем правка применяется.</div></div>
+      <div class="gl" style="--accent:var(--c1)"><div class="t">Готов к демо</div><div class="d">Систему уже можно показать: всё работает на учебных данных, проверки зелёные. Для боевого запуска нужен вход по корпоративному логину и реальные данные.</div></div>
+    </div>
+  </section>
+
+  <!-- CLOSING -->
+  <div class="close reveal">
+    <div class="q">База знаний о продажах, которая <b>отвечает каждому по его роли</b> —
+      без утечек приватного и без выдуманных фактов.</div>
+    <div class="meta">
+      <span>как спросить: <b>чат Rocket.Chat</b></span>
+      <span>где данные: <b>обычные текстовые заметки (Obsidian)</b></span>
+      <span>проверки: <b>326 зелёных · 0 ошибок</b></span>
+      <span>статус: <b>готов к демо</b></span>
+    </div>
+  </div>
+
+  <footer>
+    <span>SalesWiki · <em>умная база знаний о продажах</em> · краткий обзор</span>
+    <span>самодостаточный одностраничник · текущее состояние</span>
+  </footer>
+
+</div>
+
+<script>
+  document.documentElement.className += ' js';
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    function showAll(){ els.forEach(function(e){ e.classList.add('in'); }); }
+    if (!('IntersectionObserver' in window)) { showAll(); }
+    else {
+      var io = new IntersectionObserver(function(en){
+        en.forEach(function(x){ if(x.isIntersecting){ x.target.classList.add('in'); io.unobserve(x.target); } });
+      }, {threshold:.1, rootMargin:'0px 0px -6% 0px'});
+      els.forEach(function(e){ io.observe(e); });
+      document.querySelectorAll('.hero .reveal, .kpis .reveal').forEach(function(e,i){ setTimeout(function(){e.classList.add('in')}, 70*i); });
+      setTimeout(showAll, 1700); // safety net — never leave content hidden
+    }
+  })();
+</script>
+</body>
+</html>

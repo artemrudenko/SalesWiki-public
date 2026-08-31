@@ -1,0 +1,80 @@
+---
+type: lead
+entity_id: demo-lead-orion-foods-1
+template_version: 1
+dataset: demo
+synthetic: true
+created: 2026-08-29
+updated: 2026-08-29
+last_reviewed: 2026-08-29
+freshness: fresh
+confidence: medium
+access: sales-confidential
+profile_lock: locked
+deletion_status: active
+tags:
+  - lead
+  - demo
+lead_type: warm
+pipeline_segment: qualification-mql
+company: "[[Company - Orion Foods]]"
+owner: alex-demo
+source: demo-generated
+last_touched: 2026-05-29
+next_review: 2026-08-31
+score: 91
+score_band: hot
+score_model: scoring-models-v1/mql
+score_confidence: medium
+scored_at: 2026-08-29
+score_decay:
+freshness: needs-action
+---
+
+# Lead: Orion Foods Primary Buyer 1
+
+## Controlled Profile
+
+- Company: [[Company - Orion Foods]]
+- Contact: [[Person - Orion Foods Buyer]]
+
+## Live Intelligence
+
+Synthetic lead with a demo score and explicit next action.
+
+## Score Readout
+
+- Score: 91
+- Band: hot
+- Top positive factors: ICP fit, recent trigger, stakeholder relevance.
+- Top risks: demo data only, no real source.
+- Recommended next action: send contextual follow-up and update outcome.
+- Owner: alex-demo
+- Next review: 2026-08-31
+
+## Linked Entities
+
+- Company: [[Company - Orion Foods]]
+- Tasks: [[Task - Follow Up - Orion Foods]]
+
+## Next Action
+
+- Action: Follow up with a short trigger-based note.
+- Due: 2026-08-31
+- Owner: alex-demo
+- Related task: [[Task - Follow Up - Orion Foods]]
+
+
+## Evidence
+
+- Synthetic demo data only. Do not use for CRM, reporting or customer-facing claims.
+
+## Review Needed
+
+- Delete or regenerate this demo dataset when the presentation is complete.
+
+## Change History
+
+| Date | Change | Source/request |
+| --- | --- | --- |
+| 2026-08-29 | Created synthetic demo card | demo generator |

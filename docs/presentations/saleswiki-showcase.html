@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SalesWiki · возможности проекта</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F4F0E9; --surface:#FFFFFF; --surface-2:#FBF8F2; --surface-3:#F2ECE1;
+    --ink:#2B2622; --ink-soft:#4A4238; --ink-muted:#6E6454;
+    --line:#E6DECF; --line-soft:#EFE8DB;
+    --terra:#A35E42; --terra-deep:#8A4A30; --terracotta:#C17B5C; --terra-soft:#E7C7B7;
+    --olive:#5D6850; --olive-mid:#7A8568; --olive-soft:#C7CFB5;
+    --teal:#174C55; --teal-mid:#2E747F; --teal-soft:#CFE3E6;
+    --gold:#B0852F; --gold-soft:#F0E2C2;
+    --brown:#5E3024;
+    --ok:#5D6850; --ok-soft:#E4E9DB; --warn:#B0852F; --warn-soft:#F4E9CC;
+    --info:#174C55; --info-soft:#D6E7EA;
+    --radius:14px; --radius-sm:10px;
+    --shadow:0 1px 2px rgba(43,38,34,.04),0 8px 24px rgba(43,38,34,.05);
+    --shadow-hover:0 2px 6px rgba(43,38,34,.06),0 14px 38px rgba(43,38,34,.09);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:'Manrope',system-ui,sans-serif;font-size:15px;line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .num{font-family:'JetBrains Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+  .ser{font-family:'Fraunces',Georgia,serif;font-style:italic;font-weight:400}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 24px 64px}
+  a{color:var(--terra);text-decoration:none}
+
+  /* ── Top bar ── */
+  .topbar{position:sticky;top:0;z-index:50;background:rgba(244,240,233,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .topbar-inner{max-width:1240px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:11px;margin-right:auto}
+  .brand-mark{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--terra),var(--terracotta));display:grid;place-items:center;color:#fff;flex:none;box-shadow:0 4px 12px rgba(163,94,66,.28)}
+  .brand-name{font-weight:800;letter-spacing:-.02em;font-size:16px;line-height:1}
+  .brand-sub{font-size:11.5px;color:var(--ink-muted);font-weight:600;letter-spacing:.02em}
+  .topnav{display:flex;gap:4px;flex-wrap:wrap}
+  .topnav a{font-size:12.5px;font-weight:700;color:var(--ink-soft);padding:6px 11px;border-radius:999px}
+  .topnav a:hover{background:var(--surface);color:var(--terra)}
+  .period-pill{display:inline-flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:12.5px;font-weight:600;color:var(--ink-soft);box-shadow:var(--shadow)}
+  .period-pill .dot{width:7px;height:7px;border-radius:50%;background:var(--terra)}
+  @media(max-width:980px){.topnav{display:none}}
+
+  /* ── Hero ── */
+  .hero{padding:44px 0 8px}
+  .eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--terra);margin-bottom:14px}
+  .hero h1{margin:0;font-size:clamp(30px,5vw,52px);line-height:1.06;letter-spacing:-.025em;font-weight:800;max-width:18ch}
+  .hero h1 em{font-family:'Fraunces',Georgia,serif;font-style:italic;font-weight:400;color:var(--terra)}
+  .hero .lede{margin:18px 0 0;max-width:66ch;color:var(--ink-soft);font-size:16.5px}
+  .hero .lede b{color:var(--ink);font-weight:700}
+  .hero-tags{margin-top:22px;display:flex;flex-wrap:wrap;gap:8px}
+  .htag{font-size:12.5px;font-weight:700;color:var(--ink-soft);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:7px 13px;box-shadow:var(--shadow);display:inline-flex;align-items:center;gap:7px}
+  .htag .d{width:7px;height:7px;border-radius:50%;background:var(--olive)}
+
+  /* ── KPI cards ── */
+  .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:30px}
+  .kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);position:relative;overflow:hidden;transition:transform .2s ease,box-shadow .2s ease}
+  .kpi:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover)}
+  .kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent,var(--terra))}
+  .kpi-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}
+  .kpi-ico{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;background:var(--accent-soft,var(--surface-3));color:var(--accent,var(--terra))}
+  .kpi-ico svg{width:17px;height:17px}
+  .kpi-label{font-size:11.5px;font-weight:700;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.05em;line-height:1.3}
+  .kpi-val{font-size:30px;font-weight:700;letter-spacing:-.02em;line-height:1;color:var(--ink)}
+  .kpi-val .u{font-size:14px;color:var(--ink-muted);font-weight:600;margin-left:3px}
+  .kpi-meta{margin-top:9px;font-size:12.5px;color:var(--ink-muted);font-weight:600}
+  .kpi.total{background:linear-gradient(150deg,#2B2622,#3A332C);border-color:#3A332C}
+  .kpi.total .kpi-label{color:#C7BBA8}.kpi.total .kpi-val{color:#fff}.kpi.total .kpi-val .u{color:#C7BBA8}
+  .kpi.total .kpi-meta{color:#B7A992}.kpi.total .kpi-ico{background:rgba(255,255,255,.1);color:var(--terra-soft)}
+  .kpi.total::before{background:var(--terracotta)}
+
+  /* ── Section scaffold ── */
+  .section{margin-top:46px;scroll-margin-top:80px}
+  .sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+  .sec-no{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--terra)}
+  .sec-head h2{margin:0;font-size:clamp(20px,3vw,26px);font-weight:800;letter-spacing:-.02em}
+  .sec-head .hint{font-size:12.5px;color:var(--ink-muted);font-weight:600;margin-left:auto;text-align:right}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+  .card-pad{padding:22px 24px}
+  .card-title{font-size:14px;font-weight:800;color:var(--ink);letter-spacing:-.01em}
+  .card-sub{font-size:12.5px;color:var(--ink-muted);font-weight:600;margin-top:2px}
+  .lead-para{max-width:72ch;color:var(--ink-soft);font-size:15.5px;margin:0 0 20px}
+
+  /* ── PIPELINE (signature) ── */
+  .pipe{display:grid;grid-template-columns:repeat(6,1fr);gap:0;position:relative}
+  .stage{position:relative;padding:0 9px}
+  .stage-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);box-shadow:var(--shadow);padding:16px 14px;height:100%;transition:transform .2s ease,box-shadow .2s ease}
+  .stage:hover .stage-card{transform:translateY(-3px);box-shadow:var(--shadow-hover)}
+  .stage-no{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--accent,var(--terra))}
+  .stage-ic{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;margin:8px 0 10px;background:var(--accent-soft,var(--surface-3));color:var(--accent,var(--terra))}
+  .stage-ic svg{width:18px;height:18px}
+  .stage-nm{font-weight:800;font-size:14.5px;letter-spacing:-.01em}
+  .stage-ds{font-size:12px;color:var(--ink-muted);font-weight:600;margin-top:5px;line-height:1.45}
+  .pipe-rail{display:flex;align-items:center;gap:12px;margin:16px 2px 0;color:var(--ink-muted);font-size:12.5px;font-weight:600}
+  .pipe-rail .ln{flex:1;height:2px;background:linear-gradient(90deg,var(--terra),var(--olive),var(--teal),var(--gold));border-radius:2px;position:relative;overflow:hidden}
+  .pipe-rail .ln::after{content:"";position:absolute;top:0;left:0;height:100%;width:34%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.85),transparent);animation:sweep 5.5s linear infinite}
+  @keyframes sweep{0%{left:-34%}100%{left:100%}}
+  .pipe-rail b{color:var(--teal)}
+  @media(max-width:880px){.pipe{grid-template-columns:1fr 1fr}}
+  @media(max-width:560px){.pipe{grid-template-columns:1fr}}
+
+  /* ── two-column generic ── */
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .cols-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media(max-width:980px){.cols,.cols-3{grid-template-columns:1fr}}
+
+  /* feature card with icon */
+  .feat{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 22px;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s}
+  .feat:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover)}
+  .feat-h{display:flex;align-items:center;gap:11px;margin-bottom:12px}
+  .feat-ic{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;flex:none;background:var(--accent-soft,var(--surface-3));color:var(--accent,var(--terra))}
+  .feat-ic svg{width:18px;height:18px}
+  .feat-h h3{margin:0;font-size:15px;font-weight:800;letter-spacing:-.01em}
+  .feat ul{list-style:none;margin:0;padding:0}
+  .feat li{position:relative;padding:7px 0 7px 22px;font-size:13.5px;color:var(--ink-soft);font-weight:500;border-top:1px solid var(--line-soft);line-height:1.5}
+  .feat li:first-child{border-top:0}
+  .feat li::before{content:"";position:absolute;left:2px;top:13px;width:7px;height:7px;border-radius:2px;background:var(--accent,var(--terra))}
+  .feat li b{color:var(--ink);font-weight:700}
+
+  /* ── gate viz ── */
+  .gate-bar{display:flex;gap:5px;margin:6px 0 14px;flex-wrap:wrap}
+  .gseg{flex:1;min-width:96px;border-radius:7px;padding:11px 8px 10px;text-align:center;border:1px solid transparent}
+  .gseg .s{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:12.5px;line-height:1}
+  .gseg .t{font-size:9.5px;font-weight:700;margin-top:5px;text-transform:uppercase;letter-spacing:.03em;opacity:.85}
+  .gseg.crit{background:#f5e7dd;color:var(--terra-deep);border-color:var(--terra-soft)}
+  .gseg.crit .s{color:var(--terra)}
+  .gseg.med{background:var(--warn-soft);color:#7a5b17;border-color:#e8d49a}
+  .gseg.med .s{color:var(--gold)}
+  .gseg.info{background:var(--info-soft);color:#0f3d45;border-color:#bcd6da}
+  .gseg.info .s{color:var(--teal)}
+  .gate-legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;font-weight:600;color:var(--ink-muted)}
+  .gate-legend span{display:inline-flex;align-items:center;gap:7px}
+  .gate-legend .sw{width:12px;height:12px;border-radius:3px;border:1px solid rgba(0,0,0,.06)}
+
+  /* gate checklist */
+  .checks{display:flex;flex-direction:column;gap:8px;padding:6px 0}
+  .chk{display:flex;align-items:center;gap:11px;padding:11px 15px;background:var(--surface-2);border:1px solid var(--line-soft);border-radius:var(--radius-sm)}
+  .chk .ok{width:20px;height:20px;border-radius:50%;background:var(--ok-soft);color:#3f4a33;display:grid;place-items:center;flex:none}
+  .chk .ok svg{width:12px;height:12px}
+  .chk .l{font-weight:700;font-size:13px}
+  .chk .v{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--ink-muted);font-weight:600}
+
+  /* ── config control surface ── */
+  .cfg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .cfg{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);box-shadow:var(--shadow);padding:15px 16px}
+  .cfg .fn{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--teal);display:flex;align-items:center;gap:7px}
+  .cfg .fn .d{width:7px;height:7px;border-radius:2px;background:var(--teal);flex:none}
+  .cfg p{margin:8px 0 0;font-size:12.5px;color:var(--ink-soft);font-weight:500;line-height:1.45}
+  @media(max-width:880px){.cfg-grid{grid-template-columns:1fr 1fr}}
+  @media(max-width:560px){.cfg-grid{grid-template-columns:1fr}}
+  .banner{margin-top:16px;display:flex;gap:13px;align-items:flex-start;padding:16px 18px;border-radius:var(--radius-sm);background:var(--info-soft);border:1px solid #bcd6da;color:var(--ink-soft);font-size:13.5px;font-weight:600;line-height:1.5}
+  .banner strong{color:var(--teal)}
+  .banner .bi{width:30px;height:30px;flex:none;border-radius:8px;background:#fff;color:var(--teal);display:grid;place-items:center}
+  .banner .bi svg{width:17px;height:17px}
+
+  /* ── matrix table ── */
+  .matrix{width:100%;border-collapse:collapse;font-size:13px;overflow:hidden;border-radius:var(--radius);border:1px solid var(--line)}
+  .matrix th,.matrix td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--line-soft);vertical-align:top}
+  .matrix thead th{background:var(--surface-3);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-muted);font-weight:700}
+  .matrix tbody tr:last-child td{border-bottom:0}
+  .matrix td.ch{font-weight:800}
+  .matrix .pill{font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:600;padding:4px 9px;border-radius:6px;background:var(--surface-2);border:1px solid var(--line);color:var(--ink-soft);white-space:nowrap;display:inline-block}
+  .matrix .pill.now{background:var(--ok-soft);border-color:#c6d3b4;color:#3f4a33}
+  .matrix .pill.next{background:var(--warn-soft);border-color:#e8d49a;color:#7a5b17}
+  .matrix tbody tr{background:var(--surface)}
+
+  /* ── skills / entity groups ── */
+  .skgroups{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+  @media(max-width:880px){.skgroups{grid-template-columns:1fr}}
+  .skg{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 20px}
+  .skg h4{margin:0 0 12px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--accent,var(--terra));display:flex;align-items:center;gap:8px}
+  .skg h4 .d{width:9px;height:9px;border-radius:50%;background:var(--accent,var(--terra))}
+  .skchips{display:flex;flex-wrap:wrap;gap:8px}
+  .skchip{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:var(--ink-soft);background:var(--surface-2);border:1px solid var(--line);border-radius:7px;padding:6px 10px;transition:border-color .15s,color .15s,transform .15s}
+  .skchip:hover{border-color:var(--accent,var(--terra));color:var(--accent,var(--terra));transform:translateY(-2px)}
+  .sklist{display:flex;flex-direction:column;gap:2px}
+  .skrow{padding:9px 0;border-top:1px solid var(--line-soft)}
+  .skrow:first-child{border-top:0}
+  .skrow .skn{font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:700;color:var(--accent,var(--terra))}
+  .skrow .skd{display:block;font-size:12.5px;color:var(--ink-soft);font-weight:500;margin-top:2px;line-height:1.4}
+
+  /* anatomy / zone grid */
+  .sgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:4px}
+  @media(max-width:880px){.sgrid{grid-template-columns:1fr}}
+  .scell{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;background:var(--surface-2);border:1px solid var(--line-soft);border-radius:var(--radius-sm)}
+  .scell .sb{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px;flex:none;line-height:1.2;width:22px;text-align:center}
+  .scell .sx{font-size:12.5px;font-weight:600;color:var(--ink-soft);line-height:1.45}
+  .scell .sx b{color:var(--ink);font-weight:700;display:block;margin-bottom:1px}
+
+  /* command list */
+  .cmds{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+  @media(max-width:680px){.cmds{grid-template-columns:1fr}}
+  .cmd{display:flex;align-items:center;gap:11px;padding:11px 14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);box-shadow:var(--shadow)}
+  .cmd code{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--terra-deep);background:#f5e7dd;border-radius:6px;padding:4px 9px;white-space:nowrap}
+  .cmd span{font-size:12.5px;color:var(--ink-soft);font-weight:600}
+
+  /* governed write loop */
+  .loop{display:flex;align-items:stretch;gap:0;flex-wrap:wrap;margin-top:4px}
+  .lnode{flex:1;min-width:120px;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:13px 12px;text-align:center}
+  .lnode .lt{font-size:12.5px;font-weight:800;color:var(--ink)}
+  .lnode .lp{font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:700;color:var(--teal);margin-top:4px}
+  .larrow{display:flex;align-items:center;color:var(--terracotta);font-weight:800;font-size:18px;padding:0 6px}
+  @media(max-width:760px){.larrow{transform:rotate(90deg);padding:5px 0;width:100%;justify-content:center}.lnode{min-width:0;width:100%}}
+
+  /* ── knowledge graph ── */
+  .kg-wrap{display:flex;flex-direction:column;height:100%}
+  .kg-svg{width:100%;height:auto;display:block;border-radius:var(--radius-sm);background:linear-gradient(160deg,var(--surface-2),#fff)}
+  .kg-edge{stroke:var(--line);stroke-width:1.4;fill:none}
+  .kg-edge.hot{stroke:var(--terracotta);stroke-width:1.8;stroke-dasharray:4 4;animation:dash 4s linear infinite}
+  @keyframes dash{to{stroke-dashoffset:-32}}
+  .kg-c{fill:var(--olive)}
+  .kg-c.teal{fill:var(--teal)}
+  .kg-c.hot{fill:var(--terracotta)}
+  .kg-s{fill:#fff;stroke:var(--terra);stroke-width:2}
+  .kg-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;fill:var(--ink-muted)}
+  .kg-legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;font-size:12px;font-weight:600;color:var(--ink-muted)}
+  .kg-legend span{display:inline-flex;align-items:center;gap:7px}
+  .kg-legend .lc{width:11px;height:11px;border-radius:50%}
+  .kg-legend .ls{width:11px;height:11px;border-radius:3px;border:2px solid var(--terra);background:#fff}
+
+  /* ── card structure schematic ── */
+  .specbox{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:14px 16px;font-family:'JetBrains Mono',monospace;font-size:11.5px;line-height:1.85;color:var(--ink-soft);overflow-x:auto;white-space:pre;tab-size:2}
+  @media(max-width:560px){.specbox{white-space:pre-wrap}}
+  .specbox .fence{color:var(--ink-muted)}
+  .specbox .k{color:var(--teal);font-weight:700}
+  .specbox .c{color:var(--ink-muted)}
+  .specbox .lk{color:var(--terra);font-weight:700}
+  .specbox .zone{color:var(--ink);font-weight:700}
+  .spec-cap{font-size:11px;font-weight:700;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.05em;margin:14px 0 7px}
+  .spec-cap:first-child{margin-top:4px}
+
+  /* ── data-flow band ── */
+  .flow{display:flex;align-items:stretch;gap:0;flex-wrap:wrap;margin-top:4px}
+  .fnode{flex:1;min-width:120px;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:13px 12px;text-align:center}
+  .fnode .ft{font-size:11px;font-weight:700;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.04em}
+  .fnode .fp{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--teal);margin-top:4px;word-break:break-word}
+  .farrow{display:flex;align-items:center;color:var(--terracotta);font-weight:800;font-size:18px;padding:0 7px}
+  @media(max-width:760px){.farrow{transform:rotate(90deg);padding:5px 0;width:100%;justify-content:center}.fnode{min-width:0;width:100%}}
+
+  /* ── glossary ── */
+  .gl-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:760px){.gl-grid{grid-template-columns:1fr}}
+  .gl{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);box-shadow:var(--shadow);padding:14px 16px;border-left:3px solid var(--accent,var(--terra))}
+  .gl .t{font-weight:800;font-size:13.5px;color:var(--ink);letter-spacing:-.01em}
+  .gl .t .en{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:11.5px;color:var(--ink-muted);margin-left:6px}
+  .gl .d{font-size:13px;color:var(--ink-soft);font-weight:500;margin-top:4px;line-height:1.5}
+
+  /* closing strip */
+  .close{margin-top:48px;background:linear-gradient(150deg,#2B2622,#3A332C);border-radius:var(--radius);padding:40px 40px;color:#EFE8DB;position:relative;overflow:hidden}
+  .close::after{content:"";position:absolute;right:-60px;top:-60px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(193,123,92,.28),transparent 68%)}
+  .close .q{font-family:'Fraunces',Georgia,serif;font-style:italic;font-size:clamp(20px,3.2vw,30px);line-height:1.35;max-width:32ch;position:relative;z-index:1}
+  .close .q b{color:var(--terra-soft);font-style:normal;font-weight:700}
+  .close .meta{margin-top:22px;display:flex;flex-wrap:wrap;gap:8px 16px;font-size:12.5px;color:#B7A992;font-weight:600;position:relative;z-index:1}
+  .close .meta b{color:#E7C7B7}
+
+  footer{margin-top:40px;padding-top:22px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-muted);font-weight:600}
+  footer em{font-family:'Fraunces',Georgia,serif;font-style:italic;color:var(--terra);font-weight:400}
+
+  @media(max-width:1080px){.kpis{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}.kpi-val{font-size:25px}.wrap{padding:0 16px 48px}.topbar-inner{padding:12px 16px}.close{padding:30px 24px}}
+
+  /* reveal — JS-gated so content is always visible without JS */
+  .js .reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
+  .js .reveal.in{opacity:1;transform:none}
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important}
+    .js .reveal{opacity:1!important;transform:none!important;transition:none}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="19" cy="18" r="2"/><path d="M7 6.8 9.6 11M17 6.8 14.4 11M7 17.2 9.6 13M17 17.2 14.4 13"/></svg>
+      </div>
+      <div>
+        <div class="brand-name">SalesWiki</div>
+        <div class="brand-sub">sales &amp; marketing wiki-brain · governed knowledge layer</div>
+      </div>
+    </div>
+    <nav class="topnav">
+      <a href="#loop">цикл</a>
+      <a href="#vault">структура и сущности</a>
+      <a href="#access">доступ</a>
+      <a href="#config">конфигурация</a>
+      <a href="#now-next">сейчас → дальше</a>
+      <a href="#extend">агенты</a>
+      <a href="#quality">качество</a>
+      <a href="#glossary">глоссарий</a>
+    </nav>
+    <span class="period-pill"><span class="dot"></span>Obsidian-vault · MCP · Rocket.Chat</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="eyebrow reveal">—— управляемый слой знаний для продаж и маркетинга</div>
+    <h1 class="reveal">Живая <em>база знаний</em> о сделках, людях и рынке — с ролевым доступом.</h1>
+    <p class="lede reveal">SalesWiki превращает сырые источники — звонки, CRM-экспорты, ресёрч, события —
+      в связанные <b>типизированные карточки</b> в Obsidian, отдаёт ответы <b>по ролям, без утечки приватного</b>
+      и проводит любые правки через governance-петлю. Источник правды — Markdown в репозитории; ни сервера,
+      ни базы данных. Это <b>курируемый слой знаний</b>, а не дата-лейк.</p>
+    <div class="hero-tags reveal">
+      <span class="htag"><span class="d"></span>Obsidian-first</span>
+      <span class="htag"><span class="d" style="background:var(--teal)"></span>RBAC + ABAC, fail-closed</span>
+      <span class="htag"><span class="d" style="background:var(--gold)"></span>17 ролевых инструментов</span>
+      <span class="htag"><span class="d" style="background:var(--terracotta)"></span>Rocket.Chat · MCP · Obsidian</span>
+      <span class="htag"><span class="d"></span>stdlib · без сервера и БД</span>
+    </div>
+  </header>
+
+  <!-- KPI ROW -->
+  <div class="kpis">
+    <div class="kpi total reveal" style="--accent:#C17B5C">
+      <div class="kpi-top"><span class="kpi-label">Покрыто<br>тестами</span>
+        <span class="kpi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span></div>
+      <div class="kpi-val num">378<span class="u">тестов</span></div>
+      <div class="kpi-meta">TDD · все зелёные · health 0/0</div>
+    </div>
+    <div class="kpi reveal" style="--accent:#5D6850;--accent-soft:#e4e9db">
+      <div class="kpi-top"><span class="kpi-label">Типов<br>сущностей</span>
+        <span class="kpi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/></svg></span></div>
+      <div class="kpi-val num">34<span class="u">типа</span></div>
+      <div class="kpi-meta">типизированные карточки</div>
+    </div>
+    <div class="kpi reveal" style="--accent:#174C55;--accent-soft:#d6e7ea">
+      <div class="kpi-top"><span class="kpi-label">Ролевых<br>инструментов</span>
+        <span class="kpi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/><path d="M9.3 17.7a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/></svg></span></div>
+      <div class="kpi-val num">17<span class="u">шт</span></div>
+      <div class="kpi-meta">read · propose · govern</div>
+    </div>
+    <div class="kpi reveal" style="--accent:#A35E42;--accent-soft:#f3e0d8">
+      <div class="kpi-top"><span class="kpi-label">Ролей ×<br>границ</span>
+        <span class="kpi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span></div>
+      <div class="kpi-val num">9<span class="u">× 7</span></div>
+      <div class="kpi-meta">RBAC + ABAC, fail-closed</div>
+    </div>
+    <div class="kpi reveal" style="--accent:#B0852F;--accent-soft:#f4e9cc">
+      <div class="kpi-top"><span class="kpi-label">Решения<br>зафиксированы</span>
+        <span class="kpi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h12l4 4v12H4zM14 4v4h4M8 13h8M8 17h6"/></svg></span></div>
+      <div class="kpi-val num">16<span class="u">ADR</span></div>
+      <div class="kpi-meta">+ 9 JSON-контрактов</div>
+    </div>
+  </div>
+
+  <!-- CORE LOOP -->
+  <section class="section" id="loop">
+    <div class="sec-head reveal"><span class="sec-no">01</span><h2>Цикл обновления знаний</h2>
+      <span class="hint">сырьё на входе → связанный цитируемый смысл на выходе</span></div>
+    <p class="lead-para reveal">Каждый ингест, ресёрч или анализ звонка идёт по одному и тому же циклу: источник
+      сохраняется неизменным, из него извлекаются сущности, обновляется карточка знаний, ставятся
+      перекрёстные ссылки, перестраиваются индексы и фиксируется след в трекинге. Ничего не теряется,
+      каждый факт — со ссылкой на источник.</p>
+    <div class="pipe reveal">
+      <div class="stage" style="--accent:#A35E42;--accent-soft:#f3e0d8">
+        <div class="stage-card"><div class="stage-no">01</div>
+          <div class="stage-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v4H4zM4 12h16v8H4z"/><path d="M8 16h2"/></svg></div>
+          <div class="stage-nm">Источник</div>
+          <div class="stage-ds">Сохранить сырьё в <span class="num">raw/</span> неизменным; источники не переписываются.</div></div>
+      </div>
+      <div class="stage" style="--accent:#8A6A2F;--accent-soft:#f4e9cc">
+        <div class="stage-card"><div class="stage-no">02</div>
+          <div class="stage-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg></div>
+          <div class="stage-nm">Извлечь</div>
+          <div class="stage-ds">Сущности: компании, люди, лиды, сделки, звонки, события, сигналы, даты.</div></div>
+      </div>
+      <div class="stage" style="--accent:#5D6850;--accent-soft:#e4e9db">
+        <div class="stage-card"><div class="stage-no">03</div>
+          <div class="stage-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h12l4 4v12H4z"/><path d="M14 4v4h4M8 13h8M8 17h5"/></svg></div>
+          <div class="stage-nm">Карточка</div>
+          <div class="stage-ds">Создать/обновить типизированную карточку в <span class="num">wiki/entities/</span>.</div></div>
+      </div>
+      <div class="stage" style="--accent:#2E747F;--accent-soft:#d6e7ea">
+        <div class="stage-card"><div class="stage-no">04</div>
+          <div class="stage-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2.5"/><circle cx="5" cy="6" r="1.6"/><circle cx="19" cy="7" r="1.6"/><circle cx="18" cy="18" r="1.6"/><path d="M10 11 6.2 7M14 11l3.4-3M13.5 13.7 17 17"/></svg></div>
+          <div class="stage-nm">Связать</div>
+          <div class="stage-ds">Перекрёстные <span class="num">[[wikilinks]]</span>; отметить confidence и <span class="num">needs-source</span>.</div></div>
+      </div>
+      <div class="stage" style="--accent:#174C55;--accent-soft:#d6e7ea">
+        <div class="stage-card"><div class="stage-no">05</div>
+          <div class="stage-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg></div>
+          <div class="stage-nm">Индексы</div>
+          <div class="stage-ds">Пересобрать <span class="num">indexes/</span> и снапшоты дашбордов из Markdown.</div></div>
+      </div>
+      <div class="stage" style="--accent:#C17B5C;--accent-soft:#f5e7dd">
+        <div class="stage-card"><div class="stage-no">06</div>
+          <div class="stage-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v5l3 2"/><circle cx="12" cy="12" r="9"/></svg></div>
+          <div class="stage-nm">Трекинг</div>
+          <div class="stage-ds">Запись в <span class="num">tracking/</span> и <span class="num">log.md</span>: что проверено, принято, дедуплицировано.</div></div>
+      </div>
+    </div>
+    <div class="pipe-rail reveal"><span>источник</span><span class="ln"></span><span><b>health-check</b> — структурный тест: проверяет шаблоны, секции, enum-значения, свежесть и висячие ссылки</span></div>
+  </section>
+
+  <!-- VAULT STRUCTURE & ENTITIES -->
+  <section class="section" id="vault">
+    <div class="sec-head reveal"><span class="sec-no">02</span><h2>Структура хранилища и сущности вики</h2>
+      <span class="hint">слои Markdown · 34 типа карточек · граф связей</span></div>
+    <p class="lead-para reveal">Весь проект открывается как Obsidian-vault. Данные разложены по слоям: неизменное
+      сырьё → курируемые типизированные карточки → производные индексы и дашборды, плюс оперативное
+      состояние и трекинг. Каждый артефакт — обычный файл, который можно открыть.</p>
+
+    <div class="card card-pad reveal">
+      <div class="card-title">Слои хранилища — это просто Markdown в папках</div>
+      <div class="card-sub" style="margin-bottom:16px">без сервера и БД · индексы и дашборды производны и пересобираемы</div>
+      <div class="flow">
+        <div class="fnode"><div class="ft">сырьё</div><div class="fp">raw/</div></div>
+        <div class="farrow">→</div>
+        <div class="fnode"><div class="ft">карточки знаний</div><div class="fp">wiki/entities/</div></div>
+        <div class="farrow">→</div>
+        <div class="fnode"><div class="ft">производное</div><div class="fp">indexes/</div></div>
+        <div class="farrow">→</div>
+        <div class="fnode"><div class="ft">отчёты</div><div class="fp">dashboards/ · reports/</div></div>
+        <div class="farrow">+</div>
+        <div class="fnode"><div class="ft">состояние</div><div class="fp">state/ · tracking/</div></div>
+      </div>
+    </div>
+
+    <div class="cols reveal" style="margin-top:18px">
+      <div class="card card-pad">
+        <div class="card-title">Анатомия карточки — четыре зоны governance</div>
+        <div class="card-sub" style="margin-bottom:14px">единые обязательные секции на каждый тип · разделение защищённого и рабочего</div>
+        <div class="sgrid">
+          <div class="scell"><span class="sb">🔒</span><span class="sx"><b>Controlled Profile</b>защищённое ядро идентичности; меняется только через review (<span class="num">profile_lock</span>).</span></div>
+          <div class="scell"><span class="sb">✏️</span><span class="sx"><b>Live Intelligence</b>рабочая область: сюда ложатся ресёрч, мониторинг и анализ.</span></div>
+          <div class="scell"><span class="sb">⏳</span><span class="sx"><b>Review Needed</b>очередь предложенных правок — ждёт одобрения куратора.</span></div>
+          <div class="scell"><span class="sb">📜</span><span class="sx"><b>Change History</b>аудит-след: кто, что и когда изменил, с источником.</span></div>
+        </div>
+        <div class="band-note" style="margin-top:14px;font-size:12.5px;color:var(--ink-muted);font-weight:600;line-height:1.5">
+          YAML-properties вверху (атомарные: текст, числа, даты, списки, ссылки) + длинные пояснения и
+          evidence — в теле. Свежесть отслеживается по типам (профиль 30 дн., hot-лиды 3 дня и т.д.).
+        </div>
+      </div>
+      <div class="card card-pad">
+        <div class="card-title">База знаний как граф</div>
+        <div class="card-sub" style="margin-bottom:14px">карточки ссылаются друг на друга и на источники — схематично</div>
+        <div class="kg-wrap">
+          <svg class="kg-svg" viewBox="0 0 460 300" role="img" aria-label="Граф связей: компания в центре, вокруг — люди, сделки, лиды, звонки, кампании, события; квадратные узлы — сырьё-источники">
+            <g>
+              <path class="kg-edge" d="M196 140 L140 72"/><path class="kg-edge" d="M196 140 L238 52"/>
+              <path class="kg-edge" d="M196 140 L90 150"/><path class="kg-edge" d="M196 140 L150 228"/>
+              <path class="kg-edge hot" d="M196 140 L300 170"/><path class="kg-edge hot" d="M196 140 L330 92"/>
+              <path class="kg-edge" d="M300 170 L388 150"/><path class="kg-edge" d="M300 170 L368 232"/>
+              <path class="kg-edge" d="M330 92 L300 170"/><path class="kg-edge" d="M238 52 L330 92"/>
+              <path class="kg-edge" d="M62 92 L140 72"/><path class="kg-edge" d="M62 92 L90 150"/>
+              <path class="kg-edge" d="M64 248 L150 228"/><path class="kg-edge" d="M418 200 L368 232"/>
+            </g>
+            <g>
+              <rect class="kg-s" x="55" y="85" width="14" height="14" rx="3"/>
+              <rect class="kg-s" x="57" y="241" width="14" height="14" rx="3"/>
+              <rect class="kg-s" x="411" y="193" width="14" height="14" rx="3"/>
+            </g>
+            <g>
+              <circle class="kg-c hot" cx="196" cy="140" r="11"/>
+              <circle class="kg-c" cx="140" cy="72" r="8"/>
+              <circle class="kg-c" cx="238" cy="52" r="8"/>
+              <circle class="kg-c" cx="90" cy="150" r="8"/>
+              <circle class="kg-c" cx="150" cy="228" r="8"/>
+              <circle class="kg-c teal" cx="300" cy="170" r="9"/>
+              <circle class="kg-c" cx="330" cy="92" r="8"/>
+              <circle class="kg-c teal" cx="388" cy="150" r="8"/>
+              <circle class="kg-c teal" cx="368" cy="232" r="8"/>
+              <text class="kg-lbl" x="196" y="162" text-anchor="middle">Company</text>
+              <text class="kg-lbl" x="140" y="63" text-anchor="middle">Person</text>
+              <text class="kg-lbl" x="238" y="43" text-anchor="middle">Lead</text>
+              <text class="kg-lbl" x="300" y="190" text-anchor="middle">Deal</text>
+              <text class="kg-lbl" x="330" y="83" text-anchor="middle">Call</text>
+              <text class="kg-lbl" x="388" y="141" text-anchor="middle">Event</text>
+              <text class="kg-lbl" x="368" y="251" text-anchor="middle">Campaign</text>
+            </g>
+          </svg>
+          <div class="kg-legend">
+            <span><span class="lc" style="background:var(--terracotta)"></span>центр (Company)</span>
+            <span><span class="lc" style="background:var(--olive)"></span>связанная карточка</span>
+            <span><span class="ls"></span>источник (raw, cited)</span>
+            <span><svg width="20" height="8"><line x1="0" y1="4" x2="20" y2="4" stroke="#A35E42" stroke-width="1.8" stroke-dasharray="4 4"/></svg>sales-confidential</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-pad reveal" style="margin-top:18px">
+      <div class="card-title">Из чего состоит карточка</div>
+      <div class="card-sub" style="margin-bottom:14px">атомарные YAML-свойства сверху · структурированное тело снизу · 🔒 — защищённые поля</div>
+      <div class="spec-cap">Properties — YAML frontmatter (атомарные: текст, числа, даты, списки, ссылки)</div>
+      <div class="specbox">
+<span class="fence">---</span>
+<span class="k">entity_id</span>: company_01J8…   <span class="lk">🔒</span> <span class="c"># минтуется один раз через new_entity.py</span>
+<span class="k">type</span>: company
+<span class="k">template_version</span>: 2
+<span class="k">created</span>: 2026-06-24
+<span class="k">updated</span>: 2026-06-24
+<span class="k">access</span>: sales-confidential   <span class="c"># метка: public…personal-data</span>
+<span class="k">profile_lock</span>: locked   <span class="lk">🔒</span>
+<span class="k">freshness</span>: fresh
+<span class="k">confidence</span>: high
+<span class="k">owner</span>: …   <span class="c"># ABAC: владелец</span>
+<span class="k">team</span>: …   <span class="c"># ABAC: команда</span>
+<span class="fence">---</span>
+      </div>
+      <div class="spec-cap">Body — обязательные секции (единые на каждый тип)</div>
+      <div class="specbox">
+<span class="lk">## 🔒</span> <span class="zone">Controlled Profile</span>   <span class="c"># защищённое ядро — меняется только через review</span>
+<span class="zone">## ✏️ Live Intelligence</span>    <span class="c"># рабочая область: ресёрч, мониторинг, анализ</span>
+<span class="zone">## ⏳ Review Needed</span>         <span class="c"># очередь предложенных правок — ждёт approve</span>
+<span class="zone">## 📜 Change History</span>        <span class="c"># аудит-след: кто/что/когда + источник</span>
+      </div>
+      <div class="band-note" style="margin-top:14px;font-size:12.5px;color:var(--ink-muted);font-weight:600;line-height:1.5">
+        Правило: свойства атомарны и машиночитаемы, длинные пояснения и evidence — в теле. Health-check
+        проверяет, что обязательные секции и enum-значения на месте, а <span class="num">boundary</span>
+        совпадает с папкой карточки.
+      </div>
+    </div>
+
+    <div class="cols reveal" style="margin-top:18px">
+      <div class="feat" style="--accent:#A35E42;--accent-soft:#f3e0d8">
+        <div class="feat-h"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><h3>Закрытость — как обеспечивается</h3></div>
+        <ul>
+          <li><b>Controlled Profile отделён от Live Intelligence</b> — защищённое ядро не смешано с рабочей зоной</li>
+          <li><b>profile_lock</b> уважается; непустые controlled-поля не перезаписываются без явного approval, доверенного sync или ревью куратора</li>
+          <li><b>Граница = папка, не метка</b> — доступ определяется физическим расположением, fail-closed для неизвестных путей</li>
+          <li><b>Метки доступа</b> — public · internal · sales-confidential · personal-data · legal-review</li>
+          <li><b>Permissioned-шлюз</b> — <span class="num">can_read</span> до любого вывода; приватное только как непрозрачный handle; чувствительное не копируется в широкие summary</li>
+        </ul>
+      </div>
+      <div class="feat" style="--accent:#5D6850;--accent-soft:#e4e9db">
+        <div class="feat-h"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6M12 2 9 5M12 2l3 3"/><path d="M4 12v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6"/><circle cx="12" cy="13" r="2"/></svg></span><h3>Неизменяемость — как обеспечивается</h3></div>
+        <ul>
+          <li><b>raw/ неизменно</b> — источники не переписываются; ошибка фиксируется отдельной correction-заметкой со ссылкой на оба</li>
+          <li><b>Карточки не удаляются</b> в обычном ресёрче — только архив или merge-дубликатов</li>
+          <li><b>entity_id выдаётся один раз</b> через единый chokepoint; append-only <span class="num">id-ledger.jsonl</span></li>
+          <li><b>Правки идут в Review Needed → approve</b> → single-writer worker применяет транзакционно (revert-on-failure, dead-letter, rollback)</li>
+          <li><b>Change History + tamper-evident audit-цепочка + git</b> — каждое изменение прослеживаемо; health-check ловит дрейф</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card-sub reveal" style="margin:22px 0 12px;font-size:13px;color:var(--ink-soft);font-weight:700">34 типа карточек — что каждая описывает</div>
+    <div class="skgroups reveal">
+      <div class="skg" style="--accent:#A35E42">
+        <h4><span class="d"></span>Аккаунты и люди</h4>
+        <div class="sklist">
+          <div class="skrow"><span class="skn">companies</span><span class="skd">компания-аккаунт: профиль, индустрия, ICP-fit, связанные люди/сделки/звонки.</span></div>
+          <div class="skrow"><span class="skn">people</span><span class="skd">человек: контакт/ЛПР, роль в компании и в комитете закупки.</span></div>
+          <div class="skrow"><span class="skn">leads</span><span class="skd">лид/MQL: интерес и стадия до сделки, со скорингом и источником.</span></div>
+          <div class="skrow"><span class="skn">buyer-personas</span><span class="skd">обобщённый портрет покупателя: боли, цели, триггеры.</span></div>
+          <div class="skrow"><span class="skn">icp</span><span class="skd">профиль идеального клиента — критерии квалификации аккаунтов.</span></div>
+          <div class="skrow"><span class="skn">account-plans</span><span class="skd">план работы по ключевому аккаунту: цели, карта стейкхолдеров, шаги.</span></div>
+        </div>
+      </div>
+      <div class="skg" style="--accent:#5D6850">
+        <h4><span class="d"></span>Пайплайн и разговоры</h4>
+        <div class="sklist">
+          <div class="skrow"><span class="skn">deals</span><span class="skd">сделка/opportunity: стадия, экономика, риски, следующий шаг (sales-confidential).</span></div>
+          <div class="skrow"><span class="skn">calls</span><span class="skd">разбор звонка/встречи: участники, инсайты, обязательства, сигналы.</span></div>
+          <div class="skrow"><span class="skn">tasks</span><span class="skd">задача/follow-up с дедлайном и привязкой к лиду/сделке.</span></div>
+          <div class="skrow"><span class="skn">outreach-sequences</span><span class="skd">последовательность касаний: шаги, каналы, статус.</span></div>
+          <div class="skrow"><span class="skn">customer-success</span><span class="skd">пост-продажа: здоровье аккаунта, риски оттока, расширение.</span></div>
+          <div class="skrow"><span class="skn">enrichment-records</span><span class="skd">обогащение из CRM/внешних источников — со ссылкой и датой.</span></div>
+        </div>
+      </div>
+      <div class="skg" style="--accent:#174C55">
+        <h4><span class="d"></span>Маркетинг и контент</h4>
+        <div class="sklist">
+          <div class="skrow"><span class="skn">campaigns</span><span class="skd">кампания: цель, аудитория, ROI; источник лидов.</span></div>
+          <div class="skrow"><span class="skn">channels</span><span class="skd">канал привлечения/доставки и его эффективность.</span></div>
+          <div class="skrow"><span class="skn">content-briefs</span><span class="skd">бриф на контент: инсайт, тезис, целевая боль.</span></div>
+          <div class="skrow"><span class="skn">content-calendar</span><span class="skd">план публикаций: что, когда, по какому каналу.</span></div>
+          <div class="skrow"><span class="skn">assets</span><span class="skd">готовый материал (статья, лендинг, креатив) и его метрики.</span></div>
+          <div class="skrow"><span class="skn">experiments</span><span class="skd">маркетинговый эксперимент: гипотеза, результат, вывод.</span></div>
+          <div class="skrow"><span class="skn">case-studies</span><span class="skd">публичный кейс клиента — доказательство ценности.</span></div>
+          <div class="skrow"><span class="skn">use-cases</span><span class="skd">сценарий применения продукта под сегмент/боль.</span></div>
+        </div>
+      </div>
+      <div class="skg" style="--accent:#C17B5C">
+        <h4><span class="d"></span>Рынок, знание и доказательства</h4>
+        <div class="sklist">
+          <div class="skrow"><span class="skn">events</span><span class="skd">событие/конференция: даты, спонсоры, целевые аккаунты.</span></div>
+          <div class="skrow"><span class="skn">event-participation</span><span class="skd">участие в событии: формат, цели, итоги, контакты.</span></div>
+          <div class="skrow"><span class="skn">products</span><span class="skd">продукт/линейка: позиционирование, фичи, цены.</span></div>
+          <div class="skrow"><span class="skn">competitor-intel</span><span class="skd">разведка по конкуренту: сильные/слабые места, battlecard.</span></div>
+          <div class="skrow"><span class="skn">topics</span><span class="skd">тема для мониторинга и контент-стратегии.</span></div>
+          <div class="skrow"><span class="skn">pain-points</span><span class="skd">боль клиента — извлекается из звонков, питает контент и питч.</span></div>
+          <div class="skrow"><span class="skn">objections</span><span class="skd">возражение и его обработка; связано с конкурентами/ценой.</span></div>
+          <div class="skrow"><span class="skn">claims</span><span class="skd">утверждение/факт — с пометкой confidence и источником.</span></div>
+          <div class="skrow"><span class="skn">articles · news</span><span class="skd">внешние статьи и новости как evidence по компаниям/темам.</span></div>
+          <div class="skrow"><span class="skn">sources</span><span class="skd">отслеживаемый источник: лента/сайт/мониторинг.</span></div>
+          <div class="skrow"><span class="skn">private-cases</span><span class="skd">внутренний кейс/история — не для публикации (закрытый).</span></div>
+          <div class="skrow"><span class="skn">reports</span><span class="skd">сводный отчёт (например, для HoS) поверх карточек.</span></div>
+          <div class="skrow"><span class="skn">scoring-models</span><span class="skd">карточка-описание активной модели скоринга.</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="card card-pad reveal" style="margin-top:18px">
+      <div class="card-title">Как карточки связаны</div>
+      <div class="card-sub" style="margin-bottom:14px">связь — это <span class="num">[[wikilink]]</span> в свойстве и в теле; обратные ссылки и граф строит Obsidian</div>
+      <table class="matrix">
+        <thead><tr><th>Карточка</th><th>Ссылается на</th><th>Смысл связи</th></tr></thead>
+        <tbody>
+          <tr><td class="ch">Company</td><td><span class="pill">people</span> <span class="pill">deals</span> <span class="pill">leads</span> <span class="pill">competitor-intel</span></td><td>Центр аккаунта: вокруг неё собираются люди, сделки, разведка.</td></tr>
+          <tr><td class="ch">Person</td><td><span class="pill">company</span> <span class="pill">buyer-personas</span> <span class="pill">deals</span></td><td>Сотрудник компании и член комитета закупки по сделке.</td></tr>
+          <tr><td class="ch">Lead</td><td><span class="pill">company</span> <span class="pill">person</span> <span class="pill">campaign</span></td><td>Интерес до сделки; помнит, из какой кампании пришёл.</td></tr>
+          <tr><td class="ch">Deal</td><td><span class="pill">company</span> <span class="pill">people</span> <span class="pill">calls</span> <span class="pill">tasks</span></td><td>Сделка тянет за собой комитет, звонки и follow-up-задачи.</td></tr>
+          <tr><td class="ch">Call</td><td><span class="pill">company</span> <span class="pill">people</span> <span class="pill">deal</span> <span class="pill">→ pain-points</span> <span class="pill">→ objections</span></td><td>Разбор звонка <b>порождает</b> боли, возражения и сигналы.</td></tr>
+          <tr><td class="ch">Campaign</td><td><span class="pill">leads</span> <span class="pill">content-briefs</span> <span class="pill">assets</span> <span class="pill">channels</span></td><td>Кампания связывает контент, каналы и сгенерированные лиды.</td></tr>
+          <tr><td class="ch">Event</td><td><span class="pill">companies</span> <span class="pill">people</span> <span class="pill">event-participation</span></td><td>Событие сводит целевые аккаунты, спикеров и факт участия.</td></tr>
+          <tr><td class="ch">Pain-point / Objection</td><td><span class="pill">company</span> <span class="pill">competitor-intel</span> <span class="pill">content-briefs</span></td><td>Боли/возражения из разговоров питают контент и питч.</td></tr>
+        </tbody>
+      </table>
+      <div class="band-note" style="margin-top:14px;font-size:12.5px;color:var(--ink-muted);font-weight:600;line-height:1.5">
+        Связи живут <b>и в свойствах, и в теле</b> карточки — чтобы отношение было видно и в графе Obsidian,
+        и в индексах. Permissioned-шлюз идёт по тем же связям, но показывает только то, что роль вправе видеть
+        (напр., экономика сделки скрыта от маркетинга, а сама связь Company→Deal — нет).
+      </div>
+    </div>
+    <div class="banner reveal">
+      <span class="bi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></span>
+      <div><strong>34 типа карточек, единый контракт.</strong> Карточки одного типа используют одни и те же
+        обязательные секции; идентификаторы — непрозрачные типизированные ULID, выдаваемые единой точкой
+        (<span class="num">new_entity.py</span>). Новый тип = синхронные правки в 6 местах (шаблон, таксономия,
+        словарь свойств, индекс, дашборд, health-check) — структура остаётся согласованной.</div>
+    </div>
+  </section>
+
+  <!-- ACCESS / SECURITY -->
+  <section class="section" id="access">
+    <div class="sec-head reveal"><span class="sec-no">03</span><h2>Доступ по ролям, без утечек</h2>
+      <span class="hint">граница = физическое расположение · по умолчанию fail-closed</span></div>
+    <p class="lead-para reveal">Permissioned-сервис (<span class="num">saleswiki_mcp/</span>) на один и тот же вопрос
+      даёт разной роли разный <b>безопасный</b> ответ. Доступ определяется <b>папкой</b>, в которой лежит карточка,
+      а не YAML-меткой; карточка вне известных границ попадает в <span class="num">quarantine</span> и не видна никому.</p>
+
+    <div class="card card-pad reveal">
+      <div class="card-title">Границы доступа · 7 зон</div>
+      <div class="card-sub" style="margin-bottom:14px">политика проверяется ДО любого вывода · приватное — только как непрозрачный handle</div>
+      <div class="gate-bar" role="img" aria-label="Семь границ доступа: broad — общая; sales-confidential и personal-data — ограниченные; legal-review, operational-state, derived-indexes — служебные; quarantine — fail-closed">
+        <div class="gseg info"><div class="s">broad</div><div class="t">общая</div></div>
+        <div class="gseg crit"><div class="s">sales-conf.</div><div class="t">ABAC owner/team</div></div>
+        <div class="gseg crit"><div class="s">personal-data</div><div class="t">handle</div></div>
+        <div class="gseg med"><div class="s">legal-review</div><div class="t">служебн.</div></div>
+        <div class="gseg med"><div class="s">operational</div><div class="t">служебн.</div></div>
+        <div class="gseg med"><div class="s">derived-idx</div><div class="t">служебн.</div></div>
+        <div class="gseg crit"><div class="s">quarantine</div><div class="t">fail-closed</div></div>
+      </div>
+      <div class="gate-legend">
+        <span><span class="sw" style="background:var(--info-soft);border-color:#bcd6da"></span>общая — внутренняя, читают все роли</span>
+        <span><span class="sw" style="background:#f5e7dd;border-color:var(--terra-soft)"></span>ограниченная — RBAC/ABAC, иначе блок</span>
+        <span><span class="sw" style="background:var(--warn-soft);border-color:#e8d49a"></span>служебная</span>
+      </div>
+    </div>
+
+    <div class="cols reveal" style="margin-top:18px">
+      <div class="feat" style="--accent:#174C55;--accent-soft:#d6e7ea">
+        <div class="feat-h"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span><h3>Гарантии no-leak</h3></div>
+        <ul>
+          <li><b>Fail-closed по умолчанию</b> — неизвестная граница = блок, не «broad»</li>
+          <li><b>can_read до вывода</b> — тело карточки эмитится только при allow</li>
+          <li><b>Extract-only</b> — ответы из цитируемых данных, без генерации/галлюцинаций</li>
+          <li><b>ABAC owner/team</b> — AE видит только свои/командные сделки</li>
+          <li><b>Tamper-evident audit</b> — хеш-цепочка, race-safe запись</li>
+          <li><b>Handle-only PII</b> — сырые транскрипты в personal-data запрещены и проверяются health-check</li>
+        </ul>
+      </div>
+      <div class="feat" style="--accent:#A35E42;--accent-soft:#f3e0d8">
+        <div class="feat-h"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/></svg></span><h3>9 ролей доступа</h3></div>
+        <ul>
+          <li><b>employee</b> · <b>SDR</b> · <b>marketing</b> — общие карточки, без цен/ACV</li>
+          <li><b>account-exec</b> — свои/командные сделки (ABAC)</li>
+          <li><b>head-of-sales</b> · <b>revenue-ops</b> — все сделки</li>
+          <li><b>legal-reviewer</b> — общая + legal-review</li>
+          <li><b>curator</b> / <b>admin</b> — review/approve; personal-data только admin</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="banner reveal" style="margin-top:18px">
+      <span class="bi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0z" transform="translate(4 5) scale(.6)"/><path d="M21 2l-2 2m-5.6 5.6L8 15H5v3l-2 2 1 1 2-2h3v-3l5.4-5.4"/><circle cx="16.5" cy="7.5" r="4.5"/></svg></span>
+      <div><strong>Доступ по запросу — живые гранты.</strong> Роль без доступа может <b>запросить</b> его:
+        одобрение выдаёт <b>scoped-грант на одну компанию</b> с TTL (по умолчанию 30 дней, аппрувер задаёт свой),
+        который переживает применение других правок, <b>отзывается одной командой</b> и гаснет по сроку —
+        битый срок гасит грант (fail-closed), а не делает вечным. Personal-data открывает только одобрение админа.</div>
+    </div>
+  </section>
+
+  <!-- CONFIGURABILITY -->
+  <section class="section" id="config">
+    <div class="sec-head reveal"><span class="sec-no">04</span><h2>Конфигурируемость без кода</h2>
+      <span class="hint">поведение задаётся JSON-контрактами, валидируется health-check</span></div>
+    <p class="lead-para reveal">Роли, границы, владение, источники полей ответа, scoring и коннекторы — это
+      редактирование JSON в <span class="num">schemas/</span>, а не правка кода. Под другой по форме vault
+      можно подложить иной профиль извлечения полей — без изменения шлюза.</p>
+    <div class="cfg-grid reveal">
+      <div class="cfg"><div class="fn"><span class="d"></span>access-policy.json</div><p>Роли, границы, ABAC-ограничения, роли approver/reviewer.</p></div>
+      <div class="cfg"><div class="fn"><span class="d"></span>boundary-registry.json</div><p>Папка → граница доступа; fail-closed дефолт (<span class="num">quarantine</span>).</p></div>
+      <div class="cfg"><div class="fn"><span class="d"></span>identity-provider.json</div><p>Пользователи, маппинг ролей, org-реестр валидных владельцев/команд.</p></div>
+      <div class="cfg"><div class="fn"><span class="d"></span>field-extraction.json</div><p>Какую секцию/метку читает каждое поле ответа — отвязка от формы карточки.</p></div>
+      <div class="cfg"><div class="fn"><span class="d"></span>scoring-models.json</div><p>Веса, бэнды, штрафы и действия скоринга лидов/сделок.</p></div>
+      <div class="cfg"><div class="fn"><span class="d"></span>connector / agent / event</div><p>Контракты коннекторов, маршрутизация агентов, профиль event-ресёрча.</p></div>
+    </div>
+    <div class="banner reveal">
+      <span class="bi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+      <div><strong>Секреты — только имена env-переменных.</strong> Ключи HubSpot/Webwright/OIDC никогда не лежат
+        в репозитории; нет ключа — стадия мягко пропускается. Все 9 контрактов проверяются
+        <span class="num">health_check.py</span>.</div>
+    </div>
+  </section>
+
+  <!-- NOW → NEXT -->
+  <section class="section" id="now-next">
+    <div class="sec-head reveal"><span class="sec-no">05</span><h2>Взаимодействие: сейчас и дальше</h2>
+      <span class="hint">что работает сегодня → что добавит пилот/продакшн</span></div>
+    <p class="lead-para reveal">С системой уже сегодня можно работать четырьмя способами; будущая фаза не меняет
+      эти точки входа, а укрепляет их под боевую эксплуатацию — реальная идентичность, живые коннекторы,
+      упаковка и масштаб.</p>
+
+    <div class="card card-pad reveal">
+      <div class="card-title">Как взаимодействуют сейчас · 4 точки входа</div>
+      <div class="card-sub" style="margin-bottom:14px">от ручного Obsidian до чат-бриджа для не-технических сотрудников</div>
+      <table class="matrix">
+        <thead><tr><th>Точка входа</th><th>Кто и как</th><th>Что делает</th></tr></thead>
+        <tbody>
+          <tr><td class="ch">Obsidian</td><td><span class="pill">прямой доступ</span></td><td>Открыть vault, ходить по <span class="num">[[ссылкам]]</span>, графу и properties; редактировать карточки.</td></tr>
+          <tr><td class="ch">Rocket.Chat</td><td><span class="pill">чат-бридж</span></td><td>Не-технический сотрудник спрашивает в чате; <b>28 команд</b>: ролевые ответы, гранты доступа, «закулисье» карточки, Drive-ингест. Без Claude-клиента.</td></tr>
+          <tr><td class="ch">MCP gateway</td><td><span class="pill">Claude / MCP</span></td><td>17 ролевых инструментов поверх ядра; роль резолвится сервером, не выбирается клиентом.</td></tr>
+          <tr><td class="ch">CLI · агенты</td><td><span class="pill">скрипты</span></td><td><span class="num">refresh.py</span>, индексы, демо; 9 субагентов и 3 скилла для ресёрча, скоринга, анализа.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card card-pad reveal" style="margin-top:18px">
+      <div class="card-title">Сейчас → дальше · дорожная карта</div>
+      <div class="card-sub" style="margin-bottom:14px">демо-готовность полная (3 трека, ранбук, зелёный preflight); пилот с клиентом требует двух элементов (идентичность + боевые данные)</div>
+      <table class="matrix">
+        <thead><tr><th>Аспект</th><th>Сейчас (MVP)</th><th>Дальше (пилот / продакшн)</th></tr></thead>
+        <tbody>
+          <tr><td class="ch">Идентичность</td><td><span class="pill now">fixtures + env</span></td><td><span class="pill next">Google OIDC / SSO</span> — роль из claims</td></tr>
+          <tr><td class="ch">Данные</td><td><span class="pill now">synthetic demo</span></td><td><span class="pill next">production-fidelity vault</span> + пилот вне репо</td></tr>
+          <tr><td class="ch">Источники</td><td><span class="pill now">ручной ингест · file-drop</span></td><td><span class="pill next">HubSpot · Drive · Meet</span> коннекторы</td></tr>
+          <tr><td class="ch">Упаковка</td><td><span class="pill now">python-процессы</span></td><td><span class="pill next">Docker</span> — gateway + worker</td></tr>
+          <tr><td class="ch">Аудит-стор</td><td><span class="pill now">JSONL + хеш-цепочка</span></td><td><span class="pill next">SQLite + retention</span></td></tr>
+          <tr><td class="ch">Транспорт</td><td><span class="pill now">локальный stdio</span></td><td><span class="pill next">multi-tenant hosted</span></td></tr>
+        </tbody>
+      </table>
+      <div class="banner" style="margin-top:16px">
+        <span class="bi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v5l3 2"/><circle cx="12" cy="12" r="9"/></svg></span>
+        <div><strong>Готовность к демо: полная.</strong> Ранбук описывает <b>три трека показа</b> —
+          Rocket.Chat (основной, таймированный сценарий ведущего), MCP-персоны и Cowork/мульти-MCP
+          (несколько ролевых серверов одной командой: <span class="num">generate_mcp_demo_config.py</span>).
+          Day-of preflight и go/no-go чек-лист покрывают все треки. <strong>Клиентский пилот</strong> —
+          +реальная идентичность (OIDC) и production-fidelity данные.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AGENTS / GOVERNED WRITE -->
+  <section class="section" id="extend">
+    <div class="sec-head reveal"><span class="sec-no">06</span><h2>Агенты и управляемая запись</h2>
+      <span class="hint">никто не пишет в карточку напрямую · правка идёт через approve</span></div>
+    <p class="lead-para reveal">Запись отделена от чтения: предложение проходит ревью и одобрение, и только затем
+      отдельный single-writer worker применяет его транзакционно. Шлюз read/propose-only и worker
+      никогда не импортирует. Поверх — агенты-роли и переиспользуемые скиллы.</p>
+
+    <div class="card card-pad reveal">
+      <div class="card-title">Governance-петля записи</div>
+      <div class="card-sub" style="margin-bottom:14px">транзакционно · revert-on-failure · dead-letter · rollback · аудит-цепочка</div>
+      <div class="loop">
+        <div class="lnode"><div class="lt">Propose</div><div class="lp">flag · redaction · access · ingest</div></div>
+        <div class="larrow">→</div>
+        <div class="lnode"><div class="lt">Review</div><div class="lp">review_queue</div></div>
+        <div class="larrow">→</div>
+        <div class="lnode"><div class="lt">Approve</div><div class="lp">approver roles · TTL</div></div>
+        <div class="larrow">→</div>
+        <div class="lnode"><div class="lt">Apply</div><div class="lp">single-writer worker</div></div>
+        <div class="larrow">→</div>
+        <div class="lnode"><div class="lt">Rollback / Revoke</div><div class="lp">append-only undo · отзыв гранта</div></div>
+      </div>
+    </div>
+
+    <div class="skgroups reveal" style="margin-top:18px">
+      <div class="skg" style="--accent:#5D6850">
+        <h4><span class="d"></span>Субагенты · роли (9)</h4>
+        <div class="sklist">
+          <div class="skrow"><span class="skn">research-orchestrator</span><span class="skd">маршрутизация многошаговых запросов, handoffs, финальная верификация.</span></div>
+          <div class="skrow"><span class="skn">lead-monitor · deal-risk</span><span class="skd">скоринг/мониторинг лидов; аудит рисков по активным сделкам.</span></div>
+          <div class="skrow"><span class="skn">call-analyst · event-research</span><span class="skd">разбор звонков в карточки; event-разведка и брифы.</span></div>
+          <div class="skrow"><span class="skn">vault-linter · privacy-redaction</span><span class="skd">health-check и целостность; ревью чувствительных данных.</span></div>
+          <div class="skrow"><span class="skn">connector-sync · vault-import</span><span class="skd">планирование коннекторов; импорт внешнего vault по шагам.</span></div>
+        </div>
+      </div>
+      <div class="skg" style="--accent:#174C55">
+        <h4><span class="d"></span>Скиллы и инструменты</h4>
+        <div class="sklist">
+          <div class="skrow"><span class="skn">saleswiki-obsidian</span><span class="skd">конвенции vault: карточки, Bases-дашборды, Canvas, интейк, health/index.</span></div>
+          <div class="skrow"><span class="skn">saleswiki-lead-scoring</span><span class="skd">исполняемый скоринг лида/сделки по активной конфигурации.</span></div>
+          <div class="skrow"><span class="skn">saleswiki-scoring-configurator</span><span class="skd">изменение модели скоринга — только с явным approval.</span></div>
+        </div>
+        <div class="cmds" style="margin-top:14px;grid-template-columns:1fr">
+          <div class="cmd"><code>демо &lt;роль&gt;</code><span>в Rocket.Chat — ролевой walkthrough</span></div>
+          <div class="cmd"><code>refresh.py --demo</code><span>health + индексы + снапшоты одной командой</span></div>
+          <div class="cmd"><code>generate_mcp_demo_config.py</code><span>мульти-ролевой mcpServers-конфиг для Cowork одной командой</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUALITY -->
+  <section class="section" id="quality">
+    <div class="sec-head reveal"><span class="sec-no">07</span><h2>Качество и поставка</h2>
+      <span class="hint">собрано test-first · отгружено зелёным</span></div>
+    <div class="cols reveal">
+      <div class="card card-pad">
+        <div class="card-title">Зелёный конвейер проверок</div>
+        <div class="card-sub" style="margin-bottom:8px">структурный тест + полный набор + end-to-end smoke</div>
+        <div class="checks">
+          <div class="chk"><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4L19 6"/></svg></span><span class="l">health_check.py</span><span class="v">0 / 0</span></div>
+          <div class="chk"><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4L19 6"/></svg></span><span class="l">unittest · ядро</span><span class="v">378 OK</span></div>
+          <div class="chk"><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4L19 6"/></svg></span><span class="l">MCP-wiring · .venv</span><span class="v">OK</span></div>
+          <div class="chk"><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4L19 6"/></svg></span><span class="l">demo_dryrun.py · e2e</span><span class="v">ALL PASS</span></div>
+          <div class="chk"><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4L19 6"/></svg></span><span class="l">adversarial no-leak review</span><span class="v">PASS</span></div>
+          <div class="chk"><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4L19 6"/></svg></span><span class="l">code review ветки · 10 находок</span><span class="v">все исправлены</span></div>
+        </div>
+      </div>
+      <div class="cols-3" style="grid-template-columns:1fr;gap:16px">
+        <div class="feat" style="--accent:#5D6850;--accent-soft:#e4e9db">
+          <div class="feat-h"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg></span><h3>Архитектура</h3></div>
+          <ul>
+            <li><b>Stdlib-only</b> ядро; MCP-gateway — только <span class="num">mcp</span> SDK</li>
+            <li>Plain Markdown, <b>без сервера и БД</b>; vault открывается в Obsidian</li>
+            <li>Шлюз read/propose-only + отдельный single-writer worker</li>
+          </ul>
+        </div>
+        <div class="feat" style="--accent:#B0852F;--accent-soft:#f4e9cc">
+          <div class="feat-h"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h12l4 4v12H4z"/><path d="M14 4v4h4M8 13h8M8 17h6"/></svg></span><h3>Решения и доки</h3></div>
+          <ul>
+            <li><b>16 ADR</b> — зафиксированы контекст, последствия, альтернативы</li>
+            <li>EN + RU доки, demo-runbook на <b>3 трека показа</b>, go/no-go чек-лист</li>
+            <li>CHANGELOG + семантическое версионирование</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GLOSSARY -->
+  <section class="section" id="glossary">
+    <div class="sec-head reveal"><span class="sec-no">08</span><h2>Глоссарий — простыми словами</h2>
+      <span class="hint">если встретили незнакомый термин выше</span></div>
+    <div class="gl-grid reveal">
+      <div class="gl" style="--accent:#5D6850"><div class="t">База знаний <span class="en">Obsidian-vault</span></div><div class="d">Папка со связанными Markdown-заметками. Открывается в бесплатном Obsidian как личная «вики» с графом связей.</div></div>
+      <div class="gl" style="--accent:#174C55"><div class="t">Карточка / сущность</div><div class="d">Одна типизированная заметка (компания, сделка, звонок…) с обязательными секциями и YAML-свойствами.</div></div>
+      <div class="gl" style="--accent:#A35E42"><div class="t">Controlled Profile</div><div class="d">Защищённое ядро карточки. Меняется только через ревью; обычный ресёрч его не перезаписывает.</div></div>
+      <div class="gl" style="--accent:#5D6850"><div class="t">Граница доступа <span class="en">boundary</span></div><div class="d">Папка определяет, кому видна карточка. Неизвестная папка = карантин (никому), а не «всем».</div></div>
+      <div class="gl" style="--accent:#174C55"><div class="t">RBAC + ABAC</div><div class="d">Роль задаёт доступные границы; атрибуты (владелец/команда) сужают доступ к конфиденциальным сделкам.</div></div>
+      <div class="gl" style="--accent:#C17B5C"><div class="t">No-leak / fail-closed</div><div class="d">При любой неопределённости система скорее закроет доступ, чем покажет лишнее. Приватное — как непрозрачный handle.</div></div>
+      <div class="gl" style="--accent:#174C55"><div class="t">MCP-шлюз</div><div class="d">Сервер, через который ИИ-клиент задаёт ролевые вопросы к vault. Роль определяет сервер, не клиент.</div></div>
+      <div class="gl" style="--accent:#A35E42"><div class="t">Чат-бридж <span class="en">Rocket.Chat</span></div><div class="d">Мост: сотрудник спрашивает в чате обычными словами и получает ролевой ответ, без установки клиента.</div></div>
+      <div class="gl" style="--accent:#5D6850"><div class="t">Governance-петля</div><div class="d">Правка проходит путь предложение → ревью → одобрение → применение, с возможностью отката.</div></div>
+      <div class="gl" style="--accent:#C17B5C"><div class="t">Single-writer worker</div><div class="d">Единственный процесс, который пишет в карточки — транзакционно, с откатом и очередью «мёртвых писем».</div></div>
+      <div class="gl" style="--accent:#B0852F"><div class="t">Грант доступа <span class="en">access grant</span></div><div class="d">Одобренный запрос доступа: временное (TTL) право одной роли читать закрытые данные одной компании. Отзывается командой, гаснет по сроку.</div></div>
+      <div class="gl" style="--accent:#B0852F"><div class="t">Answer Contract</div><div class="d">Формат ответа: вывод → цитируемые факты → свежесть → следующий шаг. Без выдумок; нет данных — честный not-found.</div></div>
+      <div class="gl" style="--accent:#174C55"><div class="t">ADR</div><div class="d">Запись архитектурного решения: контекст, выбор, последствия, отвергнутые альтернативы.</div></div>
+    </div>
+  </section>
+
+  <!-- CLOSING -->
+  <div class="close reveal">
+    <div class="q">Курируемая база знаний о продажах, которая <b>отвечает каждому по его роли</b> —
+      без утечек приватного и без выдуманных фактов.</div>
+    <div class="meta">
+      <span>хранилище: <b>Obsidian vault (Markdown)</b></span>
+      <span>доступ: <b>MCP gateway · Rocket.Chat</b></span>
+      <span>рантайм: <b>Python stdlib (+ mcp SDK)</b></span>
+      <span>статус: <b>MVP · демо-готовность полная</b></span>
+    </div>
+  </div>
+
+  <footer>
+    <span>SalesWiki · <em>sales &amp; marketing wiki-brain</em> · обзор возможностей</span>
+    <span>самодостаточный одностраничник для распространения · состояние на 2026-07-02</span>
+  </footer>
+
+</div>
+
+<script>
+  document.documentElement.className += ' js';
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    function showAll(){ els.forEach(function(e){ e.classList.add('in'); }); }
+    if (!('IntersectionObserver' in window)) { showAll(); }
+    else {
+      var io = new IntersectionObserver(function(en){
+        en.forEach(function(x){ if(x.isIntersecting){ x.target.classList.add('in'); io.unobserve(x.target); } });
+      }, {threshold:.1, rootMargin:'0px 0px -6% 0px'});
+      els.forEach(function(e){ io.observe(e); });
+      document.querySelectorAll('.hero .reveal, .kpis .reveal').forEach(function(e,i){ setTimeout(function(){e.classList.add('in')}, 70*i); });
+      setTimeout(showAll, 1700); // safety net — never leave content hidden
+    }
+  })();
+</script>
+</body>
+</html>

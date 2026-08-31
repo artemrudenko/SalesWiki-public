@@ -1,0 +1,3 @@
+Synthetic test transcript.
+
+This file is fake and exists only to validate raw_path and content_hash handling.

@@ -1,0 +1,58 @@
+filters:
+  and:
+    - 'deletion_status == "active"'
+    - or:
+      - 'type == "company"'
+      - 'type == "person"'
+      - 'type == "event"'
+      - 'type == "source"'
+      - 'type == "topic"'
+formulas:
+  days_until_check: 'if(next_check, (date(next_check) - today()).days, "")'
+properties:
+  file.name:
+    displayName: "Entity"
+  type:
+    displayName: "Type"
+  monitoring_status:
+    displayName: "Monitoring Status"
+  monitoring_cadence:
+    displayName: "Cadence"
+  monitoring_owner:
+    displayName: "Owner"
+  freshness:
+    displayName: "Freshness"
+  last_checked:
+    displayName: "Last Checked"
+  next_check:
+    displayName: "Next Check"
+  formula.days_until_check:
+    displayName: "Days Until Check"
+views:
+  - type: table
+    name: "Due Or Stale"
+    filters:
+      or:
+        - 'freshness == "stale"'
+        - 'freshness == "needs-research"'
+        - 'formula.days_until_check <= 0'
+    order:
+      - file.name
+      - type
+      - monitoring_status
+      - monitoring_cadence
+      - monitoring_owner
+      - freshness
+      - last_checked
+      - next_check
+      - formula.days_until_check
+  - type: table
+    name: "All Monitored"
+    order:
+      - file.name
+      - type
+      - monitoring_status
+      - monitoring_cadence
+      - monitoring_owner
+      - freshness
+      - next_check

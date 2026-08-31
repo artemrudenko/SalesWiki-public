@@ -1,0 +1,41 @@
+filters:
+  and:
+    - 'deletion_status == "active"'
+    - or:
+      - 'freshness == "needs-research"'
+      - 'confidence == "low"'
+      - 'profile_lock == "review-required"'
+      - 'access == "legal-review"'
+      - 'access == "personal-data"'
+properties:
+  file.name:
+    displayName: "Card"
+  type:
+    displayName: "Type"
+  owner:
+    displayName: "Owner"
+  freshness:
+    displayName: "Freshness"
+  confidence:
+    displayName: "Confidence"
+  profile_lock:
+    displayName: "Profile Lock"
+  access:
+    displayName: "Access"
+  updated:
+    displayName: "Updated"
+  last_reviewed:
+    displayName: "Last Reviewed"
+views:
+  - type: table
+    name: "Quality And Access Review"
+    order:
+      - file.name
+      - type
+      - owner
+      - freshness
+      - confidence
+      - profile_lock
+      - access
+      - updated
+      - last_reviewed

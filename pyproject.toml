@@ -1,0 +1,7 @@
+[tool.ruff]
+target-version = "py311"
+extend-exclude = ["demo", "tests/fixtures"]
+
+[tool.ruff.lint]
+select = ["E", "F"]
+ignore = ["E501"]

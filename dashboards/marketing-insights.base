@@ -1,0 +1,59 @@
+filters:
+  and:
+    - 'deletion_status == "active"'
+    - or:
+      - 'type == "topic"'
+      - 'type == "pain-point"'
+      - 'type == "objection"'
+      - 'type == "use-case"'
+      - 'type == "campaign"'
+      - 'type == "content-brief"'
+      - 'type == "asset"'
+      - 'type == "experiment"'
+properties:
+  file.name:
+    displayName: "Insight"
+  type:
+    displayName: "Type"
+  owner:
+    displayName: "Owner"
+  status:
+    displayName: "Status"
+  freshness:
+    displayName: "Freshness"
+  confidence:
+    displayName: "Confidence"
+  last_reviewed:
+    displayName: "Last Reviewed"
+  next_check:
+    displayName: "Next Check"
+  access:
+    displayName: "Access"
+views:
+  - type: table
+    name: "Active Opportunities"
+    filters:
+      or:
+        - 'freshness == "needs-action"'
+        - 'freshness == "needs-research"'
+        - 'confidence == "low"'
+    order:
+      - file.name
+      - type
+      - owner
+      - status
+      - freshness
+      - confidence
+      - last_reviewed
+      - next_check
+      - access
+  - type: table
+    name: "All Marketing Knowledge"
+    order:
+      - file.name
+      - type
+      - owner
+      - status
+      - freshness
+      - confidence
+      - access

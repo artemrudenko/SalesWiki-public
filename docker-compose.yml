@@ -1,0 +1,49 @@
+x-read-only-service: &read-only-service
+  read_only: true
+  tmpfs:
+    - /tmp:size=512m,mode=1777
+
+services:
+  first-run:
+    <<: *read-only-service
+    build: .
+    command: python scripts/first_run.py --skip-install
+
+  check:
+    <<: *read-only-service
+    build: .
+    command: python scripts/public_release_review.py
+
+  health:
+    <<: *read-only-service
+    build: .
+    command: python scripts/health_check.py
+
+  test:
+    <<: *read-only-service
+    build: .
+    command: python -m unittest discover -s tests
+    environment:
+      RC_LLM_SUMMARY: "0"
+      RC_LLM_RECS: "0"
+
+  demo:
+    <<: *read-only-service
+    build: .
+    command: python scripts/demo_dryrun.py --quiet
+
+  mcp-ae:
+    <<: *read-only-service
+    build: .
+    command: python -m saleswiki_mcp.server
+    environment:
+      SALESWIKI_DEMO_ACTOR: demo-ivan-ae
+      SALESWIKI_VAULT_ROOT: /app/demo/permissioned
+      SALESWIKI_RUNTIME_DIR: /runtime
+    volumes:
+      - saleswiki-runtime:/runtime
+    stdin_open: true
+    tty: true
+
+volumes:
+  saleswiki-runtime:

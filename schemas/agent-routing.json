@@ -1,0 +1,143 @@
+{
+  "schema_version": 1,
+  "default_orchestrator": "research-orchestrator",
+  "shared_output_schema": {
+    "required_fields": [
+      "conclusion",
+      "items",
+      "gaps",
+      "cards_changed",
+      "verification"
+    ],
+    "item_fields": [
+      "entity",
+      "evidence",
+      "confidence",
+      "recommended_action",
+      "owner",
+      "due"
+    ]
+  },
+  "skills": {
+    "saleswiki-obsidian": {
+      "path": ".claude/skills/saleswiki-obsidian/SKILL.md",
+      "mode": "write-with-governance"
+    },
+    "saleswiki-lead-scoring": {
+      "path": ".claude/skills/saleswiki-lead-scoring/SKILL.md",
+      "mode": "apply-only"
+    },
+    "saleswiki-scoring-configurator": {
+      "path": ".claude/skills/saleswiki-scoring-configurator/SKILL.md",
+      "mode": "user-approved-config-change"
+    }
+  },
+  "agents": {
+    "research-orchestrator": {
+      "path": ".claude/agents/research-orchestrator.md",
+      "status": "active",
+      "mode": "orchestrate",
+      "writes": "plans-and-approved-handoffs"
+    },
+    "lead-monitor": {
+      "path": ".claude/agents/lead-monitor.md",
+      "status": "active",
+      "mode": "execute",
+      "writes": "lead scoring fields and tasks"
+    },
+    "call-analyst": {
+      "path": ".claude/agents/call-analyst.md",
+      "status": "active",
+      "mode": "execute",
+      "writes": "call cards and approved propagated updates"
+    },
+    "deal-risk": {
+      "path": ".claude/agents/deal-risk.md",
+      "status": "active",
+      "mode": "execute",
+      "writes": "deal readouts and tasks"
+    },
+    "external-vault-import-assistant": {
+      "path": ".claude/agents/external-vault-import-assistant.md",
+      "status": "active",
+      "mode": "audit-plan-approved-stage",
+      "writes": "staged import packages only until mapping approval"
+    },
+    "connector-sync-planner": {
+      "path": ".claude/agents/connector-sync-planner.md",
+      "status": "active",
+      "mode": "plan",
+      "writes": "connector plans and review notes"
+    },
+    "privacy-redaction-reviewer": {
+      "path": ".claude/agents/privacy-redaction-reviewer.md",
+      "status": "active",
+      "mode": "review",
+      "writes": "access-review notes and sanitized-summary recommendations"
+    },
+    "vault-linter": {
+      "path": ".claude/agents/vault-linter.md",
+      "status": "active",
+      "mode": "verify",
+      "writes": "structural fixes only"
+    },
+    "event-research": {
+      "path": ".claude/agents/event-research.md",
+      "status": "active",
+      "mode": "supervised-research",
+      "writes": "staged event reports by default; production event cards only after approval"
+    }
+  },
+  "routes": [
+    {
+      "intent": "score-lead-or-deal",
+      "triggers": ["score", "qualify", "re-score", "MQL", "deal risk"],
+      "primary_agent": "lead-monitor",
+      "skills": ["saleswiki-lead-scoring"],
+      "verification": ["vault-linter"]
+    },
+    {
+      "intent": "change-scoring-config",
+      "triggers": ["change scoring", "change weights", "change score bands", "change penalties"],
+      "primary_skill": "saleswiki-scoring-configurator",
+      "approval_required": true,
+      "verification": ["vault-linter"]
+    },
+    {
+      "intent": "analyze-call",
+      "triggers": ["call", "transcript", "Google Meet", "recording"],
+      "primary_agent": "call-analyst",
+      "handoffs": ["lead-monitor", "deal-risk", "privacy-redaction-reviewer"],
+      "verification": ["vault-linter"]
+    },
+    {
+      "intent": "import-external-vault",
+      "triggers": ["import vault", "existing Obsidian", "old notes", "knowledge base"],
+      "primary_agent": "external-vault-import-assistant",
+      "handoffs": ["privacy-redaction-reviewer", "vault-linter"],
+      "approval_required": true
+    },
+    {
+      "intent": "connector-planning",
+      "triggers": ["HubSpot", "Google Meet", "Drive", "Slack", "connector", "MCP", "plugin"],
+      "primary_agent": "connector-sync-planner",
+      "handoffs": ["privacy-redaction-reviewer"],
+      "verification": ["vault-linter"]
+    },
+    {
+      "intent": "sensitive-sharing-review",
+      "triggers": ["share", "publish", "redact", "legal-review", "personal-data"],
+      "primary_agent": "privacy-redaction-reviewer",
+      "approval_required": true,
+      "verification": ["vault-linter"]
+    },
+    {
+      "intent": "event-research",
+      "triggers": ["event", "conference", "summit", "exhibitors", "sponsors", "speakers", "agenda", "event ROI"],
+      "primary_agent": "event-research",
+      "handoffs": ["privacy-redaction-reviewer", "lead-monitor"],
+      "approval_required_for": ["production card creation", "outreach task creation", "high-volume browser collection"],
+      "verification": ["vault-linter"]
+    }
+  ]
+}

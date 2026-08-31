@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SalesWiki — управляемый слой знаний · для руководства</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Playfair+Display:ital,wght@1,500;1,600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B2537; --ink-soft:#3D586B; --ink-muted:#5F7A8C;
+    --bg:#F4F9FC; --surface:#FFFFFF; --line:#D7E6EE;
+    --primary:#0369A1; --primary-deep:#075985; --sky:#0EA5E9;
+    --accent:#16A34A; --accent-deep:#15803D;
+    --amber:#B45309; --neutral:#64748B;
+    --hero:#082333; --hero-2:#0B3049;
+    --r:16px; --shadow:0 1px 2px rgba(8,35,51,.05),0 8px 28px rgba(8,35,51,.07);
+    --mono:'JetBrains Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  body{font-family:'Manrope',system-ui,sans-serif;background:var(--bg);color:var(--ink);
+       font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  em.acc{font-family:'Playfair Display',serif;font-style:italic;font-weight:600}
+  .num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+  a{color:var(--primary)}
+  :focus-visible{outline:3px solid var(--sky);outline-offset:2px;border-radius:6px}
+  button{cursor:pointer;font-family:inherit}
+
+  /* progress + topbar */
+  .progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--sky),var(--accent));
+            width:0;z-index:60;transition:width .15s linear}
+  .topbar{position:sticky;top:0;z-index:50;background:rgba(8,35,51,.92);backdrop-filter:blur(10px);
+          border-bottom:1px solid rgba(255,255,255,.08)}
+  .topbar-in{max-width:1140px;margin:0 auto;display:flex;align-items:center;gap:18px;padding:12px 24px}
+  .logo{display:flex;align-items:center;gap:10px;color:#fff;font-weight:800;letter-spacing:-.01em}
+  .logo svg{width:26px;height:26px;color:var(--sky)}
+  .logo small{display:block;font-weight:600;font-size:10.5px;color:#7FA8BE;letter-spacing:.06em;text-transform:uppercase}
+  .topnav{margin-left:auto;display:flex;gap:4px;flex-wrap:wrap}
+  .topnav a{color:#B9D2DF;text-decoration:none;font-size:13px;font-weight:700;padding:7px 11px;border-radius:8px;transition:background .2s,color .2s}
+  .topnav a:hover{background:rgba(255,255,255,.1);color:#fff}
+  @media(max-width:860px){.topnav{display:none}}
+
+  .wrap{max-width:1140px;margin:0 auto;padding:0 24px}
+
+  /* hero */
+  .hero{background:radial-gradient(1100px 520px at 78% -10%,var(--hero-2),var(--hero) 60%);color:#fff;
+        padding:78px 0 60px;position:relative;overflow:hidden}
+  .hero .eyebrow{font-size:12.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--sky);margin-bottom:18px}
+  .hero h1{font-size:clamp(30px,4.6vw,52px);line-height:1.12;letter-spacing:-.025em;font-weight:800;max-width:830px}
+  .hero h1 em.acc{color:#7DD3FC;font-weight:600}
+  .hero p.sub{margin-top:20px;max-width:700px;font-size:17.5px;color:#C4D9E4;line-height:1.65}
+  .hero p.sub b{color:#fff}
+  .hero-cta{margin-top:30px;display:flex;gap:12px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:12px;font-weight:800;
+       font-size:15px;text-decoration:none;border:0;transition:transform .18s ease,box-shadow .18s ease}
+  .btn:hover{transform:translateY(-2px)}
+  .btn:active{transform:translateY(0) scale(.98)}
+  .btn-primary{background:var(--accent);color:#fff;box-shadow:0 6px 20px rgba(22,163,74,.35)}
+  .btn-ghost{background:rgba(255,255,255,.08);color:#E4F1F8;border:1px solid rgba(255,255,255,.22)}
+  .hero-stats{margin-top:46px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:900px}
+  @media(max-width:760px){.hero-stats{grid-template-columns:repeat(2,1fr)}}
+  .hstat{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.12);border-radius:var(--r);padding:16px 18px}
+  .hstat .v{font-family:var(--mono);font-size:30px;font-weight:700;color:#fff;line-height:1.1}
+  .hstat .v .u{font-size:13px;color:#8FB4C6;font-weight:500;margin-left:4px}
+  .hstat .l{font-size:12.5px;color:#9FBECD;font-weight:700;margin-top:5px;line-height:1.35}
+
+  /* sections */
+  section{padding:64px 0 8px}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:10px}
+  .sec-no{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--sky)}
+  .sec-head h2{font-size:clamp(22px,3vw,31px);letter-spacing:-.02em;font-weight:800}
+  .sec-lede{max-width:760px;color:var(--ink-soft);font-size:16.5px;margin-bottom:28px}
+  .sec-lede b{color:var(--ink)}
+
+  .cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media(max-width:860px){.cards3{grid-template-columns:1fr}}
+  .pcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px;box-shadow:var(--shadow);
+         transition:transform .2s ease,box-shadow .2s ease}
+  .pcard:hover{transform:translateY(-3px);box-shadow:0 2px 4px rgba(8,35,51,.06),0 14px 36px rgba(8,35,51,.11)}
+  .pcard .ic{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;margin-bottom:14px;
+             background:#E3F1F9;color:var(--primary)}
+  .pcard .ic svg{width:21px;height:21px}
+  .pcard h3{font-size:17px;font-weight:800;margin-bottom:8px;letter-spacing:-.01em}
+  .pcard p{font-size:14.5px;color:var(--ink-soft)}
+  .pcard .was{display:inline-block;font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+              color:var(--amber);margin-bottom:8px}
+  .pcard .now{color:var(--accent-deep)}
+
+  /* simulator */
+  .sim{background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);overflow:hidden}
+  .sim-q{display:flex;gap:12px;align-items:center;padding:18px 22px;border-bottom:1px solid var(--line);background:#FBFDFE;flex-wrap:wrap}
+  .sim-q .bubble{background:var(--hero);color:#fff;border-radius:14px 14px 14px 4px;padding:10px 16px;font-size:15px;font-weight:600}
+  .sim-q .who{font-size:12.5px;color:var(--ink-muted);font-weight:700}
+  .roles{display:flex;gap:8px;padding:16px 22px 0;flex-wrap:wrap}
+  .role-tab{border:1.5px solid var(--line);background:#fff;color:var(--ink-soft);border-radius:999px;
+            padding:9px 16px;font-size:13.5px;font-weight:800;transition:all .18s ease;min-height:40px}
+  .role-tab:hover{border-color:var(--sky);color:var(--primary)}
+  .role-tab[aria-selected="true"],.role-tab[aria-pressed="true"]{background:var(--primary);border-color:var(--primary);color:#fff;box-shadow:0 4px 14px rgba(3,105,161,.3)}
+  .sim-body{padding:20px 22px 24px}
+  .ans{border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .ans-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 16px;
+            background:#F2F8FB;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .ans-head .r{font-weight:800;font-size:14px}
+  .tag{font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:4px 9px;border-radius:999px}
+  .tag.open{background:#E5F5EC;color:var(--accent-deep)}
+  .tag.conf{background:#FCF0E4;color:var(--amber)}
+  .ans-rows{padding:6px 0}
+  .arow{display:flex;gap:12px;align-items:flex-start;padding:9px 16px;font-size:14.5px;border-bottom:1px dashed #E8F0F5}
+  .arow:last-child{border-bottom:0}
+  .arow .k{flex:0 0 168px;font-weight:800;font-size:12.5px;color:var(--ink-muted);padding-top:2px}
+  .arow .v b{color:var(--primary-deep)}
+  .arow.locked{background:#FAFBFC;color:var(--ink-muted)}
+  .arow.locked .v{display:flex;gap:8px;align-items:center;font-size:13.5px;font-weight:600}
+  .lock-ic{width:15px;height:15px;flex:none;color:var(--neutral)}
+  .arow.granted .v b{color:var(--accent-deep)}
+  .sim-note{margin-top:14px;font-size:12.5px;color:var(--ink-muted)}
+  .sim-note b{color:var(--ink-soft)}
+
+  /* matrix */
+  .mx-card{background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:22px;overflow-x:auto}
+  table.mx{border-collapse:collapse;width:100%;min-width:680px}
+  .mx th,.mx td{padding:9px 10px;text-align:center;font-size:13px;border-bottom:1px solid #EAF2F6}
+  .mx thead th{font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-muted);font-weight:800}
+  .mx td.rl{text-align:left;font-weight:800;font-size:13.5px;white-space:nowrap}
+  .mx td.rl small{display:block;font-weight:600;color:var(--ink-muted);font-size:11px}
+  .cell{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-width:64px;padding:5px 9px;
+        border-radius:8px;font-weight:800;font-size:12px;font-family:var(--mono)}
+  .c-full{background:#E5F5EC;color:var(--accent-deep)}
+  .c-abac{background:#E3F1F9;color:var(--primary-deep)}
+  .c-none{background:#F1F4F6;color:var(--neutral)}
+  .mx-legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:16px;font-size:13px;color:var(--ink-soft);font-weight:600}
+  .mx-legend .cell{min-width:0}
+  .mx tr:hover td{background:#F7FBFD}
+
+  /* architecture diagram */
+  .arch-card{background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:22px;overflow-x:auto}
+  .arch-svg{width:100%;min-width:720px;height:auto;display:block}
+  .arch-svg .bx{fill:#fff;stroke:var(--line);stroke-width:1.5}
+  .arch-svg .bx-actor{fill:#F2F8FB;stroke:#C4DCE8}
+  .arch-svg .bx-gw{fill:#E9F5EC;stroke:#B7DFC4}
+  .arch-svg .bx-wk{fill:#FDF4E7;stroke:#EAD3AE}
+  .arch-svg .bx-data{fill:#EDF3F7;stroke:#CBDCE6}
+  .arch-svg .host{fill:none;stroke:#9FBECD;stroke-width:1.5;stroke-dasharray:6 5}
+  .arch-svg .tt{font:800 13.5px 'Manrope',sans-serif;fill:var(--ink)}
+  .arch-svg .ts{font:600 11px 'Manrope',sans-serif;fill:var(--ink-muted)}
+  .arch-svg .tl{font:700 10.5px 'JetBrains Mono',monospace;fill:var(--ink-soft)}
+  .arch-svg .th{font:800 11px 'Manrope',sans-serif;fill:#7A99AA;letter-spacing:.08em}
+  .arch-svg .fl{stroke:var(--primary);stroke-width:2.2;fill:none;marker-end:url(#arr);
+                stroke-dasharray:9 9;animation:dashflow 1.1s linear infinite}
+  .arch-svg .fl-w{stroke:var(--amber);stroke-width:2.2;fill:none;marker-end:url(#arrA);
+                stroke-dasharray:9 9;animation:dashflow 1.1s linear infinite}
+  .arch-svg .fl-bg{stroke:#B45309;stroke-width:1.8;stroke-dasharray:5 7;fill:none;marker-end:url(#arrA);
+                animation:dashflow 1.8s linear infinite}
+  .arch-svg .fl-x{stroke:#C0392B;stroke-width:2;stroke-dasharray:7 6;fill:none}
+  .arch-svg .d1{animation-delay:0s}.arch-svg .d2{animation-delay:.35s}
+  .arch-svg .d3{animation-delay:.7s}.arch-svg .d4{animation-delay:1.05s}
+  @keyframes dashflow{to{stroke-dashoffset:-18}}
+  @media(prefers-reduced-motion:reduce){.arch-svg .fl,.arch-svg .fl-w,.arch-svg .fl-bg{animation:none;stroke-dasharray:none}
+    .arch-svg .fl-bg{stroke-dasharray:5 7}}
+  .arch-legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px;font-size:12.5px;color:var(--ink-soft);font-weight:600}
+  .arch-legend .sw{display:inline-block;width:22px;height:0;border-top:3px solid;vertical-align:middle;margin-right:6px;border-radius:2px}
+
+  /* shared color legend for all diagrams */
+  .clr-legend{display:flex;gap:10px 18px;flex-wrap:wrap;align-items:center;margin:0 0 16px;padding:12px 16px;
+    background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);
+    font-size:12.5px;color:var(--ink-soft);font-weight:600}
+  .clr-legend .cl-t{font-weight:800;color:var(--ink)}
+  .cl-sw{display:inline-block;width:18px;height:14px;border-radius:4px;border:1.5px solid;
+    vertical-align:-2px;margin-right:6px;font-style:normal}
+  .cl-dash{background:#F4F7F9;border-color:#9FBECD;border-style:dashed}
+
+  /* glossary */
+  .gloss{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  @media(max-width:760px){.gloss{grid-template-columns:1fr}}
+  .gterm{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow)}
+  .gterm dt{font-weight:800;font-size:14px}
+  .gterm dt .en{font-family:var(--mono);font-size:11px;color:var(--ink-muted);font-weight:700;margin-left:6px}
+  .gterm dd{font-size:13.5px;color:var(--ink-soft);margin-top:4px}
+
+  .hero-hint{margin-top:14px;font-size:12px;color:#8FB4C6;font-weight:600}
+  .lanes{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:18px}
+  @media(max-width:960px){.lanes{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:560px){.lanes{grid-template-columns:1fr}}
+  .lane{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:var(--shadow)}
+  .lane .lr{font-weight:800;font-size:13.5px;display:flex;align-items:center;gap:7px}
+  .lane .lr .d{width:9px;height:9px;border-radius:3px;flex:none}
+  .lane ul{list-style:none;margin-top:8px}
+  .lane li{font-size:12.5px;color:var(--ink-soft);padding:3px 0;border-bottom:1px dashed #EDF3F7}
+  .lane li:last-child{border-bottom:0}
+
+  /* universal tooltips: any element with data-tip; variants tip-left/tip-right/tip-up */
+  [data-tip]{position:relative;--ttx:translateX(-50%)}
+  [data-tip]::after{content:attr(data-tip);position:absolute;top:calc(100% + 9px);left:50%;
+    transform:var(--ttx) translateY(-4px);background:var(--hero);color:#E4F1F8;
+    font-size:12px;font-weight:600;line-height:1.45;text-align:left;letter-spacing:0;text-transform:none;
+    padding:9px 12px;border-radius:10px;width:max-content;max-width:250px;white-space:normal;
+    box-shadow:0 10px 26px rgba(8,35,51,.28);border:1px solid rgba(255,255,255,.14);
+    opacity:0;pointer-events:none;z-index:40;transition:opacity .18s ease,transform .18s ease}
+  [data-tip]::before{content:'';position:absolute;top:calc(100% + 3px);left:50%;transform:translateX(-50%);
+    border:6px solid transparent;border-bottom-color:var(--hero);opacity:0;pointer-events:none;z-index:40;
+    transition:opacity .18s ease}
+  [data-tip]:hover::after,[data-tip]:focus-visible::after{opacity:1;transform:var(--ttx) translateY(0)}
+  [data-tip]:hover::before,[data-tip]:focus-visible::before{opacity:1}
+  .tip-left{--ttx:translateX(0)} .tip-left::after{left:0} .tip-left::before{left:22px;transform:none}
+  .tip-right{--ttx:translateX(0)} .tip-right::after{left:auto;right:0} .tip-right::before{left:auto;right:22px;transform:none}
+  .tip-up::after{top:auto;bottom:calc(100% + 9px);transform:var(--ttx) translateY(4px)}
+  .tip-up::before{top:auto;bottom:calc(100% + 3px);border-bottom-color:transparent;border-top-color:var(--hero)}
+  .tip-up:hover::after,.tip-up:focus-visible::after{transform:var(--ttx) translateY(0)}
+  .tip-help{cursor:help}
+  @media(prefers-reduced-motion:reduce){[data-tip]::after,[data-tip]::before{transition:none}}
+
+  /* benefit chart + measured tiles */
+  .bars{display:grid;gap:11px;margin-top:6px}
+  .bar-row{display:grid;grid-template-columns:minmax(200px,300px) 1fr 40px;align-items:center;gap:12px;font-size:13px;font-weight:700;color:var(--ink-soft)}
+  .bar-row small{display:block;font-weight:600;color:var(--ink-muted);font-size:11.5px}
+  .bar-track{background:#EDF3F7;border-radius:6px;height:18px;overflow:hidden}
+  .bar-fill{height:100%;border-radius:6px;background:var(--primary)}
+  .bar-val{font-family:var(--mono);font-weight:700;color:var(--primary-deep);text-align:right}
+  .mstats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
+  @media(max-width:760px){.mstats{grid-template-columns:1fr}}
+  .mstat{border:1px solid var(--line);border-radius:14px;padding:16px;background:#FBFDFE}
+  .mstat .v{font-family:var(--mono);font-size:26px;font-weight:700;color:var(--ink)}
+  .mstat .l{font-size:12.5px;color:var(--ink-muted);font-weight:700;margin-top:4px;line-height:1.4}
+
+  /* role-place diagram */
+  .arch-svg .z-ok{fill:#E9F5EC;stroke:#B7DFC4;stroke-width:1.5}
+  .arch-svg .z-abac{fill:#E3F1F9;stroke:#A9CFE4;stroke-width:1.5}
+  .arch-svg .z-no{fill:#F4F7F9;stroke:#DFE9EF;stroke-width:1.5;stroke-dasharray:5 4}
+  .gchips{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  .gchip{font-size:12.5px;font-weight:800;padding:7px 12px;border-radius:999px;border:1.5px solid var(--line);
+         color:var(--ink-muted);background:#F7FAFC;transition:all .2s ease}
+  .gchip.on{background:#E5F5EC;border-color:#B7DFC4;color:var(--accent-deep)}
+  .gchip.off{opacity:.5}
+  .role-note{margin-top:12px;border-left:3px solid var(--sky);background:#F7FBFD;border-radius:0 10px 10px 0;
+             padding:12px 16px;font-size:14px;color:var(--ink-soft);min-height:44px}
+  .role-note b{color:var(--ink)}
+
+  /* hero mini-contrast hook */
+  .hero-mini{margin-top:26px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .hm-q{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:#E4F1F8;
+        padding:9px 14px;border-radius:12px 12px 12px 4px;font-size:13.5px;font-weight:600}
+  .hm-a{font-size:12.5px;font-weight:800;padding:7px 12px;border-radius:999px}
+  .hm-a.no{background:rgba(255,255,255,.07);color:#9FBECD;border:1px dashed rgba(255,255,255,.3)}
+  .hm-a.yes{background:rgba(22,163,74,.16);color:#86EFAC;border:1px solid rgba(22,163,74,.45)}
+
+  /* comparison table accents */
+  .mx td.bad{color:var(--ink-muted)}
+  .mx td.good{color:var(--accent-deep);font-weight:700}
+  .mx td.crit{text-align:left;font-weight:800;font-size:13px;white-space:nowrap}
+
+  /* collapsed access matrix */
+  .mx-details{margin-top:18px}
+  .mx-details summary{cursor:pointer;font-weight:800;font-size:14px;color:var(--primary-deep);
+    padding:14px 18px;background:var(--surface);border:1px solid var(--line);border-radius:14px;
+    box-shadow:var(--shadow);list-style:none;transition:background .2s}
+  .mx-details summary::-webkit-details-marker{display:none}
+  .mx-details summary::before{content:'▸ ';color:var(--sky)}
+  .mx-details[open] summary::before{content:'▾ '}
+  .mx-details summary:hover{background:#F7FBFD}
+  .mx-details[open] summary{border-radius:14px 14px 0 0;border-bottom:0}
+  .mx-details[open] .mx-card{border-radius:0 0 20px 20px}
+
+  /* AE-delta rows in simulator */
+  .arow.plus{background:#FDF9F2}
+  .arow.plus .k{color:var(--amber)}
+
+  /* governance stepper */
+  .gov{background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:26px 22px}
+  .steps{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+  @media(max-width:860px){.steps{grid-template-columns:1fr 1fr}}
+  .step{border:1.5px solid var(--line);border-radius:14px;padding:14px;background:#fff;text-align:left;
+        transition:all .2s ease;position:relative;min-height:44px}
+  .step .n{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--ink-muted)}
+  .step .t{font-weight:800;font-size:14.5px;margin-top:2px}
+  .step .d{font-size:12px;color:var(--ink-muted);margin-top:3px;line-height:1.4}
+  .step[aria-selected="true"]{border-color:var(--primary);background:#F0F8FD;box-shadow:0 6px 18px rgba(3,105,161,.16)}
+  .step[aria-selected="true"] .n{color:var(--primary)}
+  .gov-detail{margin-top:18px;border-left:3px solid var(--primary);background:#F7FBFD;border-radius:0 12px 12px 0;
+              padding:16px 18px;font-size:14.5px;color:var(--ink-soft);min-height:86px}
+  .gov-detail b{color:var(--ink)}
+  .gov-foot{margin-top:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--ink-muted);font-weight:600}
+  .gov-foot .chip{background:#E5F5EC;color:var(--accent-deep);border-radius:999px;padding:5px 12px;font-weight:800;font-size:12px}
+
+  /* guarantees */
+  .guar{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  @media(max-width:760px){.guar{grid-template-columns:1fr}}
+  .g-item{display:flex;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+          padding:18px;box-shadow:var(--shadow)}
+  .g-item .gi{flex:none;width:38px;height:38px;border-radius:10px;background:#E5F5EC;color:var(--accent-deep);display:grid;place-items:center}
+  .g-item .gi svg{width:19px;height:19px}
+  .g-item h3{font-size:15.5px;font-weight:800;margin-bottom:4px}
+  .g-item p{font-size:13.5px;color:var(--ink-soft)}
+
+  /* numbers band */
+  .band{background:linear-gradient(120deg,var(--hero),var(--hero-2));border-radius:22px;color:#fff;
+        padding:34px 30px;display:grid;grid-template-columns:repeat(5,1fr);gap:18px;margin-top:34px}
+  @media(max-width:860px){.band{grid-template-columns:repeat(2,1fr)}}
+  .bstat .v{font-family:var(--mono);font-size:32px;font-weight:700}
+  .bstat .l{font-size:12.5px;color:#9FBECD;font-weight:700;margin-top:4px;line-height:1.35}
+
+  /* readiness */
+  .ready{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:860px){.ready{grid-template-columns:1fr}}
+  .track{display:flex;gap:14px;align-items:flex-start;padding:14px 4px;border-bottom:1px dashed var(--line)}
+  .track:last-child{border-bottom:0}
+  .track .tn{flex:none;font-family:var(--mono);font-weight:700;color:var(--sky);font-size:13px;padding-top:2px}
+  .track h4{font-size:15px;font-weight:800}
+  .track p{font-size:13.5px;color:var(--ink-soft)}
+
+  /* closing */
+  .close-band{background:radial-gradient(900px 400px at 22% 120%,var(--hero-2),var(--hero) 65%);color:#fff;
+              border-radius:24px;padding:52px 40px;text-align:center;margin:64px 0 30px}
+  .close-band .q{font-size:clamp(21px,3vw,30px);font-weight:800;letter-spacing:-.02em;max-width:780px;margin:0 auto}
+  .close-band .q em.acc{color:#7DD3FC;font-weight:600}
+  .close-band p{color:#B9D2DF;margin:16px auto 26px;max-width:640px;font-size:15.5px}
+  footer{padding:18px 0 42px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;
+         font-size:12.5px;color:var(--ink-muted);font-weight:600}
+
+  /* reveal */
+  .reveal{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s ease}
+  html.js .reveal.in,html:not(.js) .reveal{opacity:1;transform:none}
+  @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}
+    .btn,.pcard,.step,.role-tab{transition:none}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<div class="topbar">
+  <div class="topbar-in">
+    <div class="logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+      <div>SalesWiki<small>governed knowledge layer</small></div>
+    </div>
+    <nav class="topnav" aria-label="Разделы">
+      <a href="#value">ценность</a>
+      <a href="#demo">живой контраст</a>
+      <a href="#vs">сравнение</a>
+      <a href="#arch">архитектура</a>
+      <a href="#flows">процессы</a>
+      <a href="#gov">governance</a>
+      <a href="#trust">гарантии</a>
+      <a href="#ready">готовность</a>
+      <a href="#gloss">словарь</a>
+    </nav>
+  </div>
+</div>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow reveal">решение для руководства · продажи и маркетинг</div>
+    <h1 class="reveal">Вся команда спрашивает одного ассистента — и каждый получает ровно то, <em class="acc">что ему разрешено видеть</em>.</h1>
+    <p class="sub reveal">SalesWiki превращает звонки, CRM-данные и ресёрч в <b>единый управляемый слой знаний</b>.
+      Ответы формируются по роли сотрудника, приватное не утекает, каждый факт подтверждён источником —
+      <b>система не генерирует, а извлекает</b>, поэтому не выдумывает.</p>
+    <div class="hero-cta reveal">
+      <a class="btn btn-primary" href="#demo">Посмотреть ролевой контраст
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a class="btn btn-ghost" href="#ready">Готовность к пилоту</a>
+    </div>
+    <div class="hero-mini reveal" aria-label="Пример: один вопрос — два ответа">
+      <span class="hm-q">«Какой у нас порог скидки по BluePeak?»</span>
+      <span class="hm-a no">Маркетолог: доступ закрыт</span>
+      <span class="hm-a yes">AE: 18% — ниже только с согласованием HoS</span>
+    </div>
+    <div class="hero-stats">
+      <div class="hstat reveal tip-up tip-left tip-help" tabindex="0" data-tip="Сотрудник, SDR, AE, Head of Sales, RevOps, маркетинг, куратор, legal, админ — зафиксированы в конфигурации access-policy.json, меняются без кода"><div class="v num" data-count="9">0</div><div class="l">ролей доступа —<br>от сотрудника до админа</div></div>
+      <div class="hstat reveal tip-up tip-help" tabindex="0" data-tip="Общая, sales-confidential, personal-data, legal-review, две служебные и карантин. Карточка вне известных зон не видна никому"><div class="v num" data-count="7">0</div><div class="l">зон данных, по умолчанию<br>fail-closed</div></div>
+      <div class="hstat reveal tip-up tip-help" tabindex="0" data-tip="Полный прогон тест-набора и структурного health-check от 2026-07-02: доступ по ролям, отсутствие утечек, путь записи, устойчивость к prompt-injection"><div class="v num" data-count="378">0</div><div class="l">автотестов зелёные ·<br>health-check 0/0</div></div>
+      <div class="hstat reveal tip-up tip-help" tabindex="0" data-tip="Свойство конструкции: слой ответа извлекает значения из карточек и цитирует их, генерации текста в нём нет — поэтому выдумать факт он не может"><div class="v num">100<span class="u">%</span></div><div class="l">фактов — из цитируемых<br>карточек, без генерации</div></div>
+    </div>
+    <p class="hero-hint reveal">ⓘ почти у каждой цифры, ячейки и шага есть пояснение — наведите курсор, и появится подсказка</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+<!-- VALUE -->
+<section id="value">
+  <div class="sec-head reveal"><span class="sec-no">01</span><h2>Три риска — одно решение</h2></div>
+  <p class="sec-lede reveal">Знания о сделках живут в головах, чатах и разрозненных документах — это первый риск.
+    Прямой доступ ИИ к таким данным добавляет ещё два: утечку приватного и выдуманные «факты».
+    SalesWiki закрывает все три.</p>
+  <div class="cards3">
+    <div class="pcard reveal">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg></div>
+      <span class="was">риск · знания теряются</span>
+      <h3>Единый слой знаний</h3>
+      <p>Звонки, CRM-экспорты, ресёрч и события собираются в связанные карточки с источником и датой.
+        <b class="now">Утренний дайджест, риск сделки и бриф по компании — за секунды, вместо ручного поиска по папкам и чатам.</b></p>
+    </div>
+    <div class="pcard reveal">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+      <span class="was">риск · утечка приватного</span>
+      <h3>Доступ по роли, не по доверию</h3>
+      <p>Права проверяются <b class="now">до того, как собирается ответ</b>: маркетинг не видит цен и скидок,
+        AE — только свои сделки, персональные данные — только по одобрению админа.</p>
+    </div>
+    <div class="pcard reveal">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h12l4 4v12H4z"/><path d="M14 4v4h4M8 13h8M8 17h5"/></svg></div>
+      <span class="was">риск · ИИ выдумывает</span>
+      <h3>Ноль галлюцинаций в нашем слое</h3>
+      <p>Ответ <b class="now">извлекается из процитированных карточек</b>, а не генерируется. Нет данных —
+        честное «не знаю» и предложение минимальной research-задачи.</p>
+    </div>
+  </div>
+
+  <div class="mx-card reveal" style="margin-top:18px;overflow:visible">
+    <h3 style="font-size:16px;font-weight:800;margin-bottom:4px">Экономика одного вопроса — измерено, не обещано</h3>
+    <p style="font-size:13px;color:var(--ink-muted);margin-bottom:14px">Сколько карточек знаний собирает в один
+      ответ каждый инструмент. Замер на синтетическом демо-vault (58 карточек), 2026-07-02 — вручную это столько же
+      открытых и прочитанных файлов в разных зонах доступа.</p>
+    <div class="bars" role="img" aria-label="Уникальных карточек в одном ответе: мой день для AE — 12, приоритет лидов для маркетинга — 8, бриф по компании для AE — 8, дайджест рисков пайплайна для Head of Sales — 5">
+      <div class="bar-row tip-help tip-left" tabindex="0" data-tip="8 карточек лидов + 4 сделки AE из двух зон доступа — каждая процитирована в ответе"><span>«Мой день» <small>утренний дайджест AE</small></span>
+        <span class="bar-track"><span class="bar-fill" style="width:100%;display:block"></span></span><span class="bar-val">12</span></div>
+      <div class="bar-row tip-help tip-left" tabindex="0" data-tip="8 процитированных карточек лидов — со скорингом и объяснением why-now"><span>Приоритет лидов <small>маркетинг</small></span>
+        <span class="bar-track"><span class="bar-fill" style="width:67%;display:block"></span></span><span class="bar-val">8</span></div>
+      <div class="bar-row tip-help tip-left" tabindex="0" data-tip="Профиль компании, сигнал рынка, сделка, звонок и связанные карточки — с датами и источниками"><span>Бриф по компании <small>AE</small></span>
+        <span class="bar-track"><span class="bar-fill" style="width:67%;display:block"></span></span><span class="bar-val">8</span></div>
+      <div class="bar-row tip-help tip-left" tabindex="0" data-tip="5 сделок в риске со статусом и следующим шагом — управленческий срез одним вопросом"><span>Риски пайплайна <small>Head of Sales</small></span>
+        <span class="bar-track"><span class="bar-fill" style="width:42%;display:block"></span></span><span class="bar-val">5</span></div>
+    </div>
+    <div class="mstats">
+      <div class="mstat tip-help" tabindex="0" data-tip="Медиана по 7 прогонам каждого инструмента на ноутбуке разработчика, ядро без LLM в контуре чтения">
+        <div class="v">&lt; 10 <span style="font-size:14px;color:var(--ink-muted)">мс</span></div>
+        <div class="l">медианный ответ ядра — быстрее, чем открыть одну папку</div></div>
+      <div class="mstat tip-help" tabindex="0" data-tip="Чтение — детерминированное извлечение из карточек, а не генерация: ответ воспроизводим, не тратит LLM-токены и не может «сочинить»">
+        <div class="v">0</div>
+        <div class="l">LLM-вызовов на чтение — ответы бесплатны и воспроизводимы</div></div>
+      <div class="mstat tip-help" tabindex="0" data-tip="Каждый из этих 12 источников процитирован в ответе — можно кликнуть и проверить">
+        <div class="v">12 <span style="font-size:14px;color:var(--ink-muted)">карточек · 2 зоны</span></div>
+        <div class="l">собирает «мой день» для AE — одним вопросом</div></div>
+    </div>
+    <p style="font-size:12.5px;color:var(--ink-muted);margin-top:14px">Сколько человеко-часов это экономит именно
+      вашей команде — честно измерим в пилоте на реальных данных. Выше — только то, что измеримо уже сейчас.</p>
+  </div>
+</section>
+
+<!-- INTERACTIVE ROLE DEMO -->
+<section id="demo">
+  <div class="sec-head reveal"><span class="sec-no">02</span><h2>Один вопрос — разные безопасные ответы</h2></div>
+  <p class="sec-lede reveal">Главный механизм — вживую. Переключайте роль и смотрите, как меняется ответ на
+    <b>один и тот же вопрос</b>. Данные ниже — синтетический демо-аккаунт из реального демо-контура системы.</p>
+  <div class="sim reveal">
+    <div class="sim-q">
+      <span class="who">Сотрудник спрашивает:</span>
+      <span class="bubble">Дай бриф по BluePeak Energy — что важно знать перед следующим шагом?</span>
+    </div>
+    <div class="roles" role="tablist" aria-label="Роль сотрудника">
+      <button class="role-tab" role="tab" aria-selected="true" id="tab-mkt" aria-controls="panel-mkt">Маркетинг</button>
+      <button class="role-tab" role="tab" aria-selected="false" id="tab-ae" aria-controls="panel-ae">Account Executive</button>
+      <button class="role-tab" role="tab" aria-selected="false" id="tab-emp" aria-controls="panel-emp">Сотрудник (viewer)</button>
+      <button class="role-tab" role="tab" aria-selected="false" id="tab-grant" aria-controls="panel-grant">Сотрудник + грант</button>
+    </div>
+    <div class="sim-body">
+
+      <div class="ans" role="tabpanel" id="panel-mkt" aria-labelledby="tab-mkt">
+        <div class="ans-head"><span class="r">Ответ для роли «Маркетинг»</span><span class="tag open">без deal-секретов</span></div>
+        <div class="ans-rows">
+          <div class="arow"><span class="k">Сигнал рынка</span><span class="v">BluePeak запустил <b>программу сокращения затрат</b> — операционные команды ищут инструменты. Свежий повод для outreach.</span></div>
+          <div class="arow"><span class="k">ROI-доказательство</span><span class="v">Санитизированный кейс: <b>14 часов сэкономлено за 30 дней</b> до первой измеримой ценности — можно использовать в кампании.</span></div>
+          <div class="arow locked"><span class="k">Цены и скидки</span><span class="v"><svg class="lock-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>скрыто — sales-confidential, роль не имеет доступа</span></div>
+          <div class="arow locked"><span class="k">Конкурент в сделке</span><span class="v"><svg class="lock-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>скрыто — deal-контекст виден только sales-ролям</span></div>
+          <div class="arow"><span class="k">Контакты</span><span class="v">Персональные данные — только как непрозрачная ссылка <b>restricted://…</b>, не выгрузка транскрипта.</span></div>
+        </div>
+      </div>
+
+      <div class="ans" role="tabpanel" id="panel-ae" aria-labelledby="tab-ae" hidden>
+        <div class="ans-head"><span class="r">Ответ для роли «Account Executive»</span><span class="tag conf">подсвечено — то, чего нет у маркетинга</span></div>
+        <div class="ans-rows">
+          <div class="arow"><span class="k">Сигнал рынка</span><span class="v">Та же программа сокращения затрат — <b>причина двигать сделку сейчас</b>.</span></div>
+          <div class="arow plus"><span class="k">Экономика сделки</span><span class="v">Предложено <b>$240k ACV</b> · скидочный порог <b>18%</b> — не превышать без согласования с Head of Sales.</span></div>
+          <div class="arow plus"><span class="k">Конкурент в сделке</span><span class="v">Действующий поставщик — <b>RivalCorp</b>; клиент назвал бюджет у нижней границы.</span></div>
+          <div class="arow plus"><span class="k">Следующий шаг</span><span class="v">ROI-ориентированный follow-up: чемпион — VP Operations, экономический покупатель ещё не вовлечён.</span></div>
+          <div class="arow"><span class="k">Контакты</span><span class="v">Транскрипт звонка по-прежнему защищён: <b>restricted://…</b> — ответ помечен как «санитизированный».</span></div>
+        </div>
+      </div>
+
+      <div class="ans" role="tabpanel" id="panel-emp" aria-labelledby="tab-emp" hidden>
+        <div class="ans-head"><span class="r">Ответ для роли «Сотрудник»</span><span class="tag open">только общая зона</span></div>
+        <div class="ans-rows">
+          <div class="arow"><span class="k">Профиль компании</span><span class="v">Общедоступная карточка: индустрия, сигнал рынка, публичные материалы — с источниками и датами.</span></div>
+          <div class="arow locked"><span class="k">Риск сделки</span><span class="v"><svg class="lock-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>нет прав — система предлагает: «запросите доступ или смените роль»</span></div>
+          <div class="arow locked"><span class="k">Цены · конкуренты</span><span class="v"><svg class="lock-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>скрыто — fail-closed: при сомнении система закрывает, а не показывает</span></div>
+        </div>
+      </div>
+
+      <div class="ans" role="tabpanel" id="panel-grant" aria-labelledby="tab-grant" hidden>
+        <div class="ans-head"><span class="r">Сотрудник после одобренного запроса доступа</span><span class="tag conf">грант · только BluePeak · 30 дней</span></div>
+        <div class="ans-rows">
+          <div class="arow granted"><span class="k">Как получил</span><span class="v">Написал «запросить доступ» → куратор увидел заявку в очереди → <b>одобрил с ограниченным сроком</b>. Всё зафиксировано в аудите.</span></div>
+          <div class="arow granted"><span class="k">Риск сделки</span><span class="v">Теперь виден — но <b>только по BluePeak Energy</b>: грант точечный, на одну компанию.</span></div>
+          <div class="arow locked"><span class="k">Другие сделки</span><span class="v"><svg class="lock-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>по-прежнему закрыты — грант не расширяется на весь пайплайн</span></div>
+          <div class="arow"><span class="k">Срок и отзыв</span><span class="v">Грант <b>гаснет по сроку</b> (по умолчанию 30 дней) и <b>отзывается одной командой</b> — доступ пропадает мгновенно.</span></div>
+        </div>
+      </div>
+
+      <p class="sim-note"><b>Это не магия промпта.</b> Роль определяется сервером, а не выбирается клиентом;
+        политика проверяется до сборки ответа. Содержимое — синтетические демо-данные.</p>
+    </div>
+  </div>
+</section>
+
+<!-- VS COMPARISON -->
+<section id="vs">
+  <div class="sec-head reveal"><span class="sec-no">03</span><h2>«А чем это лучше ChatGPT поверх папки?»</h2></div>
+  <p class="sec-lede reveal">Вопрос, который задают первым — и правильно делают. Отличие не в модели,
+    а в <b>слое между ИИ и вашими данными</b>: у обычного чата его нет.</p>
+  <div class="mx-card reveal">
+    <table class="mx">
+      <thead><tr><th scope="col" style="text-align:left">Критерий</th><th scope="col">ИИ-чат с общей папкой</th><th scope="col">SalesWiki</th></tr></thead>
+      <tbody>
+        <tr><td class="crit">Кто что видит</td><td class="bad">все, у кого есть доступ к папке, видят всё</td><td class="good">роль и права проверяются до сборки ответа</td></tr>
+        <tr><td class="crit">Выдуманные факты</td><td class="bad">возможны — модель генерирует текст</td><td class="good">исключены в слое ответа: извлечение + цитаты</td></tr>
+        <tr><td class="crit">След решений</td><td class="bad">кто что видел и менял — неизвестно</td><td class="good">аудит-цепочка, защищённая от подмены</td></tr>
+        <tr><td class="crit">Правки знаний</td><td class="bad">кто угодно правит файл напрямую</td><td class="good">предложение → одобрение → применение → откат</td></tr>
+        <tr><td class="crit">Ваши данные</td><td class="bad">загружаются в чужой индекс/облако</td><td class="good">ваш Markdown-репозиторий, без вендор-лока</td></tr>
+        <tr><td class="crit">Цена вопроса</td><td class="bad">LLM-токены за каждый ответ</td><td class="good">0 LLM-вызовов на чтение — бесплатно и воспроизводимо</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:12.5px;color:var(--ink-muted);margin-top:12px">ИИ-клиент сверху по-прежнему уместен —
+      для суммаризации и диалога. Но между ним и данными стоит слой, который решает, что вообще можно показать.</p>
+  </div>
+</section>
+
+<!-- ARCHITECTURE / DATA FLOW -->
+<section id="arch">
+  <div class="sec-head reveal"><span class="sec-no">04</span><h2>Где живут данные и кто куда ходит</h2></div>
+  <p class="sec-lede reveal">Один принцип делает всё остальное осмысленным: <b>шлюз — единственный путь к файлам</b>.
+    Обычный сотрудник не имеет ни git-доступа к данным, ни общей папки, ни Obsidian на защищённом vault —
+    иначе любые проверки обходятся. Прямой доступ остаётся у 2–3 названных операторов, и каждый такой вход аудитируется.</p>
+
+  <div class="clr-legend reveal" role="note" aria-label="Что означают цвета блоков на схемах">
+    <span class="cl-t">Как читать схемы — цвет блока несёт смысл:</span>
+    <span><i class="cl-sw" style="background:#F2F8FB;border-color:#C4DCE8"></i>люди и роли</span>
+    <span><i class="cl-sw" style="background:#E9F5EC;border-color:#B7DFC4"></i>чтение — открыто роли</span>
+    <span><i class="cl-sw" style="background:#FDF4E7;border-color:#EAD3AE"></i>запись и конфиденциальное</span>
+    <span><i class="cl-sw" style="background:#FBEBE9;border-color:#EFC7C2"></i>персональные данные</span>
+    <span><i class="cl-sw" style="background:#EDF3F7;border-color:#CBDCE6"></i>хранилища и журналы</span>
+    <span><i class="cl-sw cl-dash"></i>пунктир — закрыто или недоступно</span>
+  </div>
+
+  <div class="arch-card reveal">
+    <svg class="arch-svg" viewBox="0 0 960 560" role="img"
+         aria-label="Схема доступа: сотрудники и кураторы ходят только через MCP-шлюз по HTTPS с SSO; шлюз читает vault в режиме read-only и дописывает заявки и аудит; единственный писатель — worker — применяет только одобренное; оператор имеет аудитируемый break-glass доступ; прямые пути к файлам (git clone, общий Obsidian, сетевые папки) закрыты">
+      <defs>
+        <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0 0L10 5L0 10z" fill="#0369A1"/></marker>
+        <marker id="arrA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0 0L10 5L0 10z" fill="#B45309"/></marker>
+      </defs>
+
+      <text class="th" x="44" y="46">ЛЮДИ</text>
+      <text class="th" x="724" y="46">ДАННЫЕ</text>
+      <rect class="bx bx-actor" x="44" y="60" width="196" height="96" rx="12"/>
+      <text class="tt" x="58" y="86">Сотрудники · все роли</text>
+      <text class="ts" x="58" y="107">Rocket.Chat и ИИ-клиент (MCP)</text>
+      <text class="ts" x="58" y="124">с телефона или браузера,</text>
+      <text class="ts" x="58" y="141">без установки</text>
+
+      <rect class="bx bx-actor" x="44" y="186" width="196" height="80" rx="12"/>
+      <text class="tt" x="58" y="212">Куратор / админ</text>
+      <text class="ts" x="58" y="233">очередь ревью, одобрения,</text>
+      <text class="ts" x="58" y="250">гранты — тоже через шлюз</text>
+
+      <rect class="host" x="280" y="34" width="400" height="392" rx="16"/>
+      <text class="th" x="300" y="56">ОТДЕЛЬНЫЙ ХОСТ · DOCKER — ЦЕЛЕВОЙ ПИЛОТ</text>
+
+      <rect class="bx bx-gw" x="308" y="70" width="344" height="116" rx="12"/>
+      <text class="tt" x="326" y="96">MCP-шлюз — только чтение</text>
+      <text class="ts" x="326" y="118">роль — из SSO-токена на каждый запрос</text>
+      <text class="ts" x="326" y="136">политика проверяется до сборки ответа</text>
+      <text class="tl" x="326" y="160">vault: read-only mount</text>
+
+      <rect class="bx bx-wk" x="308" y="282" width="344" height="116" rx="12"/>
+      <text class="tt" x="326" y="308">Worker — единственный писатель</text>
+      <text class="ts" x="326" y="330">применяет только одобренные заявки</text>
+      <text class="ts" x="326" y="348">транзакционно · откат к исходным байтам</text>
+      <text class="tl" x="326" y="372">без входящих подключений</text>
+
+      <rect class="bx bx-data" x="724" y="50" width="216" height="168" rx="12"/>
+      <text class="tt" x="738" y="76">Vault · Markdown-карточки</text>
+      <rect x="738" y="90" width="188" height="32" rx="7" fill="#E9F5EC" stroke="#B7DFC4"/>
+      <text class="tl" x="746" y="110">broad — общая зона</text>
+      <rect x="738" y="128" width="188" height="32" rx="7" fill="#FDF4E7" stroke="#EAD3AE"/>
+      <text class="tl" x="746" y="148">sales-confidential</text>
+      <rect x="738" y="166" width="188" height="32" rx="7" fill="#FBEBE9" stroke="#EFC7C2"/>
+      <text class="tl" x="746" y="186">personal-data · handle</text>
+
+      <rect class="bx bx-actor" x="724" y="244" width="216" height="80" rx="12"/>
+      <text class="tt" x="738" y="270">Оператор — 2–3 человека</text>
+      <text class="ts" x="738" y="291">break-glass: прямой доступ,</text>
+      <text class="ts" x="738" y="308">каждый случай — в аудите</text>
+
+      <rect class="bx bx-data" x="724" y="350" width="216" height="84" rx="12"/>
+      <text class="tt" x="738" y="376">Журналы · runtime</text>
+      <text class="ts" x="738" y="397">предложения · аудит-цепочка</text>
+      <text class="ts" x="738" y="414">только дозапись</text>
+
+      <path class="fl d1" d="M240 105 H304"/>
+      <text class="tl" x="246" y="97">HTTPS + SSO</text>
+      <path class="fl d1" d="M240 220 C276 220 276 160 304 160"/>
+      <text class="tl" x="246" y="184">governance</text>
+      <path class="fl d2" d="M652 105 H720"/>
+      <text class="tl" x="658" y="97">чтение · RO</text>
+      <path class="fl d2" d="M652 160 C692 160 692 390 720 390"/>
+      <path class="fl d3" d="M724 412 C688 412 688 350 656 350"/>
+      <text class="tl" x="660" y="386">одобренное</text>
+      <path class="fl-w d4" d="M652 308 C710 308 710 150 720 150"/>
+      <text class="tl" x="656" y="266">запись · RW</text>
+      <path class="fl-bg" d="M832 244 V226"/>
+
+      <path class="fl-x" d="M44 140 H28 V505 H688"/>
+      <circle cx="704" cy="505" r="13" fill="#FBEBE9" stroke="#C0392B" stroke-width="2"/>
+      <text x="704" y="510" text-anchor="middle" font-size="14" font-weight="800" fill="#C0392B" font-family="Manrope,sans-serif">✕</text>
+      <text class="ts" x="60" y="536">прямой путь к файлам закрыт: git clone · общий Obsidian · сетевые папки — обычным сотрудникам недоступны</text>
+    </svg>
+    <div class="arch-legend">
+      <span><span class="sw" style="border-color:var(--primary)"></span>запросы и чтение через шлюз</span>
+      <span><span class="sw" style="border-color:var(--amber)"></span>запись одобренного (worker)</span>
+      <span><span class="sw" style="border-color:var(--amber);border-top-style:dashed"></span>break-glass оператора — в аудит</span>
+      <span><span class="sw" style="border-color:#C0392B;border-top-style:dashed"></span>закрытые боковые двери</span>
+    </div>
+    <p class="sim-note" style="margin-top:12px"><b>Сегодня (MVP/демо):</b> те же компоненты работают локально на
+      одной машине, данные синтетические. Схема — целевая топология пилота; разделение «шлюз читает / worker пишет»
+      уже действует в коде, а read-only-монтирование делает его фактом файловой системы.</p>
+  </div>
+
+  <div class="lanes reveal">
+    <div class="lane"><div class="lr"><span class="d" style="background:var(--sky)"></span>Сотрудник</div>
+      <ul><li>спрашивает в чате / ИИ-клиенте</li><li>предлагает правки</li><li>запрашивает точечный доступ</li></ul></div>
+    <div class="lane"><div class="lr"><span class="d" style="background:var(--primary)"></span>AE · Head of Sales</div>
+      <ul><li>брифы и риски сделок</li><li>AE — только свои/team (ABAC)</li><li>HoS/RevOps — весь пайплайн</li></ul></div>
+    <div class="lane"><div class="lr"><span class="d" style="background:var(--accent)"></span>Маркетинг</div>
+      <ul><li>сигналы рынка, кампании</li><li>контент-идеи и ROI-доказательства</li><li>без цен и deal-секретов</li></ul></div>
+    <div class="lane"><div class="lr"><span class="d" style="background:var(--amber)"></span>Куратор · Админ</div>
+      <ul><li>очередь ревью, одобрение</li><li>гранты с TTL и отзыв</li><li>personal-data — только админ</li></ul></div>
+    <div class="lane" style="border-style:dashed;background:#FBFDFE"><div class="lr"><span class="d" style="background:var(--neutral)"></span>Worker <span style="font-size:10.5px;font-weight:800;color:var(--neutral);background:#EDF1F4;border-radius:999px;padding:2px 8px">процесс, не человек</span></div>
+      <ul><li>применяет одобренное</li><li>откат при сбое</li><li>единственный, кто пишет</li></ul></div>
+  </div>
+
+  <details class="mx-details reveal">
+    <summary>Полная карта доступа: 9 ролей × зоны данных — точная копия действующей политики</summary>
+    <div class="mx-card">
+      <p style="font-size:12.5px;color:var(--ink-muted);margin-bottom:12px">Источник — конфигурация
+        <span class="num">access-policy.json</span>: поведение меняется правкой JSON, без кода. Зона определяется
+        физическим расположением карточки; карточка вне известных зон не видна никому.</p>
+      <table class="mx">
+        <caption style="position:absolute;left:-9999px">Матрица доступа ролей к зонам данных</caption>
+        <thead><tr><th scope="col" style="text-align:left">Роль</th>
+          <th scope="col" class="tip-help" tabindex="0" data-tip="broad: внутренние знания без deal-секретов — профили компаний, сигналы рынка, санитизированные кейсы">Общая</th>
+          <th scope="col" class="tip-help" tabindex="0" data-tip="sales-confidential: экономика сделок — цены, скидочные пороги, конкуренты, риск. Может сужаться ABAC-правилом до своих/назначенных сделок">Sales-conf.</th>
+          <th scope="col" class="tip-help" tabindex="0" data-tip="personal-data: контакты и транскрипты. Хранится handle-only; наружу уходит только непрозрачная ссылка restricted://">Персональные</th>
+          <th scope="col" class="tip-help" tabindex="0" data-tip="legal-review: материалы на юридической проверке до публикации">Legal</th>
+          <th scope="col" class="tip-help tip-right" tabindex="0" data-tip="operational-state и derived-indexes: журналы, очереди и производные индексы — служебная механика, не знания">Служебные</th></tr></thead>
+        <tbody>
+          <tr><td class="rl">Сотрудник <small>employee-viewer</small></td><td><span class="cell c-full">✓</span></td><td><span class="cell c-none">—</span></td><td><span class="cell c-none">—</span></td><td><span class="cell c-none">—</span></td><td><span class="cell c-none">—</span></td></tr>
+          <tr><td class="rl">SDR <small>sales</small></td><td><span class="cell c-full">✓</span></td><td><span class="cell c-abac">назнач.</span></td><td><span class="cell c-none">—</span></td><td><span class="cell c-none">—</span></td><td><span class="cell c-none">—</span></td></tr>
+          <tr><td class="rl">Account Executive <small>sales-owner</small></td><td><span class="cell c-full">✓</span></td><td><span class="cell c-abac">свои/team</span></td><td><span class="cell c-none">—</span></td><td><span class="cell c-none">—</span></td><td><span class="cell c-none">—</span></td></tr>
+          <tr><td class="rl">Head of Sales <small>hos</small></td><td><span class="cell c-full">✓</span></td><td><span class="cell c-full">✓</span></td><td><span class="cell c-none">—</span></td><td><span class="cell c-none">—</span></td><td><span class="cell c-none">—</span></td></tr>
+          <tr><td class="rl">RevOps <small>revops</small></td><td><span class="cell c-full">✓</span></td><td><span class="cell c-full">✓</span></td><td><span class="cell c-none">—</span></td><td><span class="cell c-none">—</span></td><td><span class="cell c-none">—</span></td></tr>
+          <tr><td class="rl">Маркетинг <small>marketing</small></td><td><span class="cell c-full">✓</span></td><td><span class="cell c-none">—</span></td><td><span class="cell c-none">—</span></td><td><span class="cell c-none">—</span></td><td><span class="cell c-none">—</span></td></tr>
+          <tr><td class="rl">Куратор <small>curator</small></td><td><span class="cell c-full">✓</span></td><td><span class="cell c-full">✓</span></td><td><span class="cell c-none">—</span></td><td><span class="cell c-none">—</span></td><td><span class="cell c-none">—</span></td></tr>
+          <tr><td class="rl">Legal <small>legal-reviewer</small></td><td><span class="cell c-full">✓</span></td><td><span class="cell c-none">—</span></td><td><span class="cell c-none">—</span></td><td><span class="cell c-full">✓</span></td><td><span class="cell c-none">—</span></td></tr>
+          <tr><td class="rl">Админ <small>admin</small></td><td><span class="cell c-full">✓</span></td><td><span class="cell c-full">✓</span></td><td><span class="cell c-full">✓</span></td><td><span class="cell c-full">✓</span></td><td><span class="cell c-full">✓</span></td></tr>
+        </tbody>
+      </table>
+      <div class="mx-legend">
+        <span><span class="cell c-full">✓</span> полный доступ к зоне</span>
+        <span><span class="cell c-abac">свои/team</span> ABAC — только назначенные / свои сделки</span>
+        <span><span class="cell c-none">—</span> нет доступа (блок до сборки ответа)</span>
+      </div>
+    </div>
+  </details>
+</section>
+
+<!-- ROLE PROCESS FLOWS -->
+<section id="flows">
+  <div class="sec-head reveal"><span class="sec-no">05</span><h2>Процессы по ролям — как это движется</h2></div>
+  <p class="sec-lede reveal">Четыре типовых сценария от действия до результата. Один и тот же шлюз и одна
+    governance-петля — меняется только роль и то, что ей разрешено. Цифры в примерах — синтетические демо-данные.</p>
+
+  <div class="clr-legend reveal" role="note" aria-label="Легенда цветов блоков">
+    <span class="cl-t">Цвета блоков — те же, что на схеме выше:</span>
+    <span><i class="cl-sw" style="background:#F2F8FB;border-color:#C4DCE8"></i>люди и роли</span>
+    <span><i class="cl-sw" style="background:#E9F5EC;border-color:#B7DFC4"></i>чтение — открыто роли</span>
+    <span><i class="cl-sw" style="background:#FDF4E7;border-color:#EAD3AE"></i>запись и конфиденциальное</span>
+    <span><i class="cl-sw" style="background:#EDF3F7;border-color:#CBDCE6"></i>хранилища и журналы</span>
+  </div>
+
+  <div class="arch-card reveal">
+    <h3 style="font-size:16px;font-weight:800;margin-bottom:4px">1 · Один вопрос — два разных безопасных ответа</h3>
+    <p style="font-size:13px;color:var(--ink-muted);margin-bottom:10px">Маркетолог и AE спрашивают одно и то же — каждый видит свой срез.</p>
+    <svg class="arch-svg" viewBox="0 0 960 200" role="img" aria-label="Маркетолог и Account Executive задают один вопрос; шлюз проверяет роль до сборки ответа; маркетолог видит сигнал и ROI-кейс без цен, AE — цены сделки, порог скидки и конкурента">
+      <rect class="bx bx-actor" x="20" y="25" width="160" height="64" rx="12"/>
+      <text class="tt" x="32" y="49">Маркетолог</text>
+      <text class="ts" x="32" y="69">вопрос: дай бриф</text>
+      <rect class="bx bx-actor" x="20" y="115" width="160" height="64" rx="12"/>
+      <text class="tt" x="32" y="139">Account Exec</text>
+      <text class="ts" x="32" y="159">тот же вопрос</text>
+
+      <rect class="bx bx-gw" x="270" y="20" width="190" height="164" rx="12"/>
+      <text class="tt" x="284" y="46">MCP-шлюз</text>
+      <text class="ts" x="284" y="66">одна точка входа</text>
+      <text class="ts" x="284" y="82">для всех ролей</text>
+
+      <rect class="bx bx-data" x="520" y="20" width="150" height="164" rx="12"/>
+      <text class="tt" x="534" y="46">Vault</text>
+      <text class="ts" x="534" y="66">зоны данных</text>
+
+      <rect class="bx bx-gw" x="730" y="22" width="210" height="72" rx="12"/>
+      <text class="tt" x="744" y="46">Видит: без цен</text>
+      <text class="ts" x="744" y="66">сигнал рынка + ROI-кейс</text>
+      <text class="ts" x="744" y="82">цены и скидки скрыты</text>
+      <rect class="bx bx-wk" x="730" y="112" width="210" height="72" rx="12"/>
+      <text class="tt" x="744" y="136">Видит: цены сделки</text>
+      <text class="ts" x="744" y="156">$240k ACV · порог 18%</text>
+      <text class="ts" x="744" y="172">конкурент: RivalCorp</text>
+
+      <text class="tl" x="196" y="49">запрос</text>
+      <text class="tl" x="470" y="49">чтение</text>
+      <text class="tl" x="680" y="49">ответ</text>
+      <path class="fl d1" d="M180 57 H266"/>
+      <path class="fl d1" d="M180 147 H266"/>
+      <path class="fl d2" d="M460 57 H516"/>
+      <path class="fl d2" d="M460 147 H516"/>
+      <path class="fl d3" d="M670 57 H726"/>
+      <path class="fl-w d3" d="M670 147 H726"/>
+    </svg>
+  </div>
+
+  <div class="arch-card reveal" style="margin-top:16px">
+    <h3 style="font-size:16px;font-weight:800;margin-bottom:4px">2 · Правка знаний — только через одобрение</h3>
+    <p style="font-size:13px;color:var(--ink-muted);margin-bottom:10px">Сотрудник замечает устаревшее — куратор решает — пишет только worker.</p>
+    <svg class="arch-svg" viewBox="0 0 960 150" role="img" aria-label="Сотрудник помечает данные устаревшими; заявка попадает в очередь ревью с уведомлением аппруверам; куратор одобряет или отклоняет; worker применяет транзакционно; правка появляется в секции Review Needed карточки с аудитом">
+      <rect class="bx bx-actor" x="20" y="30" width="150" height="84" rx="12"/>
+      <text class="tt" x="32" y="56">Сотрудник</text>
+      <text class="ts" x="32" y="76">«пометить</text>
+      <text class="ts" x="32" y="92">устаревшим»</text>
+      <rect class="bx bx-data" x="206" y="30" width="150" height="84" rx="12"/>
+      <text class="tt" x="218" y="56">Очередь ревью</text>
+      <text class="ts" x="218" y="76">уведомление</text>
+      <text class="ts" x="218" y="92">аппруверам</text>
+      <rect class="bx bx-actor" x="392" y="30" width="150" height="84" rx="12"/>
+      <text class="tt" x="404" y="56">Куратор</text>
+      <text class="ts" x="404" y="76">одобрить или</text>
+      <text class="ts" x="404" y="92">отклонить с причиной</text>
+      <rect class="bx bx-wk" x="578" y="30" width="150" height="84" rx="12"/>
+      <text class="tt" x="590" y="56">Worker</text>
+      <text class="ts" x="590" y="76">применяет</text>
+      <text class="ts" x="590" y="92">транзакционно</text>
+      <rect class="bx bx-gw" x="764" y="30" width="176" height="84" rx="12"/>
+      <text class="tt" x="776" y="56">Карточка</text>
+      <text class="ts" x="776" y="76">секция Review Needed</text>
+      <text class="ts" x="776" y="92">+ запись в аудит</text>
+      <path class="fl d1" d="M170 72 H202"/>
+      <path class="fl d2" d="M356 72 H388"/>
+      <path class="fl d3" d="M542 72 H574"/>
+      <path class="fl-w d4" d="M728 72 H760"/>
+      <text class="tl" x="20" y="140">вся цепочка — в аудит-журнале · применённое можно откатить</text>
+    </svg>
+  </div>
+
+  <div class="arch-card reveal" style="margin-top:16px">
+    <h3 style="font-size:16px;font-weight:800;margin-bottom:4px">3 · Транскрипт звонка — в карточку попадает ссылка, не текст</h3>
+    <p style="font-size:13px;color:var(--ink-muted);margin-bottom:10px">Сырой разговор остаётся в закрытой зоне; наружу — выжимка и handle.</p>
+    <svg class="arch-svg" viewBox="0 0 960 150" role="img" aria-label="Сырой транскрипт звонка попадает в закрытую зону personal-data или внешнее хранилище; из него готовится санитизированная выжимка без имён и сырых цитат; после одобрения куратора карточка звонка получает инсайты и непрозрачную ссылку restricted; сырой текст никогда не попадает в ответы">
+      <rect class="bx bx-actor" x="20" y="30" width="150" height="84" rx="12"/>
+      <text class="tt" x="32" y="56">Транскрипт</text>
+      <text class="ts" x="32" y="76">сырой файл</text>
+      <text class="ts" x="32" y="92">звонка</text>
+      <rect class="bx bx-data" x="206" y="30" width="150" height="84" rx="12"/>
+      <text class="tt" x="218" y="56">Закрытая зона</text>
+      <text class="ts" x="218" y="76">personal-data /</text>
+      <text class="ts" x="218" y="92">внешнее хранилище</text>
+      <rect class="bx bx-data" x="392" y="30" width="150" height="84" rx="12"/>
+      <text class="tt" x="404" y="56">Санитизация</text>
+      <text class="ts" x="404" y="76">выжимка без имён</text>
+      <text class="ts" x="404" y="92">и сырых цитат</text>
+      <rect class="bx bx-actor" x="578" y="30" width="150" height="84" rx="12"/>
+      <text class="tt" x="590" y="56">Одобрение</text>
+      <text class="ts" x="590" y="76">куратор —</text>
+      <text class="ts" x="590" y="92">через очередь</text>
+      <rect class="bx bx-gw" x="764" y="30" width="176" height="84" rx="12"/>
+      <text class="tt" x="776" y="56">Карточка звонка</text>
+      <text class="ts" x="776" y="76">инсайты + ссылка</text>
+      <text class="ts" x="776" y="92">restricted://…</text>
+      <path class="fl d1" d="M170 72 H202"/>
+      <path class="fl d2" d="M356 72 H388"/>
+      <path class="fl d3" d="M542 72 H574"/>
+      <path class="fl-w d4" d="M728 72 H760"/>
+      <text class="tl" x="20" y="140">сырой текст никогда не попадает в ответы — наружу уходит только непрозрачный handle</text>
+    </svg>
+  </div>
+
+  <div class="arch-card reveal" style="margin-top:16px">
+    <h3 style="font-size:16px;font-weight:800;margin-bottom:4px">4 · Коннектор: источники обновляют vault тем же путём</h3>
+    <p style="font-size:13px;color:var(--ink-muted);margin-bottom:10px">Данные из Drive/CRM не пишутся в базу напрямую — только через ту же петлю.</p>
+    <svg class="arch-svg" viewBox="0 0 960 150" role="img" aria-label="Коннектор собирает новые ресурсы из Google Drive или CRM; они видны сотрудникам по ролям, закрытые зоны скрыты; команда обработать создаёт заявку на ингест; после одобрения worker обновляет карточки, индексы и дашборды пересобираются">
+      <rect class="bx bx-actor" x="20" y="30" width="150" height="84" rx="12"/>
+      <text class="tt" x="32" y="56">Коннектор</text>
+      <text class="ts" x="32" y="76">Drive — в демо;</text>
+      <text class="ts" x="32" y="92">CRM — контракт</text>
+      <rect class="bx bx-data" x="206" y="30" width="150" height="84" rx="12"/>
+      <text class="tt" x="218" y="56">Новые ресурсы</text>
+      <text class="ts" x="218" y="76">видны по ролям,</text>
+      <text class="ts" x="218" y="92">закрытое скрыто</text>
+      <rect class="bx bx-data" x="392" y="30" width="150" height="84" rx="12"/>
+      <text class="tt" x="404" y="56">Заявка на ингест</text>
+      <text class="ts" x="404" y="76">«обработать» —</text>
+      <text class="ts" x="404" y="92">не прямая запись</text>
+      <rect class="bx bx-actor" x="578" y="30" width="150" height="84" rx="12"/>
+      <text class="tt" x="590" y="56">Одобрение</text>
+      <text class="ts" x="590" y="76">куратор +</text>
+      <text class="ts" x="590" y="92">worker применяет</text>
+      <rect class="bx bx-gw" x="764" y="30" width="176" height="84" rx="12"/>
+      <text class="tt" x="776" y="56">Vault обновлён</text>
+      <text class="ts" x="776" y="76">карточки, индексы,</text>
+      <text class="ts" x="776" y="92">дашборды</text>
+      <path class="fl d1" d="M170 72 H202"/>
+      <path class="fl d2" d="M356 72 H388"/>
+      <path class="fl d3" d="M542 72 H574"/>
+      <path class="fl-w d4" d="M728 72 H760"/>
+      <text class="tl" x="20" y="140">в демо коннектор Google Drive синтетический (без OAuth) · HubSpot/CRM — по контракту, фаза пилота</text>
+    </svg>
+  </div>
+
+  <div class="arch-card reveal" style="margin-top:16px">
+    <h3 style="font-size:16px;font-weight:800;margin-bottom:4px">5 · Место каждой роли — выберите и посмотрите</h3>
+    <p style="font-size:13px;color:var(--ink-muted);margin-bottom:12px">Диаграмма перестраивается по действующей политике: какие зоны открыты этой роли и что она может в governance.</p>
+    <div class="roles" style="padding:0 0 6px" role="group" aria-label="Выбор роли">
+      <button class="role-tab role-pick tip-left" aria-pressed="true" data-role="emp"
+        data-tip="Любой сотрудник компании без специальных прав: смотрит общие знания, может предлагать правки и запрашивать точечный доступ"
+        aria-label="Сотрудник — любой сотрудник компании без специальных прав">Сотрудник</button>
+      <button class="role-tab role-pick" aria-pressed="false" data-role="sdr"
+        data-tip="Sales Development Rep: ищет и квалифицирует новых клиентов, готовит лиды для AE. Видит конфиденциальное только по назначенным ему записям"
+        aria-label="SDR — ищет и квалифицирует новых клиентов">SDR</button>
+      <button class="role-tab role-pick" aria-pressed="false" data-role="ae"
+        data-tip="Account Executive: ведёт сделки от квалификации до закрытия. Полные deal-детали — но только по своим и командным сделкам"
+        aria-label="AE — Account Executive, ведёт сделки до закрытия">AE</button>
+      <button class="role-tab role-pick" aria-pressed="false" data-role="hos"
+        data-tip="Руководитель отдела продаж: отвечает за весь пайплайн и команду, входит в число одобряющих заявки"
+        aria-label="Head of Sales — руководитель отдела продаж">Head of Sales</button>
+      <button class="role-tab role-pick" aria-pressed="false" data-role="revops"
+        data-tip="Revenue Operations: процессы, метрики и качество данных о выручке. Видит весь пайплайн и очередь ревью, но не одобряет"
+        aria-label="RevOps — операции выручки, метрики и процессы">RevOps</button>
+      <button class="role-tab role-pick" aria-pressed="false" data-role="mkt"
+        data-tip="Маркетолог: кампании, контент и сигналы рынка. Работает с санитизированными ROI-кейсами, экономику сделок не видит"
+        aria-label="Маркетинг — кампании, контент и сигналы рынка">Маркетинг</button>
+      <button class="role-tab role-pick" aria-pressed="false" data-role="cur"
+        data-tip="Хранитель качества базы знаний: ведёт очередь ревью, одобряет и отклоняет правки, выдаёт и отзывает гранты доступа"
+        aria-label="Куратор — хранитель качества базы знаний, одобряет правки">Куратор</button>
+      <button class="role-tab role-pick" aria-pressed="false" data-role="legal"
+        data-tip="Юрист / комплаенс: проверяет чувствительные материалы в отдельной зоне legal-review перед публикацией"
+        aria-label="Legal — юрист, проверяет чувствительные материалы">Legal</button>
+      <button class="role-tab role-pick tip-right" aria-pressed="false" data-role="adm"
+        data-tip="Технический владелец системы: полный доступ ко всем зонам; только он одобряет доступ к персональным данным"
+        aria-label="Админ — технический владелец системы">Админ</button>
+    </div>
+    <svg class="arch-svg" viewBox="0 0 960 312" role="img" aria-label="Интерактивная схема: выбранная роль обращается к MCP-шлюзу, от шлюза открыты потоки только в разрешённые этой роли зоны данных; закрытые зоны показаны пунктиром">
+      <rect class="bx bx-actor" x="20" y="105" width="210" height="110" rx="12"/>
+      <text class="tt" x="34" y="133" id="rpName">Сотрудник (viewer)</text>
+      <text class="ts" x="34" y="155" id="rpD1">читает общую зону;</text>
+      <text class="ts" x="34" y="172" id="rpD2">дальше — только через</text>
+      <text class="ts" x="34" y="189" id="rpD3">точечный грант</text>
+
+      <rect class="bx bx-gw" x="300" y="95" width="200" height="130" rx="12"/>
+      <text class="tt" x="314" y="125">MCP-шлюз</text>
+      <text class="ts" x="314" y="147">политика до ответа</text>
+      <text class="tl" x="314" y="171">RBAC + ABAC</text>
+      <path class="fl d1" d="M230 160 H296"/>
+
+      <rect id="rpz-broad" class="z-ok" x="640" y="22" width="300" height="44" rx="10"/>
+      <text class="tl" x="654" y="49">broad — общая</text>
+      <text class="tl" x="926" y="49" text-anchor="end" id="rps-broad">✓ полный</text>
+      <rect id="rpz-sconf" class="z-no" x="640" y="78" width="300" height="44" rx="10"/>
+      <text class="tl" x="654" y="105">sales-confidential</text>
+      <text class="tl" x="926" y="105" text-anchor="end" id="rps-sconf">—</text>
+      <rect id="rpz-pdata" class="z-no" x="640" y="134" width="300" height="44" rx="10"/>
+      <text class="tl" x="654" y="161">personal-data</text>
+      <text class="tl" x="926" y="161" text-anchor="end" id="rps-pdata">—</text>
+      <rect id="rpz-legal" class="z-no" x="640" y="190" width="300" height="44" rx="10"/>
+      <text class="tl" x="654" y="217">legal-review</text>
+      <text class="tl" x="926" y="217" text-anchor="end" id="rps-legal">—</text>
+      <rect id="rpz-ops" class="z-no" x="640" y="246" width="300" height="44" rx="10"/>
+      <text class="tl" x="654" y="273">служебные зоны</text>
+      <text class="tl" x="926" y="273" text-anchor="end" id="rps-ops">—</text>
+
+      <path id="rpp-broad" class="fl d2" d="M500 160 C580 160 580 44 636 44"/>
+      <path id="rpp-sconf" class="fl d2" d="M500 160 C580 160 580 100 636 100"/>
+      <path id="rpp-pdata" class="fl d2" d="M500 160 C580 160 580 156 636 156"/>
+      <path id="rpp-legal" class="fl d2" d="M500 160 C580 160 580 212 636 212"/>
+      <path id="rpp-ops" class="fl d2" d="M500 160 C580 160 580 268 636 268"/>
+    </svg>
+    <div class="clr-legend" style="margin:12px 0 0;box-shadow:none" role="note" aria-label="Легенда зон на диаграмме">
+      <span class="cl-t">Зоны справа:</span>
+      <span><i class="cl-sw" style="background:#E9F5EC;border-color:#B7DFC4"></i>открыта роли полностью</span>
+      <span><i class="cl-sw" style="background:#E3F1F9;border-color:#A9CFE4"></i>частично — только свои / назначенные</span>
+      <span><i class="cl-sw cl-dash"></i>закрыта для роли</span>
+    </div>
+    <div class="gchips" id="rpChips" aria-live="polite">
+      <span class="gchip on" data-act="ask">✓ спрашивает</span>
+      <span class="gchip on" data-act="prop">✓ предлагает правки</span>
+      <span class="gchip off" data-act="queue">— очередь ревью</span>
+      <span class="gchip off" data-act="appr">— одобряет и отзывает</span>
+      <span class="gchip off" data-act="pd">— грант personal-data</span>
+    </div>
+    <p class="role-note" id="rpNote" aria-live="polite"><b>Сотрудник.</b> Видит только общую зону. Может запросить точечный доступ — одобрение даёт грант на одну компанию с ограниченным сроком.</p>
+  </div>
+</section>
+
+<!-- GOVERNANCE -->
+<section id="gov">
+  <div class="sec-head reveal"><span class="sec-no">06</span><h2>Никто не редактирует базу напрямую</h2></div>
+  <p class="sec-lede reveal">Любое изменение знаний — предложение, которое проходит ревью. Пишет в карточки
+    <b>единственный процесс</b>, транзакционно и с возможностью отката. Нажмите на шаг, чтобы увидеть детали.</p>
+  <div class="gov reveal">
+    <div class="steps" role="tablist" aria-label="Шаги governance-петли">
+      <button class="step" role="tab" aria-selected="true" data-step="0"><span class="n">Шаг 1</span><span class="t" style="display:block">Предложение</span><span class="d" style="display:block">сотрудник флагает проблему</span></button>
+      <button class="step" role="tab" aria-selected="false" data-step="1"><span class="n">Шаг 2</span><span class="t" style="display:block">Очередь ревью</span><span class="d" style="display:block">видят только ревьюеры</span></button>
+      <button class="step" role="tab" aria-selected="false" data-step="2"><span class="n">Шаг 3</span><span class="t" style="display:block">Одобрение</span><span class="d" style="display:block">куратор / админ, со сроком</span></button>
+      <button class="step" role="tab" aria-selected="false" data-step="3"><span class="n">Шаг 4</span><span class="t" style="display:block">Применение</span><span class="d" style="display:block">single-writer, транзакционно</span></button>
+      <button class="step" role="tab" aria-selected="false" data-step="4"><span class="n">Шаг 5</span><span class="t" style="display:block">Откат / отзыв</span><span class="d" style="display:block">любое решение обратимо</span></button>
+    </div>
+    <div class="gov-detail" id="govDetail" aria-live="polite">
+      <b>Предложение.</b> Заметил устаревшее, ошибку или персональные данные не на месте — команда в чате создаёт
+      формальное предложение: пометить устаревшим, запросить редактуру, запросить доступ или обработать файл из
+      подключённого источника. Прямой правки базы нет ни у кого.
+    </div>
+    <div class="gov-foot">
+      <span class="chip tip-help tip-left" tabindex="0" data-tip="Каждая запись журнала криптографически связана с предыдущей: незаметно изменить или удалить прошлое решение нельзя">аудит: хеш-цепочка</span>
+      <span class="chip tip-help" tabindex="0" data-tip="Если применение правки сорвалось, карточка возвращается к исходным байтам — половинчатых состояний не бывает">откат к точным байтам</span>
+      <span class="chip tip-help" tabindex="0" data-tip="Выданный доступ живёт ограниченный срок (по умолчанию 30 дней), отзывается одной командой и гаснет сам">грант: TTL + отзыв</span>
+      <span>Каждый шаг фиксируется в защищённом от подмены журнале — видно, кто что видел, решал и менял.</span>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST -->
+<section id="trust">
+  <div class="sec-head reveal"><span class="sec-no">07</span><h2>Гарантии, которые можно проверить</h2></div>
+  <p class="sec-lede reveal">Не обещания, а свойства конструкции — каждое покрыто автотестами и проверено
+    независимым adversarial-ревью.</p>
+  <div class="guar">
+    <div class="g-item reveal"><div class="gi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+      <div><h3>Fail-closed по умолчанию</h3><p>Любая неопределённость закрывает доступ, а не открывает: неизвестная зона — карантин, битый срок гранта — грант гаснет.</p></div></div>
+    <div class="g-item reveal"><div class="gi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+      <div><h3>Персональные данные — только handle</h3><p>Сырые транскрипты в зоне персональных данных запрещены и проверяются автоматически; наружу уходит непрозрачная ссылка.</p></div></div>
+    <div class="g-item reveal"><div class="gi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h12l4 4v12H4z"/><path d="M14 4v4h4M8 13h8M8 17h6"/></svg></div>
+      <div><h3>Аудит, защищённый от подмены</h3><p>Журнал решений — хеш-цепочка: изменить прошлое незаметно нельзя. Видно, кто что видел и одобрял.</p></div></div>
+    <div class="g-item reveal"><div class="gi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+      <div><h3>Проверено атакующим ревью</h3><p>Независимое adversarial-ревью (no-leak, prompt-injection, пути записи): 10 подтверждённых находок — все исправлены и закрыты тестами.</p></div></div>
+  </div>
+
+  <div class="band reveal">
+    <div class="bstat tip-help tip-left" tabindex="0" data-tip="Прогон python-тестов от 2026-07-02: роли, no-leak, prompt-injection, транзакционная запись, откаты, гранты"><div class="v num" data-count="378">0</div><div class="l">автотестов, TDD ·<br>все зелёные</div></div>
+    <div class="bstat tip-help" tabindex="0" data-tip="9 инструментов чтения (брифы, риски, дайджесты), 3 предложения (флаг, редактура, доступ) и 5 governance-операций"><div class="v num" data-count="17">0</div><div class="l">ролевых инструментов:<br>чтение · предложение · ревью</div></div>
+    <div class="bstat tip-help" tabindex="0" data-tip="Команды Rocket.Chat-моста: вопросы, смена роли, заявки, одобрения, x-ray карточки, Drive-ингест, экспорт в файл"><div class="v num" data-count="28">0</div><div class="l">команд в чате —<br>без установки клиента</div></div>
+    <div class="bstat tip-help" tabindex="0" data-tip="Architecture Decision Records: почему принято каждое значимое решение — контекст, последствия, отвергнутые альтернативы"><div class="v num" data-count="16">0</div><div class="l">архитектурных решений<br>зафиксированы (ADR)</div></div>
+    <div class="bstat tip-help tip-right" tabindex="0" data-tip="Роли, зоны, владение, источники полей ответа, скоринг, коннекторы — редактирование JSON, валидируется health-check"><div class="v num" data-count="9">0</div><div class="l">JSON-контрактов —<br>настройка без кода</div></div>
+  </div>
+</section>
+
+<!-- READINESS -->
+<section id="ready">
+  <div class="sec-head reveal"><span class="sec-no">08</span><h2>Готовность: демо — сегодня, пилот — решение за вами</h2></div>
+  <p class="sec-lede reveal">Демо-контур полностью готов: сценарии отрепетированы, preflight-проверки зелёные.
+    Дальше — четыре последовательных решения, каждое опирается на результат предыдущего.</p>
+  <div class="ready">
+    <div class="mx-card reveal">
+      <h3 style="font-size:16px;font-weight:800;margin-bottom:6px">Три способа показать и использовать</h3>
+      <div class="track"><span class="tn">01</span><div><h4>Rocket.Chat — общий канал для всей команды</h4>
+        <p>Любой сотрудник задаёт вопрос в чате с телефона или браузера — без установки. Роли, гранты, ревью-очередь — всё в диалоге.</p></div></div>
+      <div class="track"><span class="tn">02</span><div><h4>MCP — подключение к ИИ-клиенту</h4>
+        <p>Те же права в Claude/совместимых клиентах; роль определяет сервер. Мульти-ролевой конфиг разворачивается одной командой.</p></div></div>
+      <div class="track"><span class="tn">03</span><div><h4>Obsidian — прямая работа со знаниями</h4>
+        <p>База — обычные Markdown-файлы: открываются локально, граф связей, никакой привязки к вендору. Данные всегда ваши.</p></div></div>
+    </div>
+    <div class="mx-card reveal">
+      <h3 style="font-size:16px;font-weight:800;margin-bottom:6px">Путь к пилоту — четыре решения, ни одного прыжка веры</h3>
+      <div class="track"><span class="tn">01</span><div><h4>Живое демо — 15 минут</h4>
+        <p>Ролевой контраст, выдача и отзыв доступа, управляемая правка — на синтетических данных, в вашем чате. Обязательств ноль.</p></div></div>
+      <div class="track"><span class="tn">02</span><div><h4>Выбираем один срез данных и группы доступа</h4>
+        <p>Не «вся CRM», а один контролируемый кусок: например, сделки одной команды. Вы решаете, кто и что видит, — мы переносим это в конфигурацию; пилотные данные живут вне общего репозитория, проверки границ уже действуют.</p></div></div>
+      <div class="track"><span class="tn">03</span><div><h4>Google SSO и ограниченный пилот</h4>
+        <p>Роли — из ваших корпоративных групп, MFA для одобряющих; дизайн готов, ядро уже проверяет права на каждый запрос. Узкий круг пользователей работает в обычном чате.</p></div></div>
+      <div class="track"><span class="tn">04</span><div><h4>Меряем и решаем</h4>
+        <p>Реальные before/after по времени на подготовку и качеству ответов — те цифры, которые в этой презентации честно отсутствуют. По ним — решение о масштабировании.</p></div></div>
+      <p style="font-size:12.5px;color:var(--ink-muted);margin-top:12px">Стоимость входа минимальна: ядро — Python без
+        внешних зависимостей, без сервера и БД; знания — переносимый Markdown.</p>
+    </div>
+  </div>
+</section>
+
+<!-- GLOSSARY -->
+<section id="gloss">
+  <div class="sec-head reveal"><span class="sec-no">09</span><h2>Словарь — термины простыми словами</h2></div>
+  <p class="sec-lede reveal">Встретили выше незнакомое слово — вот что оно значит. Нового содержания здесь нет,
+    только расшифровки.</p>
+  <dl class="gloss reveal">
+    <div class="gterm"><dt>Vault <span class="en">база знаний</span></dt>
+      <dd>Папка обычных Markdown-файлов-карточек, связанных ссылками. Открывается любым редактором и без нашей системы — данные всегда ваши.</dd></div>
+    <div class="gterm"><dt>Карточка</dt>
+      <dd>Страница знаний об одной сущности: компании, сделке, звонке, лиде. У каждого факта — источник и дата.</dd></div>
+    <div class="gterm"><dt>Зона данных</dt>
+      <dd>«Сейф» внутри базы со своими правилами доступа: общая, sales-confidential (экономика сделок), персональные данные, legal-review, служебные.</dd></div>
+    <div class="gterm"><dt>Роль <span class="en">RBAC</span></dt>
+      <dd>Набор прав, привязанный к функции сотрудника. Определяется сервером при входе — пользователь не может «выбрать» себе больше прав.</dd></div>
+    <div class="gterm"><dt>«Свои / назначенные» <span class="en">ABAC</span></dt>
+      <dd>Уточнение прав по атрибутам записи: AE видит конфиденциальное только по своим и командным сделкам, SDR — только по назначенным ему.</dd></div>
+    <div class="gterm"><dt>MCP</dt>
+      <dd>Открытый стандарт-«разъём», по которому ИИ-клиенты (Claude и совместимые) подключаются к внешним данным и инструментам.</dd></div>
+    <div class="gterm"><dt>Шлюз <span class="en">MCP-шлюз</span></dt>
+      <dd>Единственная дверь между людьми/ИИ и базой. Проверяет права до сборки ответа и умеет только читать — писать он не может физически.</dd></div>
+    <div class="gterm"><dt>Worker <span class="en">процесс-писатель</span></dt>
+      <dd>Единственный процесс, которому разрешено менять базу. Применяет только одобренные заявки; если применение сорвалось — возвращает всё как было.</dd></div>
+    <div class="gterm"><dt>Governance-петля</dt>
+      <dd>Путь любой правки знаний: предложение → очередь ревью → одобрение → применение → возможный откат. Прямой правки базы нет ни у кого.</dd></div>
+    <div class="gterm"><dt>Грант</dt>
+      <dd>Временный точечный доступ, выданный по заявке, — например, к одной компании. Отзывается одной командой, по сроку гаснет сам.</dd></div>
+    <div class="gterm"><dt>TTL <span class="en">срок жизни</span></dt>
+      <dd>Время, которое живёт грант (по умолчанию 30 дней). После — доступ пропадает автоматически, продление требует нового одобрения.</dd></div>
+    <div class="gterm"><dt>Fail-closed</dt>
+      <dd>Принцип «при сомнении — закрыть»: всё непонятное (неизвестная зона, битый срок гранта) система прячет, а не показывает.</dd></div>
+    <div class="gterm"><dt>Handle <span class="en">restricted://…</span></dt>
+      <dd>Непрозрачная ссылка вместо самих персональных данных: в ответе видно, что данные существуют, но не их содержимое.</dd></div>
+    <div class="gterm"><dt>Санитизированный</dt>
+      <dd>Очищенный от имён, контактов и сырых цитат — безопасен для широкой аудитории; например, ROI-кейс для маркетинга.</dd></div>
+    <div class="gterm"><dt>Аудит-цепочка</dt>
+      <dd>Журнал всех решений, где каждая запись криптографически сцеплена с предыдущей: незаметно изменить или удалить прошлое нельзя.</dd></div>
+    <div class="gterm"><dt>SSO <span class="en">единый вход</span></dt>
+      <dd>Корпоративный вход (например, Google): из него система узнаёт, кто спрашивает и какая у него роль, — на каждый запрос.</dd></div>
+    <div class="gterm"><dt>Break-glass</dt>
+      <dd>Аварийный прямой доступ к файлам у 2–3 названных операторов. Каждый такой случай фиксируется в аудите.</dd></div>
+    <div class="gterm"><dt>Пилот</dt>
+      <dd>Ограниченное внедрение на одном реальном срезе данных и узком круге пользователей — с измерением «до/после» перед масштабированием.</dd></div>
+  </dl>
+</section>
+
+<!-- CLOSING -->
+<div class="close-band reveal">
+  <div class="q">Знания продаж работают на каждого — <em class="acc">не утекая</em> и не выдумывая.</div>
+  <p style="margin-bottom:0">Живое демо занимает 10–15 минут: ролевой контраст, выдача и отзыв доступа, управляемое обновление базы.
+    Всё, что вы видели выше, — работающая система, а не концепт.</p>
+</div>
+
+<footer>
+  <span>SalesWiki · презентация для руководства</span>
+  <span>данные проверены по состоянию на 2026-07-02 · демо-контент синтетический</span>
+</footer>
+
+</div>
+
+<script>
+document.documentElement.className += ' js';
+(function(){
+  'use strict';
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* scroll progress */
+  var prog = document.getElementById('progress');
+  function onScroll(){
+    var h = document.documentElement;
+    var max = h.scrollHeight - h.clientHeight;
+    prog.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + '%';
+  }
+  document.addEventListener('scroll', onScroll, {passive:true}); onScroll();
+
+  /* reveal on scroll */
+  var els = document.querySelectorAll('.reveal');
+  function showAll(){ els.forEach(function(e){ e.classList.add('in'); }); }
+  if (!('IntersectionObserver' in window) || reduced) { showAll(); }
+  else {
+    var io = new IntersectionObserver(function(en){
+      en.forEach(function(x){ if(x.isIntersecting){ x.target.classList.add('in'); io.unobserve(x.target); } });
+    }, {threshold:.12, rootMargin:'0px 0px -5% 0px'});
+    els.forEach(function(e){ io.observe(e); });
+    setTimeout(showAll, 1800); // safety net
+  }
+
+  /* animated counters */
+  var counted = new WeakSet();
+  function animate(el){
+    if (counted.has(el)) return; counted.add(el);
+    var target = parseInt(el.getAttribute('data-count'), 10);
+    if (reduced) { el.childNodes[0].nodeValue = target; return; }
+    var start = null, dur = 900;
+    function tick(ts){
+      if (!start) start = ts;
+      var p = Math.min((ts - start) / dur, 1);
+      el.childNodes[0].nodeValue = Math.round(target * (1 - Math.pow(1 - p, 3)));
+      if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+  var nums = document.querySelectorAll('[data-count]');
+  if ('IntersectionObserver' in window && !reduced) {
+    var nio = new IntersectionObserver(function(en){
+      en.forEach(function(x){ if(x.isIntersecting){ animate(x.target); nio.unobserve(x.target); } });
+    }, {threshold:.4});
+    nums.forEach(function(e){ nio.observe(e); });
+    setTimeout(function(){ nums.forEach(animate); }, 2200); // safety net
+  } else { nums.forEach(function(e){ e.childNodes[0].nodeValue = e.getAttribute('data-count'); }); }
+
+  /* role simulator tabs */
+  function tabGroup(tabSel, activate){
+    var tabs = Array.prototype.slice.call(document.querySelectorAll(tabSel));
+    tabs.forEach(function(tab, i){
+      tab.addEventListener('click', function(){ activate(tabs, tab); });
+      tab.addEventListener('keydown', function(e){
+        var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+        if (!d) return;
+        e.preventDefault();
+        var next = tabs[(i + d + tabs.length) % tabs.length];
+        next.focus(); activate(tabs, next);
+      });
+    });
+  }
+  tabGroup('.role-tab', function(tabs, active){
+    tabs.forEach(function(t){
+      var on = t === active;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      var panel = document.getElementById(t.getAttribute('aria-controls'));
+      if (panel) panel.hidden = !on;
+    });
+  });
+
+  /* governance stepper */
+  var govTexts = [
+    '<b>Предложение.</b> Заметил устаревшее, ошибку или персональные данные не на месте — команда в чате создаёт формальное предложение: пометить устаревшим, запросить редактуру, запросить доступ или обработать файл из подключённого источника. Прямой правки базы нет ни у кого.',
+    '<b>Очередь ревью.</b> Предложение попадает в защищённую очередь — её видят только роли-ревьюеры (куратор, админ). Одобряющие получают уведомление; ничего не применяется автоматически.',
+    '<b>Одобрение.</b> Куратор одобряет или отклоняет с причиной. Одобрение запроса доступа выдаёт точечный грант — на одну компанию, с ограниченным сроком (по умолчанию 30 дней), который задаёт сам одобряющий.',
+    '<b>Применение.</b> Отдельный единственный процесс-писатель применяет одобренное транзакционно: не получилось — карточка возвращается к исходным байтам, сбойное уходит в отдельную очередь, а не теряется.',
+    '<b>Откат и отзыв.</b> Применённую правку можно откатить, выданный доступ — отозвать одной командой; по сроку грант гаснет сам. История только дописывается — прошлое не переписывается.'
+  ];
+  var govDetail = document.getElementById('govDetail');
+  tabGroup('.step', function(steps, active){
+    steps.forEach(function(s){ s.setAttribute('aria-selected', s === active ? 'true' : 'false'); });
+    govDetail.innerHTML = govTexts[parseInt(active.getAttribute('data-step'), 10)];
+  });
+
+  /* role-place diagram (mirrors schemas/access-policy.json) */
+  var FULL = '✓ полный', NONE = '—';
+  var ROLE_DATA = {
+    emp:   {name:'Сотрудник (viewer)', d:['читает общую зону;','дальше — только через','точечный грант'],
+            z:{broad:FULL}, a:{ask:1,prop:1},
+            note:'<b>Сотрудник.</b> Видит только общую зону. Может запросить точечный доступ — одобрение даёт грант на одну компанию с ограниченным сроком.'},
+    sdr:   {name:'SDR (sales)', d:['sales-confidential —','только назначенные','ему лиды и сделки'],
+            z:{broad:FULL, sconf:'назначенные'}, a:{ask:1,prop:1},
+            note:'<b>SDR.</b> Конфиденциальное открыто точечно: только по назначенным записям (ABAC-атрибут «assigned»), не по всему пайплайну.'},
+    ae:    {name:'Account Executive', d:['сделки — только свои','или своей команды','(ABAC owner/team)'],
+            z:{broad:FULL, sconf:'свои / team'}, a:{ask:1,prop:1},
+            note:'<b>AE.</b> Полные deal-детали (цены, скидки, конкуренты) — но только по своим/командным сделкам. Чужая сделка для него закрыта.'},
+    hos:   {name:'Head of Sales', d:['весь пайплайн +','одобрение заявок','команды'],
+            z:{broad:FULL, sconf:FULL}, a:{ask:1,prop:1,queue:1,appr:1},
+            note:'<b>Head of Sales.</b> Видит все сделки без ABAC-ограничений и входит в число одобряющих: очередь ревью, одобрение и отзыв — его инструменты.'},
+    revops:{name:'RevOps', d:['весь пайплайн и','метрики; очередь —','только просмотр'],
+            z:{broad:FULL, sconf:FULL}, a:{ask:1,prop:1,queue:1},
+            note:'<b>RevOps.</b> Полное чтение пайплайна и просмотр очереди ревью — но без права одобрять: разделение «видит» и «решает».'},
+    mkt:   {name:'Маркетинг', d:['сигналы, кампании,','контент-идеи —','без цен и скидок'],
+            z:{broad:FULL}, a:{ask:1,prop:1},
+            note:'<b>Маркетинг.</b> Работает с сигналами рынка и санитизированными ROI-кейсами; экономика сделок не видна никогда. Активный автор предложений (флаги, редактура).'},
+    cur:   {name:'Куратор', d:['главный ревьюер:','одобряет, отзывает,','выдаёт гранты'],
+            z:{broad:FULL, sconf:FULL}, a:{ask:1,prop:1,queue:1,appr:1},
+            note:'<b>Куратор.</b> Хозяин governance-петли: очередь ревью, одобрение/отклонение с причиной, гранты с TTL и их отзыв. Прямо в карточки не пишет — применяет worker.'},
+    legal: {name:'Legal-ревьюер', d:['общая зона +','legal-review для','проверки материалов'],
+            z:{broad:FULL, legal:FULL}, a:{ask:1,prop:1},
+            note:'<b>Legal.</b> Единственная роль с зоной legal-review — проверка чувствительных материалов. Deal-экономика и personal-data закрыты.'},
+    adm:   {name:'Админ / Ops', d:['все зоны; только он','одобряет доступ к','personal-data'],
+            z:{broad:FULL, sconf:FULL, pdata:FULL, legal:FULL, ops:FULL}, a:{ask:1,prop:1,queue:1,appr:1,pd:1},
+            note:'<b>Админ.</b> Полный доступ, включая personal-data и служебные зоны. Только его одобрение открывает грант на персональные данные — и даже это точечно и со сроком.'}
+  };
+  var ZONE_IDS = ['broad','sconf','pdata','legal','ops'];
+  var ACT_LABELS = {ask:'спрашивает', prop:'предлагает правки', queue:'очередь ревью', appr:'одобряет и отзывает', pd:'грант personal-data'};
+  function setRole(key){
+    var r = ROLE_DATA[key];
+    document.getElementById('rpName').textContent = r.name;
+    ['rpD1','rpD2','rpD3'].forEach(function(id,i){ document.getElementById(id).textContent = r.d[i] || ''; });
+    ZONE_IDS.forEach(function(z){
+      var st = r.z[z];
+      var zone = document.getElementById('rpz-'+z), status = document.getElementById('rps-'+z), path = document.getElementById('rpp-'+z);
+      zone.setAttribute('class', st ? (st === FULL ? 'z-ok' : 'z-abac') : 'z-no');
+      status.textContent = st || NONE;
+      path.style.display = st ? '' : 'none';
+    });
+    document.querySelectorAll('#rpChips .gchip').forEach(function(ch){
+      var on = !!r.a[ch.getAttribute('data-act')];
+      ch.className = 'gchip ' + (on ? 'on' : 'off');
+      ch.textContent = (on ? '✓ ' : '— ') + ACT_LABELS[ch.getAttribute('data-act')];
+    });
+    document.getElementById('rpNote').innerHTML = r.note;
+  }
+  var picks = Array.prototype.slice.call(document.querySelectorAll('.role-pick'));
+  picks.forEach(function(btn, i){
+    btn.addEventListener('click', function(){
+      picks.forEach(function(b){ b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'); });
+      setRole(btn.getAttribute('data-role'));
+    });
+    btn.addEventListener('keydown', function(e){
+      var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+      if (!d) return;
+      e.preventDefault();
+      var next = picks[(i + d + picks.length) % picks.length];
+      next.focus(); next.click();
+    });
+  });
+  setRole('emp');
+})();
+</script>
+</body>
+</html>

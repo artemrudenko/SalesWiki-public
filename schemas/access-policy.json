@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "description": "RBAC + ABAC access policy for the permissioned-knowledge MVP. RBAC sets the boundaries a role may reach; attribute_constraints narrow sales-confidential by ownership/team. The gateway enforces this before any retrieval output. See docs/engineering/permissioned-knowledge-architecture.md.",
+  "updated": "2026-06-03",
+  "operations": ["read", "summarize", "propose", "approve", "apply", "export", "writeback"],
+  "rules": {
+    "personal_data_default": "deny",
+    "personal_data_unauthorized_behavior": "opaque-handle",
+    "export_requires_approval": ["sales-confidential", "personal-data", "legal-review"],
+    "writeback_requires_approval": true,
+    "approver_roles": ["curator", "hos", "admin"],
+    "reviewer_roles": ["curator", "hos", "revops", "admin"]
+  },
+  "roles": [
+    {"id": "employee-viewer", "label": "Broad employee viewer", "boundaries": ["broad"]},
+    {"id": "sales", "label": "Sales (SDR)", "boundaries": ["broad", "sales-confidential"], "attribute_constraints": {"sales-confidential": "assigned"}},
+    {"id": "sales-owner", "label": "AE / sales owner", "boundaries": ["broad", "sales-confidential"], "attribute_constraints": {"sales-confidential": "owned_or_team"}},
+    {"id": "hos", "label": "Head of Sales", "boundaries": ["broad", "sales-confidential"]},
+    {"id": "revops", "label": "RevOps", "boundaries": ["broad", "sales-confidential"]},
+    {"id": "marketing", "label": "Marketing", "boundaries": ["broad"]},
+    {"id": "curator", "label": "Curator", "boundaries": ["broad", "sales-confidential"]},
+    {"id": "legal-reviewer", "label": "Legal / reviewer", "boundaries": ["broad", "legal-review"]},
+    {"id": "admin", "label": "Admin / Ops", "boundaries": ["broad", "sales-confidential", "personal-data", "legal-review", "operational-state", "derived-indexes"]}
+  ],
+  "proposal_operations": ["create_manual_intake", "flag_stale_or_wrong", "stage_source"]
+}

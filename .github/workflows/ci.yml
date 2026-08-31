@@ -1,0 +1,47 @@
+name: CI
+
+# Enforces the gates AGENTS.md describes ("treat a non-zero exit as a failing
+# test"): the test suite, structural health check, public-release review and
+# end-to-end demo smoke.
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install the MCP SDK (only extra dependency)
+        run: |
+          python -m venv .venv
+          .venv/bin/pip install --upgrade pip
+          .venv/bin/pip install -r requirements.txt
+
+      - name: Health check (structure + contracts)
+        run: python3 scripts/health_check.py
+
+      - name: Public release review
+        run: python3 scripts/public_release_review.py
+
+      - name: Test suite (stdlib interpreter)
+        run: python3 -m unittest discover -s tests
+        env:
+          RC_LLM_SUMMARY: "0"
+          RC_LLM_RECS: "0"
+
+      - name: Test suite (venv — also runs the MCP protocol test)
+        run: .venv/bin/python -m unittest discover -s tests
+        env:
+          RC_LLM_SUMMARY: "0"
+          RC_LLM_RECS: "0"
+
+      - name: Demo end-to-end smoke
+        run: python3 scripts/demo_dryrun.py

@@ -1,0 +1,12 @@
+graph LR
+    C["MCP clients<br/>Claude, Slackbot, M365 agent"] -->|"call SalesWiki tools"| S["SalesWiki MCP gateway"]
+    R["Rocket.Chat<br/>or a custom channel"] --> A["Thin provider adapter"]
+    A --> T["Shared chat runtime"]
+    T --> S
+    S --> K["Policy and knowledge core"]
+    K --> V["Markdown vault"]
+    O["Controlled ingest runner"] -->|"call vendor tools"| M["Official vendor MCP<br/>HubSpot, Google, Slack"]
+    M --> X["External systems"]
+    O --> P["Staged evidence or proposal"]
+    P --> W["Approval and single writer"]
+    W --> V

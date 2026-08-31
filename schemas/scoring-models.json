@@ -1,0 +1,151 @@
+{
+  "schema_version": 1,
+  "active_version": "v1",
+  "score_bands": [
+    {
+      "id": "low",
+      "label": "Low",
+      "min": 0,
+      "max": 49,
+      "meaning": "Low priority",
+      "recommended_action": "Pause, disqualify or monitor only if strategic."
+    },
+    {
+      "id": "nurture",
+      "label": "Nurture",
+      "min": 50,
+      "max": 69,
+      "meaning": "Monitor",
+      "recommended_action": "Keep warm and wait for stronger signal."
+    },
+    {
+      "id": "warm",
+      "label": "Warm",
+      "min": 70,
+      "max": 84,
+      "meaning": "Prioritize",
+      "recommended_action": "Act when trigger and message are clear."
+    },
+    {
+      "id": "hot",
+      "label": "Hot",
+      "min": 85,
+      "max": 100,
+      "meaning": "Act now",
+      "recommended_action": "Immediate owner action."
+    }
+  ],
+  "confidence_rules": [
+    {
+      "id": "high",
+      "meaning": "CRM data plus recent call or source evidence."
+    },
+    {
+      "id": "medium",
+      "meaning": "Good public/source evidence but limited direct interaction."
+    },
+    {
+      "id": "low",
+      "meaning": "Weak inference, stale data or missing key fields."
+    }
+  ],
+  "models": {
+    "inbound-lead": {
+      "version": "v1",
+      "status": "active",
+      "owner": "sales-ops",
+      "applies_to": "lead",
+      "model_ref": "scoring-models-v1/inbound-lead",
+      "description": "Scores new inbound contacts before an opportunity exists.",
+      "dimensions": [
+        {"id": "icp-fit", "label": "ICP fit", "weight": 20, "description": "Fit against target segment and company profile."},
+        {"id": "persona-fit", "label": "Persona fit", "weight": 10, "description": "Role relevance and buying influence."},
+        {"id": "intent-strength", "label": "Intent strength", "weight": 25, "description": "Form intent, direct request, repeat visits or explicit need."},
+        {"id": "pain-evidence", "label": "Pain evidence", "weight": 15, "description": "Known pain from message, source or call."},
+        {"id": "timing", "label": "Timing", "weight": 10, "description": "Urgency, initiative window or event timing."},
+        {"id": "access-contact-quality", "label": "Access/contact quality", "weight": 10, "description": "Reachable, valid and actionable contact path."},
+        {"id": "deal-potential", "label": "Deal potential", "weight": 10, "description": "Likely business value and commercial fit."}
+      ],
+      "penalties": [
+        {"id": "invalid-contact", "type": "subtract", "value": 40, "condition": "Fake or invalid contact."},
+        {"id": "non-icp", "type": "subtract", "value": 25, "condition": "Non-ICP geography or industry unless strategic."},
+        {"id": "spam", "type": "disqualify", "condition": "Student, vendor or spam."}
+      ],
+      "default_next_action": "Create qualification task and fill missing evidence."
+    },
+    "outbound-lead": {
+      "version": "v1",
+      "status": "active",
+      "owner": "sales-ops",
+      "applies_to": "lead",
+      "model_ref": "scoring-models-v1/outbound-lead",
+      "description": "Scores cold/warm outbound targets and outside-pipeline accounts.",
+      "dimensions": [
+        {"id": "icp-fit", "label": "ICP fit", "weight": 25, "description": "Fit against target account profile."},
+        {"id": "persona-fit", "label": "Persona fit", "weight": 15, "description": "Buyer role and influence."},
+        {"id": "trigger-strength", "label": "Trigger strength", "weight": 20, "description": "Recent news, event, hiring, tech or business trigger."},
+        {"id": "pain-hypothesis", "label": "Pain hypothesis", "weight": 10, "description": "Credible inferred pain."},
+        {"id": "account-priority", "label": "Account priority", "weight": 10, "description": "Strategic account value or segment importance."},
+        {"id": "reachability", "label": "Reachability", "weight": 10, "description": "Clean contact path and channel availability."},
+        {"id": "relationship-warm-path", "label": "Relationship/warm path", "weight": 10, "description": "Intro, event contact or previous interaction."}
+      ],
+      "penalties": [
+        {"id": "no-trigger", "type": "cap", "value": 65, "condition": "No relevant trigger and no strategic account reason."},
+        {"id": "unclear-buyer-role", "type": "cap", "value": 70, "condition": "Buyer role is unclear."}
+      ],
+      "default_next_action": "Create outreach task only if trigger and message are clear."
+    },
+    "qualification-mql": {
+      "version": "v1",
+      "status": "active",
+      "owner": "sales-ops",
+      "applies_to": "lead",
+      "model_ref": "scoring-models-v1/qualification-mql",
+      "description": "Scores MQL and qualification-stage leads.",
+      "dimensions": [
+        {"id": "icp-fit", "label": "ICP fit", "weight": 15, "description": "Fit against target profile."},
+        {"id": "intent-strength", "label": "Intent strength", "weight": 20, "description": "Strength of explicit or behavioral intent."},
+        {"id": "pain-evidence", "label": "Pain evidence", "weight": 15, "description": "Confirmed business pain."},
+        {"id": "timing", "label": "Timing", "weight": 15, "description": "Urgency and project timing."},
+        {"id": "stakeholder-quality", "label": "Stakeholder quality", "weight": 10, "description": "Buyer relevance and seniority."},
+        {"id": "engagement-history", "label": "Engagement history", "weight": 10, "description": "Relevant touches, replies or meetings."},
+        {"id": "next-step-clarity", "label": "Next step clarity", "weight": 10, "description": "Clear owner, action and due date."},
+        {"id": "risk-noise", "label": "Risk/noise", "weight": 5, "description": "Noise, bad-fit or blocker adjustment."}
+      ],
+      "penalties": [
+        {"id": "no-next-step-30d", "type": "cap", "value": 65, "condition": "No next step for 30+ days."},
+        {"id": "no-confirmed-pain", "type": "cap", "value": 75, "condition": "No confirmed pain."}
+      ],
+      "default_next_action": "Create qualification follow-up with owner and due date."
+    },
+    "deal": {
+      "version": "v1",
+      "status": "active",
+      "owner": "sales-ops",
+      "applies_to": "deal",
+      "model_ref": "scoring-models-v1/deal",
+      "description": "Scores open opportunities and deal risk.",
+      "dimensions": [
+        {"id": "icp-fit", "label": "ICP fit", "weight": 10, "description": "Account fit."},
+        {"id": "pain-business-case", "label": "Pain/business case", "weight": 20, "description": "Business problem and value clarity."},
+        {"id": "champion-strength", "label": "Champion strength", "weight": 15, "description": "Internal support and influence."},
+        {"id": "economic-buyer-access", "label": "Economic buyer access", "weight": 15, "description": "Access to budget/authority."},
+        {"id": "timing-urgency", "label": "Timing/urgency", "weight": 10, "description": "Deadline or compelling event."},
+        {"id": "next-step-clarity", "label": "Next step clarity", "weight": 10, "description": "Clear owner/action/date."},
+        {"id": "competitive-position", "label": "Competitive position", "weight": 10, "description": "Differentiation and competitor risk."},
+        {"id": "commercial-fit", "label": "Commercial fit", "weight": 10, "description": "Budget, packaging and implementation fit."}
+      ],
+      "penalties": [
+        {"id": "no-next-step", "type": "cap", "value": 60, "condition": "No next step."},
+        {"id": "no-buyer-access", "type": "cap", "value": 70, "condition": "No economic buyer access."},
+        {"id": "competitor-preferred", "type": "cap", "value": 75, "condition": "Active competitor preferred unless differentiation evidence exists."}
+      ],
+      "default_next_action": "Create deal next-step task within SLA."
+    }
+  },
+  "change_control": {
+    "editable_by_agent": false,
+    "requires_user_approval": true,
+    "change_request_log": "state/scoring-change-requests.md"
+  }
+}

@@ -1,0 +1,52 @@
+filters:
+  and:
+    - 'deletion_status == "active"'
+    - or:
+      - 'profile_lock == "review-required"'
+      - 'freshness == "needs-research"'
+      - 'freshness == "needs-action"'
+      - 'evidence_strength == "conflicting"'
+      - 'confidence == "low"'
+properties:
+  file.name:
+    displayName: "Card"
+  type:
+    displayName: "Type"
+  owner:
+    displayName: "Owner"
+  profile_lock:
+    displayName: "Profile Lock"
+  freshness:
+    displayName: "Freshness"
+  confidence:
+    displayName: "Confidence"
+  last_reviewed:
+    displayName: "Last Reviewed"
+  access:
+    displayName: "Access"
+views:
+  - type: table
+    name: "Needs Review"
+    order:
+      - file.name
+      - type
+      - owner
+      - profile_lock
+      - freshness
+      - confidence
+      - last_reviewed
+      - access
+  - type: table
+    name: "Low Confidence Claims"
+    filters:
+      and:
+        - 'type == "claim"'
+        - or:
+          - 'confidence == "low"'
+          - 'evidence_strength == "conflicting"'
+    order:
+      - file.name
+      - evidence_strength
+      - confidence
+      - last_reviewed
+      - access

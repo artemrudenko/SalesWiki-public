@@ -1,0 +1,59 @@
+filters: 'type == "deal" && deletion_status == "active"'
+formulas:
+  days_since_update: 'if(last_updated, (today() - date(last_updated)).days, "")'
+  risk_label: 'if(freshness == "stale", "Stale", if(freshness == "needs-crm-sync", "Needs CRM Sync", if(score < 50, "Low Score", "")))'
+properties:
+  file.name:
+    displayName: "Deal"
+  company:
+    displayName: "Company"
+  owner:
+    displayName: "Owner"
+  stage:
+    displayName: "Stage"
+  amount:
+    displayName: "Amount"
+  close_date:
+    displayName: "Close Date"
+  score:
+    displayName: "Score"
+  score_band:
+    displayName: "Band"
+  freshness:
+    displayName: "Freshness"
+  formula.risk_label:
+    displayName: "Risk"
+  formula.days_since_update:
+    displayName: "Days Since Update"
+views:
+  - type: table
+    name: "Risk Review"
+    filters:
+      or:
+        - 'freshness == "stale"'
+        - 'freshness == "needs-crm-sync"'
+        - 'score < 50'
+    order:
+      - file.name
+      - company
+      - owner
+      - stage
+      - amount
+      - close_date
+      - score
+      - score_band
+      - freshness
+      - formula.risk_label
+      - formula.days_since_update
+  - type: table
+    name: "All Active Deals"
+    order:
+      - file.name
+      - company
+      - owner
+      - stage
+      - amount
+      - close_date
+      - score
+      - score_band
+      - freshness

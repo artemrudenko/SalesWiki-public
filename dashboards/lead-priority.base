@@ -1,0 +1,57 @@
+filters: 'type == "lead" && deletion_status == "active"'
+formulas:
+  days_until_review: 'if(next_review, (date(next_review) - today()).days, "")'
+  priority_label: 'if(score >= 85, "Hot", if(score >= 70, "Warm", if(score >= 50, "Nurture", "Low")))'
+properties:
+  file.name:
+    displayName: "Lead"
+  company:
+    displayName: "Company"
+  owner:
+    displayName: "Owner"
+  pipeline_segment:
+    displayName: "Segment"
+  score:
+    displayName: "Score"
+  score_band:
+    displayName: "Band"
+  formula.priority_label:
+    displayName: "Priority"
+  freshness:
+    displayName: "Freshness"
+  next_review:
+    displayName: "Next Review"
+  formula.days_until_review:
+    displayName: "Days Until Review"
+views:
+  - type: table
+    name: "Hot And Warm"
+    filters:
+      or:
+        - 'score >= 70'
+        - 'freshness == "needs-action"'
+    order:
+      - file.name
+      - company
+      - owner
+      - pipeline_segment
+      - score
+      - score_band
+      - formula.priority_label
+      - freshness
+      - next_review
+      - formula.days_until_review
+  - type: table
+    name: "Outside Pipeline Watchlist"
+    filters:
+      and:
+        - 'pipeline_segment == "outside-pipeline"'
+        - 'deletion_status == "active"'
+    order:
+      - file.name
+      - company
+      - owner
+      - score
+      - score_band
+      - freshness
+      - next_review

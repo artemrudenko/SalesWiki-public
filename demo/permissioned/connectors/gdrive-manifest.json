@@ -1,0 +1,45 @@
+{
+  "connector": "google-drive",
+  "synthetic": true,
+  "account": "demo-curator@saleswiki.local",
+  "folders": {
+    "Sales/Q3-Calls": {
+      "boundary": "sales-confidential",
+      "files": [
+        {
+          "id": "gd-001",
+          "name": "Atlas Foods — Discovery 2026-05-29.txt",
+          "kind": "call-transcript",
+          "status": "new",
+          "maps_to": "demo-company-atlas-foods"
+        },
+        {
+          "id": "gd-002",
+          "name": "BluePeak — Pricing follow-up.eml",
+          "kind": "email",
+          "status": "new",
+          "maps_to": "demo-company-bluepeak-energy"
+        },
+        {
+          "id": "gd-003",
+          "name": "Northstar — signed NDA.pdf",
+          "kind": "document",
+          "status": "processed",
+          "maps_to": "demo-company-northstar-robotics"
+        }
+      ]
+    },
+    "Marketing/Webinars": {
+      "boundary": "broad",
+      "files": [
+        {
+          "id": "gd-010",
+          "name": "Q3 ROI Webinar — registrants.csv",
+          "kind": "lead-list",
+          "status": "new",
+          "maps_to": "demo-campaign-q3-roi-push"
+        }
+      ]
+    }
+  }
+}

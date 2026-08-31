@@ -1,0 +1,12 @@
+graph TD
+    A[SalesWiki platform repository] --> B[Code, schemas, templates, docs]
+    A --> C[Synthetic demo contour]
+    C --> D[dataset: demo]
+    C --> E[Safe to regenerate]
+    A -. never stores .-> F[Real pilot data]
+    F --> G[Separate private vault]
+    F --> H[dataset: pilot]
+    F --> I[Gateway reads via explicit vault path]
+    J[Health check] --> C
+    J --> B
+    J -. fails on pilot leakage .-> A

@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "description": "Maps path prefixes (relative to the configured boundary vault root, e.g. demo/permissioned) to permission boundaries for the permissioned-knowledge MVP. A real boundary is a physical location, not a YAML label. See docs/engineering/permissioned-knowledge-architecture.md.",
+  "updated": "2026-06-03",
+  "vault_root_hint": "demo/permissioned",
+  "default_boundary": "quarantine",
+  "boundaries": [
+    {"id": "quarantine", "label": "Quarantine (unclassified)", "sensitivity": "unknown", "default": true, "description": "Fail-closed default for any card outside an explicit path_map prefix. No role lists it, so a misfiled card is blocked, never leaked; the health check surfaces it for correct filing."},
+    {"id": "broad", "label": "Broad vault", "sensitivity": "internal"},
+    {"id": "sales-confidential", "label": "Sales-confidential boundary", "sensitivity": "sales-confidential"},
+    {"id": "personal-data", "label": "Personal-data store", "sensitivity": "personal-data", "raw_bodies_allowed": false},
+    {"id": "legal-review", "label": "Legal-review queue", "sensitivity": "legal-review", "design_only": true},
+    {"id": "operational-state", "label": "Operational state", "sensitivity": "internal", "design_only": true},
+    {"id": "derived-indexes", "label": "Derived indexes", "sensitivity": "internal", "design_only": true}
+  ],
+  "path_map": [
+    {"prefix": "broad/", "boundary": "broad"},
+    {"prefix": "sales-confidential/", "boundary": "sales-confidential"},
+    {"prefix": "personal-data/", "boundary": "personal-data"}
+  ]
+}

@@ -1,0 +1,49 @@
+filters:
+  and:
+    - 'deletion_status == "active"'
+    - or:
+      - 'type == "lead"'
+      - 'type == "task"'
+      - 'type == "deal"'
+formulas:
+  days_until_review: 'if(next_review, (date(next_review) - today()).days, "")'
+  action_label: 'if(freshness == "needs-action", "Needs Action", if(score >= 85, "Hot", if(score >= 70, "Warm", "")))'
+properties:
+  file.name:
+    displayName: "Item"
+  type:
+    displayName: "Type"
+  owner:
+    displayName: "Owner"
+  company:
+    displayName: "Company"
+  score:
+    displayName: "Score"
+  score_band:
+    displayName: "Band"
+  freshness:
+    displayName: "Freshness"
+  next_review:
+    displayName: "Next Review"
+  formula.action_label:
+    displayName: "Action"
+  access:
+    displayName: "Access"
+views:
+  - type: table
+    name: "Needs Action"
+    filters:
+      or:
+        - 'freshness == "needs-action"'
+        - 'score >= 70'
+    order:
+      - file.name
+      - type
+      - owner
+      - company
+      - score
+      - score_band
+      - freshness
+      - next_review
+      - formula.action_label
+      - access

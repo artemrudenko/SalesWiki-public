@@ -1,0 +1,304 @@
+{
+  "schema_version": 1,
+  "selection_policy": {
+    "preference_order": [
+      "official-vendor-mcp",
+      "official-api-or-webhook",
+      "managed-connector",
+      "custom-thin-adapter"
+    ],
+    "evaluate_per_operation": true,
+    "mandatory_gates": [
+      "least-privilege-scope",
+      "caller-identity-and-audit",
+      "writes-can-be-disabled-or-isolated",
+      "stable-record-identifiers-and-source-references",
+      "trusted-token-path",
+      "compatible-retention-and-residency",
+      "acceptable-service-maturity",
+      "retry-and-reconciliation-path"
+    ],
+    "external_write_boundary": "proposal-approval-worker-action-audit",
+    "custom_adapter_requires": "documented vendor capability gap and architecture decision"
+  },
+  "connectors": {
+    "hubspot": {
+      "status": "planned",
+      "kind": "crm",
+      "owner": "revops",
+      "implementation_strategy": {
+        "interactive_read": "official-vendor-mcp-pilot-candidate",
+        "scheduled_sync": "official-api-webhook-or-managed-connector",
+        "writeback": "worker-owned-provider-action-after-approval",
+        "pilot_gate": "lead_priority real-data pilot proves workflow value",
+        "official_reference": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/integrate-with-the-remote-hubspot-mcp-server"
+      },
+      "process_docs": [
+        "wiki/processes/hubspot-field-matrix.md",
+        "wiki/processes/hubspot-lifecycle-mapping.md",
+        "wiki/processes/hubspot-enrichment.md"
+      ],
+      "read_scopes": [
+        "companies",
+        "contacts",
+        "deals",
+        "owners",
+        "activities"
+      ],
+      "write_modes": {
+        "company": "propose-only",
+        "person": "approved-writeback",
+        "lead": "approved-writeback",
+        "deal": "approved-writeback",
+        "task": "system-writeback"
+      },
+      "approval_required_for": [
+        "controlled-profile changes",
+        "owner changes",
+        "stage changes",
+        "creating new CRM objects",
+        "HubSpot card fill or writeback execution",
+        "access-label downgrades",
+        "writeback outside allowed field matrix"
+      ],
+      "forbidden_operations": [
+        "silent overwrite of CRM-owned fields",
+        "creating duplicate companies without dedupe check",
+        "writing generated research directly into HubSpot without a staged proposal",
+        "writing personal-data into broad wiki pages"
+      ],
+      "writeback_pipeline": {
+        "default_mode": "staged-proposal",
+        "proposal_location": "state/hubspot-writeback-proposals.md",
+        "allowed_card_fill_targets": [
+          "company AI summary",
+          "company AI score",
+          "contact AI summary",
+          "contact AI score",
+          "deal AI risk summary",
+          "deal AI deal score",
+          "task or next activity"
+        ],
+        "requires_before_write": [
+          "HubSpot object id",
+          "field matrix mode allows writeback",
+          "previous value captured",
+          "source and confidence captured",
+          "approver or system-writeback rule captured",
+          "dedupe check for object creation"
+        ],
+        "never_write_without_approval": [
+          "owner",
+          "lifecycle stage",
+          "deal stage",
+          "amount",
+          "email",
+          "phone",
+          "company association"
+        ]
+      },
+      "audit_log": "state/ingest-runs.md",
+      "failure_mode": "propose update in Review Needed and do not write back"
+    },
+    "google-drive-meet": {
+      "status": "planned",
+      "kind": "source-storage",
+      "owner": "sales-ops",
+      "implementation_strategy": {
+        "drive_docs_read": "official-vendor-mcp-experiment",
+        "meet_transcript": "drive-docs-mcp-when-file-backed-otherwise-official-api-or-export",
+        "service_maturity": "developer-preview",
+        "production_use": "deferred-until-general-availability-and-reassessment",
+        "official_reference": "https://developers.google.com/workspace/guides/configure-mcp-servers"
+      },
+      "process_docs": [
+        "wiki/processes/google-meet-call-import.md",
+        "wiki/processes/google-meet-participant-matching.md",
+        "wiki/processes/access-and-redaction-policy.md"
+      ],
+      "read_scopes": [
+        "recording metadata",
+        "transcript export",
+        "file references"
+      ],
+      "write_modes": {
+        "call": "staged-import",
+        "raw": "reference-preferred",
+        "person": "propose-only"
+      },
+      "approval_required_for": [
+        "copying transcripts into repository",
+        "copying recordings into repository",
+        "personal-data access downgrade",
+        "new person identity creation"
+      ],
+      "forbidden_operations": [
+        "broad sharing of raw transcript excerpts",
+        "auto-creating CRM records",
+        "copying recordings without permission boundary"
+      ],
+      "audit_log": "state/ingest-runs.md",
+      "failure_mode": "store reference and mark transcript_status as needs-transcript or manual-notes"
+    },
+    "slack-or-email-digest": {
+      "status": "proposed",
+      "kind": "notification",
+      "owner": "operations",
+      "implementation_strategy": {
+        "saleswiki_ui": "native-slackbot-mcp-client-first",
+        "content_read": "official-slack-mcp-for-named-channel-workflow-only",
+        "notification": "approved-send-sink",
+        "custom_slack_bot": "deferred-until-native-client-gap-is-proven",
+        "official_references": [
+          "https://docs.slack.dev/ai/slack-mcp-server/",
+          "https://slack.com/help/articles/52414744085139-Connect-Slackbot-to-other-apps-with-MCP/"
+        ]
+      },
+      "process_docs": [
+        "wiki/processes/report-templates.md",
+        "wiki/processes/access-and-redaction-policy.md",
+        "wiki/processes/dashboard-contract.md"
+      ],
+      "read_scopes": [
+        "dashboard snapshots",
+        "reports",
+        "task queues"
+      ],
+      "write_modes": {
+        "notification": "approved-send",
+        "report": "propose-only"
+      },
+      "approval_required_for": [
+        "external recipients",
+        "personal-data",
+        "legal-review items",
+        "sales-confidential broad distribution"
+      ],
+      "forbidden_operations": [
+        "sending personal-data",
+        "sending legal-review content before approval",
+        "sending raw transcript excerpts"
+      ],
+      "audit_log": "state/monitoring-runs.md",
+      "failure_mode": "write report draft only"
+    },
+    "web-research": {
+      "status": "manual-first",
+      "kind": "research",
+      "owner": "research",
+      "process_docs": [
+        "wiki/processes/source-governance.md",
+        "wiki/processes/research-and-audit.md",
+        "wiki/processes/sales-marketing-research-framework.md"
+      ],
+      "read_scopes": [
+        "public web",
+        "managed source lists",
+        "company websites"
+      ],
+      "write_modes": {
+        "source": "staged-import",
+        "news": "curated-write",
+        "company": "curated-write",
+        "claim": "curated-write"
+      },
+      "collection_methods": {
+        "web-fetch": {
+          "status": "default",
+          "allowed_when": [
+            "page content is public and accessible as text",
+            "source can be cited by URL",
+            "no login, form submission or dynamic interaction is needed"
+          ],
+          "artifacts": [
+            "source URL",
+            "short source note",
+            "processed-source ledger entry"
+          ]
+        },
+        "defuddle": {
+          "status": "optional-cleanup",
+          "allowed_when": [
+            "public article or web page needs clean Markdown extraction",
+            "page is not already Markdown",
+            "source terms allow summarization/reference use"
+          ],
+          "artifacts": [
+            "clean Markdown note or summary",
+            "source URL",
+            "processed-source ledger entry"
+          ]
+        },
+        "playwright-cli": {
+          "status": "manual-first",
+          "allowed_when": [
+            "public page requires JavaScript rendering",
+            "filters, tabs, search, pagination or expandable agenda sections must be inspected",
+            "screenshot or PDF evidence is useful for review",
+            "a human-supervised browser session is needed"
+          ],
+          "forbidden": [
+            "mass scraping",
+            "bypassing login, paywall, rate limit, robots policy or access control",
+            "automating LinkedIn or restricted social sources",
+            "submitting forms or sending messages without explicit approval",
+            "copying paid, licensed or restricted content into broad pages"
+          ],
+          "artifacts": [
+            "source URL",
+            "collection date",
+            "screenshot or PDF path when captured",
+            "processed-source ledger entry",
+            "usage limitation note"
+          ]
+        },
+        "webwright": {
+          "status": "proposed-repeatable-browser-agent",
+          "credential_policy": {
+            "full_harness_requires_one_of": [
+              "OPENAI_API_KEY",
+              "ANTHROPIC_API_KEY",
+              "OPENROUTER_API_KEY"
+            ],
+            "credential_storage": "external-env-or-secret-store-only",
+            "repo_storage": "forbidden",
+            "without_backend_key": "artifact-contract-only: plan.md, final_script.py, screenshots, logs and structured output may be produced manually or by the active coding agent"
+          },
+          "allowed_when": [
+            "the browser task is long-horizon or multi-step",
+            "the task should become a reusable script or repeatable research run",
+            "screenshots, action logs and generated script artifacts are required for audit",
+            "the site has dynamic filters, pagination or workflows that are too tedious for manual browser collection"
+          ],
+          "forbidden": [
+            "production writes from generated scripts",
+            "mass scraping without a configured pilot limit",
+            "bypassing login, paywall, rate limit, robots policy or access control",
+            "submitting forms or sending messages without explicit approval",
+            "running without an isolated output workspace and artifact review"
+          ],
+          "artifacts": [
+            "plan.md",
+            "final_script.py or generated task script",
+            "screenshots",
+            "action log or trajectory",
+            "staged report",
+            "processed-source ledger entry"
+          ]
+        }
+      },
+      "approval_required_for": [
+        "paid/licensed source use",
+        "restricted source copying",
+        "customer claim publication"
+      ],
+      "forbidden_operations": [
+        "copying licensed content into broad pages",
+        "using low-confidence source as sole outreach reason",
+        "publishing unsourced claims"
+      ],
+      "audit_log": "tracking/processed-sources.md",
+      "failure_mode": "record coverage gap and source rejection reason"
+    }
+  }
+}
