@@ -1,8 +1,15 @@
 const roleLabels = {
   "sales-owner": "Account executive", sales: "Sales", hos: "Head of sales", revops: "Revenue operations", curator: "Knowledge curator", marketing: "Marketing", admin: "Administrator",
 };
-const tourAccountByRole = { "sales-owner": "bluepeak", sales: "atlas", marketing: "atlas" };
-const tourAccount = (role) => tourAccountByRole[role] ?? "bluepeak";
+// The workbench routes by stable entity id, not by the readable fixture slug.
+// Keeping those distinct prevents a tour step from landing in the app's
+// deliberate "not found" state after a role change.
+const tourAccountByRole = {
+  "sales-owner": "demo-company-bluepeak-energy",
+  sales: "demo-company-atlas-foods",
+  marketing: "demo-company-atlas-foods",
+};
+const tourAccount = (role) => tourAccountByRole[role] ?? "demo-company-bluepeak-energy";
 
 export function roleLabel(role) { return roleLabels[role] ?? role; }
 
@@ -21,11 +28,15 @@ const roleSteps = (role) => [
 
 export function buildTourSteps({ mode, role }) {
   if (mode === "full") {
-    const steps = roleSteps("sales-owner");
+    const salesSteps = roleSteps("sales-owner");
+    const marketingSteps = roleSteps("marketing");
     return [
-      steps[0], steps[1],
+      salesSteps[0], salesSteps[1],
       { id: "role-contrast", target: "persona-switcher", role: "marketing", view: "today", title: "The same workspace changes with the person", body: "Switching the synthetic person changes their Today queue, accessible accounts and decision-signal cards. It is a visible demonstration of a server-owned boundary.", why: "A role is not just a label that hides buttons; it changes what can be retrieved." },
-      ...steps.slice(2),
+      // Keep the rest of the product route in the marketing boundary. It makes
+      // the role contrast tangible and avoids a distracting mid-tour switch
+      // back to an account that marketing is not allowed to inspect.
+      ...marketingSteps.slice(2),
       { id: "review", target: "review", role: "curator", view: "review", title: "Changes enter a governed review loop", body: "A curator can inspect proposals and record an explicit decision. Approval does not directly rewrite the knowledge base; a separate worker applies approved changes later.", why: "This preserves evidence, accountability and a clean audit trail." },
     ];
   }

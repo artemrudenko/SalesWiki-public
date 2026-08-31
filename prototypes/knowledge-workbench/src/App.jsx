@@ -612,9 +612,9 @@ export function App() {
     labelBgStyle: { fill: "#111720", fillOpacity: 1, stroke: edgeColors[edge.kind], strokeOpacity: 0.45, strokeWidth: 1 },
   }));
 
-  function changeAccount(nextId) {
+  function changeAccount(nextId, allowPendingRoleChange = false) {
     const next = accounts.find((item) => item.id === nextId);
-    if (!next && graphClient.source !== "bff") { setToast("This account is not available in the current demo."); window.setTimeout(() => setToast(""), 3200); return; }
+    if (!next && graphClient.source !== "bff" && !allowPendingRoleChange) { setToast("This account is not available in the current demo."); window.setTimeout(() => setToast(""), 3200); return; }
     setAccountId(next?.id ?? nextId);
     setSelectedNodeId(next?.nodes[0].id ?? "");
     setFilter("all");
@@ -708,7 +708,10 @@ export function App() {
     if (!step) return;
     const persona = sessionResult.status === "ready" ? sessionResult.data.personas.find((item) => item.role === step.role) : null;
     if (persona && persona.id !== sessionResult.data.person.id) void changePersona(persona.id);
-    if (step.accountId) changeAccount(step.accountId);
+    // A fixture persona update changes the visible account list on the next
+    // render. The tour already knows the next permitted account, so avoid a
+    // transient false "not available" toast while that render catches up.
+    if (step.accountId) changeAccount(step.accountId, true);
     setView(step.view);
     setAskOpen(step.panel === "assistant");
     setMonitorOpen(step.panel === "monitor");
