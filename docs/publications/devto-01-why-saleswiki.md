@@ -1,5 +1,5 @@
 ---
-title: We built a sales knowledge base that refuses to guess
+title: Why I built a sales knowledge base that refuses to guess
 published: false
 description: SalesWiki keeps GTM knowledge in Markdown, answers from cited fields, and makes missing data visible instead of inventing an answer.
 tags: opensource, sales, knowledgebase, ai
@@ -18,7 +18,7 @@ salesperson asks a simple question:
 The answer exists, but nobody can assemble it quickly or explain where each
 part came from.
 
-We built [SalesWiki](https://github.com/artemrudenko/SalesWiki-public) to test a different operating model. The
+I started building [SalesWiki](https://github.com/artemrudenko/SalesWiki-public) to test a different operating model. The
 durable source of truth is a folder of Markdown files that opens directly in
 Obsidian. Raw evidence stays separate from compiled knowledge. Answers copy
 facts from named fields and sections, attach citations, and say `not-found`
@@ -29,9 +29,9 @@ for a governed sales and marketing knowledge base.
 
 ## This started as a research question
 
-We did not begin with "let's build another knowledge product." We wanted to
+I did not begin with "let's build another knowledge product." I wanted to
 learn whether a plain wiki could act as a useful brain for a sales team without
-becoming an unstructured folder. We also wanted to know whether agents could
+becoming an unstructured folder. I also wanted to know whether agents could
 help maintain it without changing protected facts behind the scenes.
 
 Sales and marketing are a useful stress test. Evidence arrives in many shapes,
@@ -43,7 +43,7 @@ That led to four questions:
 
 1. Can typed Markdown be a small but dependable knowledge data plane?
 2. Will people trust a shorter cited answer more than a fluent generated one?
-3. Can we make agent changes reviewable and reversible?
+3. Can I make agent changes reviewable and reversible?
 4. When does owning this machinery beat buying search over existing documents?
 
 The synthetic demo answers only the engineering part. A real pilot still has to
@@ -147,7 +147,7 @@ There is no fallback paragraph that guesses what the company probably does.
 
 ## Markdown alone is not the product
 
-Using Markdown is useful, but it is not enough to justify another system. We
+Using Markdown is useful, but it is not enough to justify another system. I
 would tell most teams to buy an existing product if all they need is AI search
 over documents.
 
@@ -163,7 +163,7 @@ that work.
 
 ## Where the design helps and where it costs
 
-| What we chose | Why it helps | What you pay for it |
+| What I chose | Why it helps | What you pay for it |
 | --- | --- | --- |
 | Markdown source of truth | people can read it; Git can diff it; tools can parse it | queries and transactions are weaker than in a database |
 | Typed cards and validation | extraction stays predictable and drift becomes visible | templates and schema changes need discipline |
@@ -172,7 +172,7 @@ that work.
 | Proposal, approval and one writer | sensitive edits are reviewable and reversible | a correction takes more steps |
 | Owned data and policy | the team controls portability and meaning | the team also owns operations and maintenance |
 
-For us, these are design constraints rather than universal best practices. If
+I treat these as design constraints rather than universal best practices. If
 your main problem is finding a document, a mature search product is probably the
 better choice.
 
@@ -228,7 +228,7 @@ assistant. The assistant deliberately offers focused, cited questions rather
 than a free-form chat box, so a user can inspect what changed or choose a next
 step without turning access-controlled data into an opaque prompt.
 
-One small interface lesson changed the demo as we built it: a role switch has to
+One small interface lesson changed the demo as I built it: a role switch has to
 change the job, not just an access badge. The synthetic account executive,
 marketing and curator views therefore have different permitted accounts, daily
 queues, decision signals and review access. In the public static Workbench, the

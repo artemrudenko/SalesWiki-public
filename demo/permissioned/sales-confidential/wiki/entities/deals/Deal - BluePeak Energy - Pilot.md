@@ -17,7 +17,7 @@ tags:
   - deal
   - demo
 company: demo-company-bluepeak-energy
-owner: demo-ivan-ae
+owner: demo-ethan-ae
 team: sales-west
 stage: Proposal
 ---
@@ -27,7 +27,7 @@ stage: Proposal
 ## Controlled Profile
 
 - Company: [[Company - BluePeak Energy]]
-- Owner: demo-ivan-ae
+- Owner: demo-ethan-ae
 - Team: sales-west
 - Stage: Proposal
 

@@ -1,4 +1,4 @@
-# Morning Digest — Head of Sales (Elena)
+# Morning Digest — Head of Sales (Claire)
 
 > Synthetic demo data (`dataset: demo`) — safe to share. Regenerate with `python3 scripts/generate_demo_digests.py`.
 

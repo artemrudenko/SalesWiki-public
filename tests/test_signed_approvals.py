@@ -74,7 +74,7 @@ class SignedApprovals(unittest.TestCase):
 
     def test_tampered_approver_role_is_rejected(self) -> None:
         pid = self.svc.request_access(self.who("demo-broad-viewer"), COMPANY_ID, "need it")
-        self.svc.approve_proposal(self.who("demo-marina-curator"), pid)  # legit, signed
+        self.svc.approve_proposal(self.who("demo-sophie-curator"), pid)  # legit, signed
         # Tamper: escalate approver_role to admin in the stored record.
         text = self.proposals.read_text(encoding="utf-8").replace(
             '"approver_role": "curator"', '"approver_role": "admin"'
@@ -86,7 +86,7 @@ class SignedApprovals(unittest.TestCase):
     def test_legit_signed_approval_still_works_end_to_end(self) -> None:
         self.assertEqual(self.deal_access("demo-broad-viewer", "BluePeak Energy"), "blocked")
         pid = self.svc.request_access(self.who("demo-broad-viewer"), COMPANY_ID, "need it")
-        self.svc.approve_proposal(self.who("demo-marina-curator"), pid)
+        self.svc.approve_proposal(self.who("demo-sophie-curator"), pid)
         self.assertEqual(self.deal_access("demo-broad-viewer", "BluePeak Energy"), "allowed")
         summary = worker.apply_approved(
             self.vault, self.proposals, self.audit, self.runtime,

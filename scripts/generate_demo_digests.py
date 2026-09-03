@@ -43,22 +43,22 @@ BANNER = (
 DIGESTS = [
     {
         "file": "my-day-ae.md",
-        "actor": "demo-ivan-ae",
-        "persona": "Account Executive (Ivan)",
+        "actor": "demo-ethan-ae",
+        "persona": "Account Executive (Ethan)",
         "tool": "my_day",
         "intro": "What an AE finds in the inbox before the first call:",
     },
     {
         "file": "my-day-marketing.md",
-        "actor": "demo-nina-marketing",
-        "persona": "Marketing (Nina)",
+        "actor": "demo-olivia-marketing",
+        "persona": "Marketing (Olivia)",
         "tool": "my_day",
         "intro": "The same digest for marketing — deal economics stay invisible:",
     },
     {
         "file": "pipeline-digest-hos.md",
-        "actor": "demo-elena-hos",
-        "persona": "Head of Sales (Elena)",
+        "actor": "demo-claire-hos",
+        "persona": "Head of Sales (Claire)",
         "tool": "pipeline_risk_digest",
         "intro": "The weekly-review view for the Head of Sales:",
     },

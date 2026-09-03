@@ -59,7 +59,7 @@ class StrictResolver(unittest.TestCase):
 
     def test_company_brief_is_ambiguous_not_wrong(self) -> None:
         svc = build_default_service(self.vault, self.tmp / "a.jsonl", self.tmp / "p.jsonl", now=lambda: "t")
-        out = svc.company_brief(actor("demo-ivan-ae"), "Acme")
+        out = svc.company_brief(actor("demo-ethan-ae"), "Acme")
         self.assertEqual(out["access"], "ambiguous")
         self.assertIn("Acme Foods", out["text"])
         self.assertIn("Acme Robotics", out["text"])
@@ -73,7 +73,7 @@ class DataDerivedFreshness(unittest.TestCase):
         self.svc = build_default_service(self.vault, self.tmp / "a.jsonl", self.tmp / "p.jsonl", now=lambda: "t")
 
     def test_freshness_reflects_card_not_constant(self) -> None:
-        out = self.svc.company_brief(actor("demo-ivan-ae"), "BluePeak Energy")
+        out = self.svc.company_brief(actor("demo-ethan-ae"), "BluePeak Energy")
         self.assertEqual(out["freshness"], "fresh", "demo cards are fresh; value must come from data")
         self.assertTrue(out["as_of"], "as_of should be the card's updated date")
         self.assertNotIn("fresh (synthetic demo)", out["text"], "no hardcoded freshness constant")
@@ -81,7 +81,7 @@ class DataDerivedFreshness(unittest.TestCase):
     def test_stale_card_reports_stale(self) -> None:
         card = self.vault / "broad" / "wiki" / "entities" / "companies" / "Company - BluePeak Energy.md"
         card.write_text(card.read_text(encoding="utf-8").replace("freshness: fresh", "freshness: stale"), encoding="utf-8")
-        out = self.svc.company_brief(actor("demo-ivan-ae"), "BluePeak Energy")
+        out = self.svc.company_brief(actor("demo-ethan-ae"), "BluePeak Energy")
         self.assertEqual(out["freshness"], "stale", "a stale card must not be reported as fresh")
 
 

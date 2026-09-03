@@ -38,7 +38,7 @@ class AnswerContract(unittest.TestCase):
         self.vault = self.tmp / "permissioned"
         gdv.generate_permissioned_demo(self.vault)
         self.svc = build_default_service(self.vault, self.tmp / "audit.jsonl", self.tmp / "proposals.jsonl", now=lambda: "t")
-        self.a = actor("demo-ivan-ae")
+        self.a = actor("demo-ethan-ae")
         self.answers = [
             self.svc.company_brief(self.a, "BluePeak Energy"),
             self.svc.deal_risk(self.a, None),

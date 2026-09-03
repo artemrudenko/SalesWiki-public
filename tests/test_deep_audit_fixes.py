@@ -93,7 +93,7 @@ class GovernanceCoreFixes(unittest.TestCase):
         return FixtureIdentityProvider(actor_id, config.identity_config()).resolve()
 
     def _approve_and_apply(self, pid: str) -> dict:
-        self.svc.approve_proposal(self.who("demo-marina-curator"), pid)
+        self.svc.approve_proposal(self.who("demo-sophie-curator"), pid)
         return worker.apply_approved(
             self.vault, self.proposals, self.audit, self.runtime,
             now=lambda: "2026-06-14T01:00:00Z",
@@ -124,7 +124,7 @@ class GovernanceCoreFixes(unittest.TestCase):
         """M-C3: if the bullet is already applied, a rerun is a no-op success, not a
         dead-lettered base-version-mismatch."""
         pid = self.svc.flag_stale_or_wrong(self.who("demo-broad-viewer"), COMPANY_ID, "please check")
-        self.svc.approve_proposal(self.who("demo-marina-curator"), pid)
+        self.svc.approve_proposal(self.who("demo-sophie-curator"), pid)
         state = ProposalStore(self.proposals).state(pid)
         card = Retriever(self.vault, config.boundary_registry()).find(COMPANY_ID)
         card_path = self.vault / card.rel_path

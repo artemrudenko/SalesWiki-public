@@ -44,7 +44,7 @@ class PromptInjectionResistance(unittest.TestCase):
         return FixtureIdentityProvider(actor_id, config.identity_config()).resolve()
 
     def test_injection_does_not_leak_secrets_to_marketing(self) -> None:
-        brief = self.svc.company_brief(self._actor("demo-nina-marketing"), "BluePeak Energy")
+        brief = self.svc.company_brief(self._actor("demo-olivia-marketing"), "BluePeak Energy")
         for secret in SALES_SECRETS:
             self.assertNotIn(secret, brief["text"], "injection must not unlock sales-confidential content")
         self.assertEqual(brief["access"], "sanitized")

@@ -217,8 +217,8 @@ deployment boundary and the first controlled real-data slice.
 ## Ten-Minute Version: 3 Questions, 2 Roles, 1 Edit
 
 A self-contained scenario when you have one shot and ten minutes. Two MCP
-server entries are pre-connected side by side: AE (`demo-ivan-ae`) and
-Marketing (`demo-nina-marketing`); the Curator window is prepared but hidden.
+server entries are pre-connected side by side: AE (`demo-ethan-ae`) and
+Marketing (`demo-olivia-marketing`); the Curator window is prepared but hidden.
 
 | When | Step | What the audience sees | Say this |
 | --- | --- | --- | --- |

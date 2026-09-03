@@ -38,7 +38,7 @@ class EntityGraphProjection(unittest.TestCase):
         )
 
     def test_sales_owner_gets_private_account_context(self) -> None:
-        graph = self.projector.entity_graph(actor("demo-ivan-ae"), entity="BluePeak Energy")
+        graph = self.projector.entity_graph(actor("demo-ethan-ae"), entity="BluePeak Energy")
 
         self.assertEqual(graph["contract"], "saleswiki.graph-view")
         self.assertEqual(graph["version"], 1)
@@ -55,7 +55,7 @@ class EntityGraphProjection(unittest.TestCase):
         self._assert_invariants(graph)
 
     def test_marketing_graph_omits_blocked_nodes_ids_edges_and_paths(self) -> None:
-        graph = self.projector.entity_graph(actor("demo-nina-marketing"), entity="BluePeak Energy")
+        graph = self.projector.entity_graph(actor("demo-olivia-marketing"), entity="BluePeak Energy")
         serialized = repr(graph)
 
         self.assertEqual(graph["access"], "sanitized")
@@ -93,7 +93,7 @@ class EntityGraphProjection(unittest.TestCase):
         self.assertEqual(len(self.decisions), 1)
 
     def test_not_found_and_ambiguous_are_honest_empty_graphs(self) -> None:
-        missing = self.projector.entity_graph(actor("demo-ivan-ae"), entity="No Such Company")
+        missing = self.projector.entity_graph(actor("demo-ethan-ae"), entity="No Such Company")
         self.assertEqual(missing["access"], "not-found")
         self.assertEqual(missing["nodes"], [])
 
@@ -107,7 +107,7 @@ class EntityGraphProjection(unittest.TestCase):
                 1,
             )
         )
-        ambiguous = self.projector.entity_graph(actor("demo-ivan-ae"), entity="BluePeak Energy")
+        ambiguous = self.projector.entity_graph(actor("demo-ethan-ae"), entity="BluePeak Energy")
         self.assertEqual(ambiguous["access"], "ambiguous")
         self.assertIsNone(ambiguous["root_id"])
         self.assertEqual(ambiguous["nodes"], [])
@@ -115,18 +115,18 @@ class EntityGraphProjection(unittest.TestCase):
 
     def test_include_is_a_display_allowlist_not_an_access_bypass(self) -> None:
         marketing = self.projector.entity_graph(
-            actor("demo-nina-marketing"),
+            actor("demo-olivia-marketing"),
             entity="BluePeak Energy",
             include=["deal", "source"],
         )
         self.assertEqual({node["type"] for node in marketing["nodes"]}, {"company", "source"})
         self.assertEqual(marketing["access"], "sanitized")
         with self.assertRaises(ValueError):
-            self.projector.entity_graph(actor("demo-ivan-ae"), entity="BluePeak Energy", include=["secret"])
+            self.projector.entity_graph(actor("demo-ethan-ae"), entity="BluePeak Energy", include=["secret"])
         with self.assertRaises(ValueError):
-            self.projector.entity_graph(actor("demo-ivan-ae"), entity="BluePeak Energy", depth=2)
+            self.projector.entity_graph(actor("demo-ethan-ae"), entity="BluePeak Energy", depth=2)
         with self.assertRaises(ValueError):
-            self.projector.entity_graph(actor("demo-ivan-ae"), entity_type="deal", entity="BluePeak Energy")
+            self.projector.entity_graph(actor("demo-ethan-ae"), entity_type="deal", entity="BluePeak Energy")
 
     def test_response_limits_and_reference_invariants(self) -> None:
         source_dir = self.vault / "broad/wiki/entities/sources"
@@ -151,7 +151,7 @@ class EntityGraphProjection(unittest.TestCase):
                 )
             )
         graph = self.projector.entity_graph(
-            actor("demo-ivan-ae"), entity="BluePeak Energy", include=["source"]
+            actor("demo-ethan-ae"), entity="BluePeak Energy", include=["source"]
         )
 
         self.assertLessEqual(len(graph["nodes"]), MAX_NODES)
@@ -161,7 +161,7 @@ class EntityGraphProjection(unittest.TestCase):
         self._assert_invariants(graph)
 
     def test_dense_demo_account_fills_the_safe_projection_budget(self) -> None:
-        graph = self.projector.entity_graph(actor("demo-ivan-ae"), entity="Summit Grid Logistics")
+        graph = self.projector.entity_graph(actor("demo-ethan-ae"), entity="Summit Grid Logistics")
 
         self.assertEqual(len(graph["nodes"]), MAX_EVIDENCE)
         self.assertEqual(len(graph["edges"]), MAX_EVIDENCE - 1)
@@ -173,17 +173,17 @@ class EntityGraphProjection(unittest.TestCase):
         self._assert_invariants(graph)
 
     def test_internal_validator_rejects_dangling_references(self) -> None:
-        graph = self.projector.entity_graph(actor("demo-ivan-ae"), entity="BluePeak Energy")
+        graph = self.projector.entity_graph(actor("demo-ethan-ae"), entity="BluePeak Energy")
         graph["edges"][0]["to"] = "blocked-hidden-id"
         with self.assertRaisesRegex(RuntimeError, "dangling graph edge"):
             self.projector._validate(graph)
 
-        graph = self.projector.entity_graph(actor("demo-ivan-ae"), entity="BluePeak Energy")
+        graph = self.projector.entity_graph(actor("demo-ethan-ae"), entity="BluePeak Energy")
         graph["nodes"][0]["evidence_ids"] = ["missing-evidence"]
         with self.assertRaisesRegex(RuntimeError, "dangling evidence reference"):
             self.projector._validate(graph)
 
-        graph = self.projector.entity_graph(actor("demo-ivan-ae"), entity="BluePeak Energy")
+        graph = self.projector.entity_graph(actor("demo-ethan-ae"), entity="BluePeak Energy")
         graph["edges"][1]["id"] = graph["edges"][0]["id"]
         with self.assertRaisesRegex(RuntimeError, "duplicate graph identifier"):
             self.projector._validate(graph)

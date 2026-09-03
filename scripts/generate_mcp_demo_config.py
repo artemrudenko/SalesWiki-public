@@ -35,13 +35,13 @@ import generate_demo_vault as gdv  # noqa: E402
 # Persona alias -> fixture actor id (schemas/identity-provider.json). The role
 # is resolved server-side from SALESWIKI_DEMO_ACTOR; the client never picks it.
 PERSONA_ACTORS: dict[str, str] = {
-    "ae": "demo-ivan-ae",
-    "marketing": "demo-nina-marketing",
-    "curator": "demo-marina-curator",
-    "hos": "demo-elena-hos",
+    "ae": "demo-ethan-ae",
+    "marketing": "demo-olivia-marketing",
+    "curator": "demo-sophie-curator",
+    "hos": "demo-claire-hos",
     "revops": "demo-raj-revops",
     "admin": "demo-ada-admin",
-    "legal": "demo-lena-legal",
+    "legal": "demo-hannah-legal",
     "sdr": "demo-sam-sdr",
     "sales": "demo-sam-sdr",
     "viewer": "demo-broad-viewer",

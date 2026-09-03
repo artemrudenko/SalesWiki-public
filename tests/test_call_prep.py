@@ -49,25 +49,25 @@ class CallPrep(unittest.TestCase):
         self.svc = make_service(self.tmp)
 
     def test_owner_gets_sanitized_prep_and_raw_handle(self) -> None:
-        out = self.svc.call_prep(actor("demo-ivan-ae"), "BluePeak Energy")
+        out = self.svc.call_prep(actor("demo-ethan-ae"), "BluePeak Energy")
         self.assertEqual(out["access"], "allowed")
         self.assertIn("Sanitized takeaway", out["text"])
         self.assertTrue(out["restricted"], "raw transcript must be surfaced as a restricted handle")
         self.assertIn("restricted://", json.dumps(out))
 
     def test_hos_also_allowed(self) -> None:
-        out = self.svc.call_prep(actor("demo-elena-hos"), "BluePeak Energy")
+        out = self.svc.call_prep(actor("demo-claire-hos"), "BluePeak Energy")
         self.assertEqual(out["access"], "allowed")
         self.assertIn("Sanitized takeaway", out["text"])
 
     def test_call_secrets_never_in_prep_for_any_role(self) -> None:
-        for who in ("demo-ivan-ae", "demo-elena-hos", "demo-nina-marketing"):
+        for who in ("demo-ethan-ae", "demo-claire-hos", "demo-olivia-marketing"):
             out = self.svc.call_prep(actor(who), "BluePeak Energy")
             for secret in CALL_SECRETS:
                 self.assertNotIn(secret, out["text"], f"{secret} leaked to {who}")
 
     def test_marketing_gets_sanitized_note_no_deal_detail(self) -> None:
-        out = self.svc.call_prep(actor("demo-nina-marketing"), "BluePeak Energy")
+        out = self.svc.call_prep(actor("demo-olivia-marketing"), "BluePeak Energy")
         self.assertEqual(out["access"], "sanitized")
         self.assertNotIn("Sanitized takeaway", out["text"], "marketing must not get the call conclusion body")
         self.assertNotIn("restricted://", json.dumps(out), "marketing must not get the raw transcript handle")
@@ -75,21 +75,21 @@ class CallPrep(unittest.TestCase):
             self.assertNotIn(secret, out["text"])
 
     def test_no_salesconf_path_in_marketing_citations(self) -> None:
-        out = self.svc.call_prep(actor("demo-nina-marketing"), "BluePeak Energy")
+        out = self.svc.call_prep(actor("demo-olivia-marketing"), "BluePeak Energy")
         self.assertNotIn("sales-confidential/wiki", json.dumps(out["citations"]))
 
     def test_unknown_company_is_safe(self) -> None:
-        out = self.svc.call_prep(actor("demo-ivan-ae"), "Nonexistent Corp")
+        out = self.svc.call_prep(actor("demo-ethan-ae"), "Nonexistent Corp")
         self.assertEqual(out["access"], "not-found")
 
     def test_audit_records_call_prep(self) -> None:
-        self.svc.call_prep(actor("demo-ivan-ae"), "BluePeak Energy")
+        self.svc.call_prep(actor("demo-ethan-ae"), "BluePeak Energy")
         events = [json.loads(l) for l in (self.tmp / "audit.jsonl").read_text().splitlines() if l.strip()]
         self.assertTrue(any(e["tool"] == "call_prep" for e in events))
 
     def test_does_not_mutate_production(self) -> None:
         before = {p: p.read_bytes() for p in (self.tmp / "permissioned").rglob("*.md")}
-        self.svc.call_prep(actor("demo-ivan-ae"), "BluePeak Energy")
+        self.svc.call_prep(actor("demo-ethan-ae"), "BluePeak Energy")
         for p, h in before.items():
             self.assertEqual(p.read_bytes(), h, f"{p} mutated by a read")
 

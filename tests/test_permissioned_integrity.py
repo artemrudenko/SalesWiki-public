@@ -49,9 +49,9 @@ class PermissionedIntegrity(unittest.TestCase):
         self.assertTrue(any("does not resolve to a known company" in m for m in integrity_findings(self.vault)))
 
     def test_owner_off_roster_is_caught(self) -> None:
-        text = self.deal.read_text(encoding="utf-8").replace("owner: demo-ivan-ae", "owner: demo-ivann-ae")
+        text = self.deal.read_text(encoding="utf-8").replace("owner: demo-ethan-ae", "owner: demo-unknown-ae")
         self.deal.write_text(text, encoding="utf-8")
-        self.assertTrue(any("owner: demo-ivann-ae" in m and "org roster" in m for m in integrity_findings(self.vault)))
+        self.assertTrue(any("owner: demo-unknown-ae" in m and "org roster" in m for m in integrity_findings(self.vault)))
 
     def test_team_typo_is_caught(self) -> None:
         text = self.deal.read_text(encoding="utf-8").replace("team: sales-west", "team: sales_west")
@@ -110,7 +110,7 @@ class PermissionedIntegrity(unittest.TestCase):
         pd_card = next(iter(sorted((self.vault / "personal-data").rglob("*.md"))))
         pd_card.write_text(
             pd_card.read_text(encoding="utf-8")
-            + "\n## Raw Transcript (personal-data)\n\nAE (Ivan Petrov): full raw dialogue here\n",
+            + "\n## Raw Transcript (personal-data)\n\nAE (Ethan Cole): full raw dialogue here\n",
             encoding="utf-8",
         )
         self.assertTrue(

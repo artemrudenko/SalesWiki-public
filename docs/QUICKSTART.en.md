@@ -64,9 +64,9 @@ Cowork or another MCP client, restart the client, then ask:
    what you see depends on your role.
 3. *"Which deals are at risk?"* → `deal_risk` — risk factors and next actions.
 
-Demo roles (set via `SALESWIKI_DEMO_ACTOR`): `demo-ivan-ae` (account executive),
-`demo-nina-marketing` (marketing), `demo-elena-hos` (head of sales),
-`demo-marina-curator` (curator/approver), `demo-broad-viewer` (viewer).
+Demo roles (set via `SALESWIKI_DEMO_ACTOR`): `demo-ethan-ae` (account executive),
+`demo-olivia-marketing` (marketing), `demo-claire-hos` (head of sales),
+`demo-sophie-curator` (curator/approver), `demo-broad-viewer` (viewer).
 Run two entries with different actors side by side to see role contrast:
 marketing never sees deal economics, and personal data stays a `restricted://`
 handle. The full demo script is

@@ -35,13 +35,13 @@ def make_vault(base: Path) -> Path:
 class PersonaMappingTest(unittest.TestCase):
     def test_persona_aliases_map_to_expected_fixture_actors(self) -> None:
         expected = {
-            "ae": "demo-ivan-ae",
-            "marketing": "demo-nina-marketing",
-            "curator": "demo-marina-curator",
-            "hos": "demo-elena-hos",
+            "ae": "demo-ethan-ae",
+            "marketing": "demo-olivia-marketing",
+            "curator": "demo-sophie-curator",
+            "hos": "demo-claire-hos",
             "revops": "demo-raj-revops",
             "admin": "demo-ada-admin",
-            "legal": "demo-lena-legal",
+            "legal": "demo-hannah-legal",
             "sdr": "demo-sam-sdr",
             "sales": "demo-sam-sdr",
             "viewer": "demo-broad-viewer",
@@ -97,7 +97,7 @@ class BuildConfigTest(unittest.TestCase):
         # `-m saleswiki_mcp.server` with PYTHONPATH at the repo root.
         self.assertEqual(entry["args"], ["-m", "saleswiki_mcp.server"])
         self.assertEqual(entry["env"]["PYTHONPATH"], str(gmc.ROOT))
-        self.assertEqual(entry["env"]["SALESWIKI_DEMO_ACTOR"], "demo-ivan-ae")
+        self.assertEqual(entry["env"]["SALESWIKI_DEMO_ACTOR"], "demo-ethan-ae")
 
     def test_entries_share_one_vault_and_one_runtime(self) -> None:
         vaults = {e["env"]["SALESWIKI_VAULT_ROOT"] for e in self.config["mcpServers"].values()}
@@ -114,9 +114,9 @@ class BuildConfigTest(unittest.TestCase):
         self.assertEqual(
             actors,
             {
-                "saleswiki-ae": "demo-ivan-ae",
-                "saleswiki-marketing": "demo-nina-marketing",
-                "saleswiki-curator": "demo-marina-curator",
+                "saleswiki-ae": "demo-ethan-ae",
+                "saleswiki-marketing": "demo-olivia-marketing",
+                "saleswiki-curator": "demo-sophie-curator",
             },
         )
 

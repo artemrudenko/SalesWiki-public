@@ -45,7 +45,7 @@ class WorkerAtomicity(unittest.TestCase):
             "note": note,
             "proposal_id": "p-empty-base",
             "approved": "t",
-            "approver": "demo-marina-curator",
+            "approver": "demo-sophie-curator",
             "approver_role": "curator",
             "payload_hash": payload_hash("flag_stale_or_wrong", TARGET, note),
             "base_hash": "",  # card did not exist at capture time

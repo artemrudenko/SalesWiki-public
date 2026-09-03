@@ -1,5 +1,5 @@
 ---
-title: How we keep an AI client from rewriting the sales knowledge base
+title: How I keep an AI client from rewriting the sales knowledge base
 published: false
 description: A practical look at role-aware retrieval, extract-only answers, proposals, approval and a single-writer worker in SalesWiki.
 tags: architecture, security, mcp, python
@@ -15,7 +15,7 @@ cards, a bad instruction or a simple bug can move from retrieval to mutation.
 Parallel writers add another problem: two valid edits can corrupt the card or
 the audit sequence.
 
-SalesWiki separates those jobs.
+I separated those jobs in SalesWiki.
 
 The MCP gateway can read, propose and govern. It cannot update production cards.
 A separate worker is the only writer, and it applies only approved proposals.

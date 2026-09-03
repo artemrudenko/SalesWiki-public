@@ -49,26 +49,26 @@ class DealRisk(unittest.TestCase):
         self.svc = make_service(self.tmp)
 
     def test_owner_sees_own_deal_risk_by_company(self) -> None:
-        out = self.svc.deal_risk(actor("demo-ivan-ae"), "BluePeak Energy")
+        out = self.svc.deal_risk(actor("demo-ethan-ae"), "BluePeak Energy")
         self.assertEqual(out["access"], "allowed")
         self.assertIn("economic buyer", out["text"].lower())
         self.assertIn("BluePeak Energy", out["text"])
 
     def test_owner_all_accessible_lists_only_owned_or_team(self) -> None:
-        out = self.svc.deal_risk(actor("demo-ivan-ae"), None)
+        out = self.svc.deal_risk(actor("demo-ethan-ae"), None)
         self.assertEqual(out["access"], "allowed")
         self.assertIn("BluePeak Energy", out["text"])
         self.assertIn("Atlas Foods", out["text"])
-        self.assertNotIn("Northstar Robotics", out["text"], "Ivan must not see the sales-east deal")
+        self.assertNotIn("Northstar Robotics", out["text"], "Ethan must not see the sales-east deal")
 
     def test_hos_sees_all_deals(self) -> None:
-        out = self.svc.deal_risk(actor("demo-elena-hos"), None)
+        out = self.svc.deal_risk(actor("demo-claire-hos"), None)
         self.assertEqual(out["access"], "allowed")
         for name in COMPANY_NAMES:
             self.assertIn(name, out["text"], f"HoS must see {name}")
 
     def test_marketing_gets_aggregated_count_without_names(self) -> None:
-        out = self.svc.deal_risk(actor("demo-nina-marketing"), None)
+        out = self.svc.deal_risk(actor("demo-olivia-marketing"), None)
         self.assertEqual(out["access"], "aggregated")
         for name in COMPANY_NAMES:
             self.assertNotIn(name, out["text"], "aggregated view must not name deals")
@@ -76,27 +76,27 @@ class DealRisk(unittest.TestCase):
             self.assertNotIn(secret, out["text"])
 
     def test_marketing_blocked_for_named_company(self) -> None:
-        out = self.svc.deal_risk(actor("demo-nina-marketing"), "BluePeak Energy")
+        out = self.svc.deal_risk(actor("demo-olivia-marketing"), "BluePeak Energy")
         self.assertEqual(out["access"], "blocked")
         for secret in SALES_SECRETS:
             self.assertNotIn(secret, out["text"])
 
     def test_no_salesconf_path_in_marketing_citations(self) -> None:
-        out = self.svc.deal_risk(actor("demo-nina-marketing"), None)
+        out = self.svc.deal_risk(actor("demo-olivia-marketing"), None)
         self.assertNotIn("sales-confidential/wiki", json.dumps(out["citations"]))
 
     def test_unknown_company_is_safe(self) -> None:
-        out = self.svc.deal_risk(actor("demo-ivan-ae"), "Nonexistent Corp")
+        out = self.svc.deal_risk(actor("demo-ethan-ae"), "Nonexistent Corp")
         self.assertEqual(out["access"], "not-found")
 
     def test_audit_records_deal_risk(self) -> None:
-        self.svc.deal_risk(actor("demo-ivan-ae"), None)
+        self.svc.deal_risk(actor("demo-ethan-ae"), None)
         events = [json.loads(l) for l in (self.tmp / "audit.jsonl").read_text().splitlines() if l.strip()]
         self.assertTrue(any(e["tool"] == "deal_risk" for e in events))
 
     def test_does_not_mutate_production(self) -> None:
         before = {p: p.read_bytes() for p in (self.tmp / "permissioned").rglob("*.md")}
-        self.svc.deal_risk(actor("demo-elena-hos"), None)
+        self.svc.deal_risk(actor("demo-claire-hos"), None)
         for p, h in before.items():
             self.assertEqual(p.read_bytes(), h, f"{p} mutated by a read")
 

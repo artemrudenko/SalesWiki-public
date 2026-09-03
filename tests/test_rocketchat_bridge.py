@@ -278,7 +278,7 @@ class McpModeGovernance(unittest.TestCase):
         }
         bridge.handle("запросить доступ нужен риск", wiki=self.wiki, state=self.state)
         self.pid = "proposal-0001"
-        curator = FixtureIdentityProvider("demo-marina-curator", config.identity_config()).resolve()
+        curator = FixtureIdentityProvider("demo-sophie-curator", config.identity_config()).resolve()
         self.server_tools = server.build_tools(self.wiki.svc, curator)
 
     def _stub_mcp(self, envelope: dict) -> list:

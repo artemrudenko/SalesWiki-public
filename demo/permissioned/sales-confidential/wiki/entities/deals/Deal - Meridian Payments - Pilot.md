@@ -17,7 +17,7 @@ tags:
   - deal
   - demo
 company: demo-company-meridian-payments
-owner: demo-ivan-ae
+owner: demo-ethan-ae
 team: sales-west
 stage: Negotiation
 ---
@@ -27,7 +27,7 @@ stage: Negotiation
 ## Controlled Profile
 
 - Company: [[Company - Meridian Payments]]
-- Owner: demo-ivan-ae
+- Owner: demo-ethan-ae
 - Team: sales-west
 - Stage: Negotiation
 

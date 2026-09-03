@@ -29,10 +29,10 @@ SALES_SECRETS = ("Discount floor", "Pricing:", "ACV")
 RISK_HINT = "economic buyer"
 
 # Roles that must never see sales-confidential secrets in any read tool.
-NO_SECRET_ROLES = ["demo-broad-viewer", "demo-sam-sdr", "demo-nina-marketing", "demo-lena-legal"]
+NO_SECRET_ROLES = ["demo-broad-viewer", "demo-sam-sdr", "demo-olivia-marketing", "demo-hannah-legal"]
 # Roles that should see deal risk in deal_risk(None).
-RISK_PRESENT = ["demo-ivan-ae", "demo-elena-hos", "demo-raj-revops", "demo-marina-curator", "demo-ada-admin"]
-RISK_ABSENT = ["demo-broad-viewer", "demo-sam-sdr", "demo-nina-marketing", "demo-lena-legal"]
+RISK_PRESENT = ["demo-ethan-ae", "demo-claire-hos", "demo-raj-revops", "demo-sophie-curator", "demo-ada-admin"]
+RISK_ABSENT = ["demo-broad-viewer", "demo-sam-sdr", "demo-olivia-marketing", "demo-hannah-legal"]
 
 
 def actor(actor_id: str):
@@ -89,12 +89,12 @@ class RoleToolMatrix(unittest.TestCase):
             self.assertNotIn(RISK_HINT, self.svc.deal_risk(actor(aid), None)["text"], f"{aid} must not see deal risk")
 
     def test_sdr_assigned_is_narrower_than_owner_team(self) -> None:
-        # A deal owned by Ivan on team sales-west: the AE (owned_or_team) sees it,
+        # A deal owned by Ethan on team sales-west: the AE (owned_or_team) sees it,
         # but an unassigned SDR on the same team (assigned) does not.
         policy = PolicyEvaluator(config.access_policy())
         deal = Resource(entity_id="demo-deal-bluepeak-energy-pilot", boundary="sales-confidential",
-                        owner="demo-ivan-ae", team="sales-west", company="demo-company-bluepeak-energy")
-        self.assertEqual(policy.can_read(actor("demo-ivan-ae"), deal).effect, "allow")
+                        owner="demo-ethan-ae", team="sales-west", company="demo-company-bluepeak-energy")
+        self.assertEqual(policy.can_read(actor("demo-ethan-ae"), deal).effect, "allow")
         self.assertEqual(policy.can_read(actor("demo-sam-sdr"), deal).effect, "block",
                          "an unassigned SDR must not see a team-mate's deal")
 
@@ -102,12 +102,12 @@ class RoleToolMatrix(unittest.TestCase):
         policy = PolicyEvaluator(config.access_policy())
         pd = Resource(entity_id="x", boundary="personal-data")
         self.assertEqual(policy.can_read(actor("demo-ada-admin"), pd).effect, "allow")
-        self.assertEqual(policy.can_read(actor("demo-nina-marketing"), pd).effect, "handle")
+        self.assertEqual(policy.can_read(actor("demo-olivia-marketing"), pd).effect, "handle")
 
     def test_legal_reviewer_blocked_from_sales_confidential(self) -> None:
         policy = PolicyEvaluator(config.access_policy())
         deal = Resource(entity_id="d", boundary="sales-confidential", owner="x", team="y", company="z")
-        self.assertEqual(policy.can_read(actor("demo-lena-legal"), deal).effect, "block")
+        self.assertEqual(policy.can_read(actor("demo-hannah-legal"), deal).effect, "block")
 
 
 if __name__ == "__main__":

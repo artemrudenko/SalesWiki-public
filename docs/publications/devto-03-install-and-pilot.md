@@ -7,8 +7,9 @@ series: Building SalesWiki in the open
 cover_image: https://raw.githubusercontent.com/artemrudenko/SalesWiki-public/main/assets/publication/devto-03-safe-pilot.png
 ---
 
-This tutorial takes SalesWiki from a fresh clone to a working synthetic demo. It
-also shows where to stop before adding real customer data.
+I wrote this tutorial to take SalesWiki from a fresh clone to a working synthetic
+demo. It also marks the point where you should stop before adding real customer
+data.
 
 The public preview has two practical modes today:
 
@@ -235,5 +236,6 @@ After one hour with the demo, you should be able to answer these questions:
 - Is real pilot data physically outside the public repository?
 
 If those properties match your requirements, clone the
-[SalesWiki repository](https://github.com/artemrudenko/SalesWiki-public), run the demo and open an issue with the
-workflow you want to test first.
+[SalesWiki repository](https://github.com/artemrudenko/SalesWiki-public) and run
+the demo. If you try it on a real workflow, I would like to know where the model
+holds up and where it gets in your way.

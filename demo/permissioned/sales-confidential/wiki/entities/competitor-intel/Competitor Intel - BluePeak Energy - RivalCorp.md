@@ -17,7 +17,7 @@ tags:
   - competitor-intel
   - demo
 company: demo-company-bluepeak-energy
-owner: demo-ivan-ae
+owner: demo-ethan-ae
 team: sales-west
 competitor: RivalCorp
 ---
@@ -28,7 +28,7 @@ competitor: RivalCorp
 
 - Company: [[Company - BluePeak Energy]]
 - Competitor: RivalCorp
-- Owner: demo-ivan-ae
+- Owner: demo-ethan-ae
 - Team: sales-west
 
 ## Live Intelligence

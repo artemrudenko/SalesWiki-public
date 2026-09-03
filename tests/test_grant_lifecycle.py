@@ -42,7 +42,7 @@ class GrantLifecycleTest(unittest.TestCase):
     def brief_access(self, actor_id: str) -> str:
         return self.svc.company_brief(self.who(actor_id), "BluePeak Energy")["access"]
 
-    def _granted_pid(self, approver: str = "demo-marina-curator", ttl_days: int = 30) -> str:
+    def _granted_pid(self, approver: str = "demo-sophie-curator", ttl_days: int = 30) -> str:
         pid = self.svc.request_access(self.who("demo-broad-viewer"), COMPANY_ID, "need it")
         self.svc.approve_proposal(self.who(approver), pid, ttl_days=ttl_days)
         return pid
@@ -50,7 +50,7 @@ class GrantLifecycleTest(unittest.TestCase):
     def test_revoke_drops_the_grant(self) -> None:
         pid = self._granted_pid()
         self.assertEqual(self.deal_access("demo-broad-viewer", "BluePeak Energy"), "allowed")
-        out = self.svc.revoke_proposal(self.who("demo-marina-curator"), pid, "no longer needed")
+        out = self.svc.revoke_proposal(self.who("demo-sophie-curator"), pid, "no longer needed")
         self.assertEqual(out["status"], "revoked")
         self.assertEqual(self.deal_access("demo-broad-viewer", "BluePeak Energy"), "blocked")
 
@@ -71,14 +71,14 @@ class GrantLifecycleTest(unittest.TestCase):
         # timedelta's ~1e9 limit). The grant is clamped to a sane maximum: never a
         # crash, never silently turned into an eternal grant.
         pid = self.svc.request_access(self.who("demo-broad-viewer"), COMPANY_ID, "need it")
-        out = self.svc.approve_proposal(self.who("demo-marina-curator"), pid, ttl_days=10 ** 9)
+        out = self.svc.approve_proposal(self.who("demo-sophie-curator"), pid, ttl_days=10 ** 9)
         self.assertEqual(out["status"], "approved")
         state = self.svc.proposal_state(pid)
         self.assertIn("grant_expires", state, "a bounded expiry must be stamped, not omitted")
         self.assertLess(state["grant_expires"], "3000-01-01T00:00:00Z", "expiry must be clamped, not astronomical")
 
     def test_curator_grant_keeps_personal_data_restricted(self) -> None:
-        self._granted_pid(approver="demo-marina-curator")
+        self._granted_pid(approver="demo-sophie-curator")
         # sales-confidential unblocked, but personal-data still restricted -> sanitized
         self.assertEqual(self.deal_access("demo-broad-viewer", "BluePeak Energy"), "allowed")
         self.assertEqual(self.brief_access("demo-broad-viewer"), "sanitized")
@@ -113,7 +113,7 @@ class GrantLifecycleTest(unittest.TestCase):
     def test_revoke_works_after_worker_apply(self) -> None:
         pid = self._granted_pid()
         self._run_worker()
-        out = self.svc.revoke_proposal(self.who("demo-marina-curator"), pid, "no longer needed")
+        out = self.svc.revoke_proposal(self.who("demo-sophie-curator"), pid, "no longer needed")
         self.assertEqual(out["status"], "revoked")
         self.assertEqual(self.deal_access("demo-broad-viewer", "BluePeak Energy"), "blocked")
 
@@ -186,7 +186,7 @@ class StubClockApproval(unittest.TestCase):
 
     def test_stub_clock_approve_does_not_crash_or_strand_the_draft(self) -> None:
         pid = self.svc.request_access(self.who("demo-broad-viewer"), COMPANY_ID, "need it")
-        out = self.svc.approve_proposal(self.who("demo-marina-curator"), pid)
+        out = self.svc.approve_proposal(self.who("demo-sophie-curator"), pid)
         self.assertEqual(out["status"], "approved")
         state = self.svc.proposal_state(pid)
         self.assertEqual(state.get("status"), "approved", "no half-recorded state: the status append must land")

@@ -1105,7 +1105,7 @@ PERMISSIONED_PAINS = {
 # Ironclad Freight is the closed-won-pilot expansion story (quantified proof).
 PERMISSIONED_PROFILES = [
     {
-        "name": "BluePeak Energy", "slug": "bluepeak-energy", "owner": "demo-ivan-ae", "team": "sales-west",
+        "name": "BluePeak Energy", "slug": "bluepeak-energy", "owner": "demo-ethan-ae", "team": "sales-west",
         "industry": "Energy & utilities", "icp": "high",
         "summary": "BluePeak Energy is a synthetic permissioned-demo account. This broad card is the sanitized summary every employee may see.",
         "public_angle": "Cost-reduction buyer — lead outreach with ROI proof and time-to-value; deal specifics in the sales-owner view.",
@@ -1127,7 +1127,7 @@ PERMISSIONED_PROFILES = [
         "lead": {"band": "hot", "stage": "SQL", "score": 88, "source": "Webinar: Energy ROI", "why": "downloaded the pricing guide twice this week",
                  "next": "scope the 30-day ROI pilot on their reporting workflow."},
         "transcript": (
-            "AE (Ivan Petrov): Thanks for the time. What's driving the cost-reduction initiative right now?\n"
+            "AE (Ethan Cole): Thanks for the time. What's driving the cost-reduction initiative right now?\n"
             "Champion (Dana Reyes, VP Operations): Finance wants every ops team to show time-to-value before Q3 planning. Weekly reporting eats two analyst-days.\n"
             "AE: If that dropped under an hour, what changes for you?\n"
             "Champion: I redeploy an analyst and can actually defend the budget. RivalCorp is our incumbent but their reporting config is painful.\n"
@@ -1170,7 +1170,7 @@ PERMISSIONED_PROFILES = [
         ),
     },
     {
-        "name": "Atlas Foods", "slug": "atlas-foods", "owner": "demo-ivan-ae", "team": "sales-west",
+        "name": "Atlas Foods", "slug": "atlas-foods", "owner": "demo-ethan-ae", "team": "sales-west",
         "industry": "Food manufacturing", "icp": "medium",
         "summary": "Atlas Foods runs multi-plant food production. This broad card is the sanitized summary every employee may see.",
         "public_angle": "Compliance-driven buyer — lead with audit-readiness; commercial detail in the sales-owner view.",
@@ -1192,7 +1192,7 @@ PERMISSIONED_PROFILES = [
         "lead": {"band": "warm", "stage": "SQL", "score": 70, "source": "Content: ROI calculator", "why": "completed the ROI calculator and opened two emails",
                  "next": "offer a compliance-readiness workshop slot before the audit."},
         "transcript": (
-            "AE (Ivan Petrov): What's the priority before the audit?\n"
+            "AE (Ethan Cole): What's the priority before the audit?\n"
             "Champion (Grace Okoro, Plant Operations Lead): We rebuild audit evidence by hand every cycle — it's days of work across sites.\n"
             "AE: If evidence were continuous and standardized, what would that unlock?\n"
             "Champion: Faster audits and fewer findings. FoodChain handles traceability but not the audit packet.\n"
@@ -1202,7 +1202,7 @@ PERMISSIONED_PROFILES = [
         ),
     },
     {
-        "name": "Meridian Payments", "slug": "meridian-payments", "owner": "demo-ivan-ae", "team": "sales-west",
+        "name": "Meridian Payments", "slug": "meridian-payments", "owner": "demo-ethan-ae", "team": "sales-west",
         "industry": "Fintech & payments", "icp": "high",
         "summary": "Meridian Payments processes card and dispute flows for online merchants. This broad card is the sanitized summary every employee may see.",
         "public_angle": "Security-conscious buyer — lead with PCI/fraud-ops ROI; commercial detail in the sales-owner view.",
@@ -1234,7 +1234,7 @@ PERMISSIONED_PROFILES = [
         ),
     },
     {
-        "name": "Cedar Health", "slug": "cedar-health", "owner": "demo-ivan-ae", "team": "sales-west",
+        "name": "Cedar Health", "slug": "cedar-health", "owner": "demo-ethan-ae", "team": "sales-west",
         "industry": "Healthcare services", "icp": "high",
         "summary": "Cedar Health runs outpatient clinics and care-operations teams. This broad card is the sanitized summary every employee may see.",
         "public_angle": "HIPAA-sensitive buyer — lead with clinician-hours ROI; PHI and commercial detail in the sales-owner view.",
@@ -1256,7 +1256,7 @@ PERMISSIONED_PROFILES = [
         "lead": {"band": "warm", "stage": "SQL", "score": 67, "source": "Webinar: Care-Ops ROI", "why": "downloaded the HIPAA-readiness brief",
                  "next": "share the clinician-hours ROI model and request a COO intro."},
         "transcript": (
-            "AE (Ivan Petrov): What's the throughput program trying to fix?\n"
+            "AE (Ethan Cole): What's the throughput program trying to fix?\n"
             "Champion (Dr. Amara Singh, Director of Clinical Ops): Clinicians lose hours to manual reporting that should go to patients.\n"
             "AE: Roughly how many hours?\n"
             "Champion: Easily a dozen per clinician each week. MedSys holds the records but we export to spreadsheets for reporting.\n"
@@ -1347,7 +1347,7 @@ PERMISSIONED_COMPANIES = [(p["name"], p["slug"], p["owner"], p["team"], True) fo
 DENSE_GRAPH_DEMO = {
     "name": "Summit Grid Logistics",
     "slug": "summit-grid-logistics",
-    "owner": "demo-ivan-ae",
+    "owner": "demo-ethan-ae",
     "team": "sales-west",
     "industry": "Logistics technology",
     "summary": "Summit Grid Logistics is a synthetic expansion account used to demonstrate a denser, cross-functional knowledge graph.",

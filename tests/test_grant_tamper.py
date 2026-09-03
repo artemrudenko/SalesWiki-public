@@ -59,7 +59,7 @@ class GrantTamper(unittest.TestCase):
     def _signed_bluepeak_grant(self) -> str:
         """A viewer's legitimately signed, approved access grant on BluePeak."""
         pid = self.svc.request_access(self.who("demo-broad-viewer"), BLUEPEAK, "need it")
-        self.svc.approve_proposal(self.who("demo-marina-curator"), pid)
+        self.svc.approve_proposal(self.who("demo-sophie-curator"), pid)
         self.assertEqual(
             self.deal_access("demo-broad-viewer", "BluePeak Energy"),
             "allowed",
@@ -85,11 +85,11 @@ class GrantTamper(unittest.TestCase):
         """Re-pointing a signed grant to a different requester must not unlock it:
         requester is not covered by payload_hash, so it must be a signed field."""
         pid = self._signed_bluepeak_grant()
-        self.assertEqual(self.deal_access("demo-nina-marketing", "BluePeak Energy"), "blocked")
+        self.assertEqual(self.deal_access("demo-olivia-marketing", "BluePeak Energy"), "blocked")
         # Attacker hands the grant to marketing (zero sales-confidential access).
-        self.store.append_status(pid, {"requester": "demo-nina-marketing"})
+        self.store.append_status(pid, {"requester": "demo-olivia-marketing"})
         self.assertEqual(
-            self.deal_access("demo-nina-marketing", "BluePeak Energy"),
+            self.deal_access("demo-olivia-marketing", "BluePeak Energy"),
             "blocked",
             "a post-signing requester swap must not hand the grant to another user",
         )
@@ -101,7 +101,7 @@ class GrantTamper(unittest.TestCase):
         would be an eternal grant.)"""
         # A viewer's signed, approved flag_stale on BluePeak — no grant of any kind.
         pid = self.svc.flag_stale_or_wrong(self.who("demo-broad-viewer"), BLUEPEAK, "stale")
-        self.svc.approve_proposal(self.who("demo-marina-curator"), pid)
+        self.svc.approve_proposal(self.who("demo-sophie-curator"), pid)
         self.assertEqual(self.deal_access("demo-broad-viewer", "Atlas Foods"), "blocked")
         # Attacker flips it into a request_access grant on Atlas (requester unchanged).
         self.store.append_status(pid, {"type": "request_access", "target": ATLAS})
@@ -117,7 +117,7 @@ class GrantTamper(unittest.TestCase):
         tampered revoke, so grant derivation fails closed rather than reverting to
         the last-parseable (more permissive) approved state."""
         pid = self._signed_bluepeak_grant()
-        out = self.svc.revoke_proposal(self.who("demo-marina-curator"), pid, "no longer needed")
+        out = self.svc.revoke_proposal(self.who("demo-sophie-curator"), pid, "no longer needed")
         self.assertEqual(out["status"], "revoked")
         self.assertEqual(self.deal_access("demo-broad-viewer", "BluePeak Energy"), "blocked")
         # Corrupt the revoke line's bytes (a torn write on crash, or tampering by a

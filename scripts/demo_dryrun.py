@@ -36,8 +36,8 @@ from saleswiki_mcp.service import build_default_service  # noqa: E402
 
 SECRETS = ("Discount floor", "Pricing:", "ACV", "internal budget", "RivalCorp")
 RISK = "economic buyer"
-UNPRIVILEGED = ["demo-broad-viewer", "demo-sam-sdr", "demo-nina-marketing", "demo-lena-legal"]
-PRIVILEGED = ["demo-ivan-ae", "demo-elena-hos", "demo-raj-revops", "demo-marina-curator", "demo-ada-admin"]
+UNPRIVILEGED = ["demo-broad-viewer", "demo-sam-sdr", "demo-olivia-marketing", "demo-hannah-legal"]
+PRIVILEGED = ["demo-ethan-ae", "demo-claire-hos", "demo-raj-revops", "demo-sophie-curator", "demo-ada-admin"]
 COMPANY = "BluePeak Energy"
 COMPANY_ID = "demo-company-bluepeak-energy"
 
@@ -107,27 +107,27 @@ def run(quiet: bool) -> int:
 
     # 3. Access labels: marketing vs owner.
     rep.section("== Access labels ==")
-    rep.check("deal_risk marketing=aggregated", svc.deal_risk(who("demo-nina-marketing"), None)["access"] == "aggregated")
-    rep.check("deal_risk owner=allowed", svc.deal_risk(who("demo-ivan-ae"), None)["access"] == "allowed")
-    rep.check("company_brief owner sees pricing", any(s in tools("demo-ivan-ae")["saleswiki.company_brief"](COMPANY)["text"] for s in SECRETS))
+    rep.check("deal_risk marketing=aggregated", svc.deal_risk(who("demo-olivia-marketing"), None)["access"] == "aggregated")
+    rep.check("deal_risk owner=allowed", svc.deal_risk(who("demo-ethan-ae"), None)["access"] == "allowed")
+    rep.check("company_brief owner sees pricing", any(s in tools("demo-ethan-ae")["saleswiki.company_brief"](COMPANY)["text"] for s in SECRETS))
 
     # 4. Business value: broad signals/proof for marketing, restricted competitor context for sales.
     rep.section("== Business value storyline ==")
-    marketing_brief = tools("demo-nina-marketing")["saleswiki.company_brief"](COMPANY)["text"]
-    owner_brief = tools("demo-ivan-ae")["saleswiki.company_brief"](COMPANY)["text"]
+    marketing_brief = tools("demo-olivia-marketing")["saleswiki.company_brief"](COMPANY)["text"]
+    owner_brief = tools("demo-ethan-ae")["saleswiki.company_brief"](COMPANY)["text"]
     rep.check("marketing sees public-safe market signal", "cost-reduction initiative" in marketing_brief)
     rep.check("marketing sees sanitized ROI proof", "14 hours" in marketing_brief)
     rep.check("owner sees competitor intel", "RivalCorp" in owner_brief)
-    rep.check("content opportunities include ROI proof gap", "ROI proof gap" in tools("demo-nina-marketing")["saleswiki.content_opportunities"]("")["text"])
+    rep.check("content opportunities include ROI proof gap", "ROI proof gap" in tools("demo-olivia-marketing")["saleswiki.content_opportunities"]("")["text"])
 
     # 5. Governed write loop.
     rep.section("== Governed write loop ==")
-    msg = tools("demo-nina-marketing")["saleswiki.request_redaction_review"](COMPANY_ID, "contact PII exposed")
+    msg = tools("demo-olivia-marketing")["saleswiki.request_redaction_review"](COMPANY_ID, "contact PII exposed")
     pid = "proposal-0001"
     rep.check("marketing can propose", pid in msg["text"] and msg["proposal_id"] == pid)
-    rep.check("curator sees it in review_queue", pid in tools("demo-marina-curator")["saleswiki.review_queue"]("")["text"])
-    rep.check("sales role cannot approve", tools("demo-ivan-ae")["saleswiki.approve_proposal"](pid)["status"] == "blocked")
-    rep.check("curator can approve", tools("demo-marina-curator")["saleswiki.approve_proposal"](pid)["status"] == "approved")
+    rep.check("curator sees it in review_queue", pid in tools("demo-sophie-curator")["saleswiki.review_queue"]("")["text"])
+    rep.check("sales role cannot approve", tools("demo-ethan-ae")["saleswiki.approve_proposal"](pid)["status"] == "blocked")
+    rep.check("curator can approve", tools("demo-sophie-curator")["saleswiki.approve_proposal"](pid)["status"] == "approved")
     card = vault / "broad" / "wiki" / "entities" / "companies" / f"Company - {COMPANY}.md"
     rep.check("card unchanged before worker", "contact PII exposed" not in card.read_text(encoding="utf-8"))
     summary = worker.apply_approved(vault, proposals, audit, runtime, now=lambda: at(1))
@@ -138,18 +138,18 @@ def run(quiet: bool) -> int:
 
     # 6. Reject path never applies.
     rep.section("== Reject path ==")
-    tools("demo-ivan-ae")["saleswiki.flag_stale_or_wrong"](COMPANY_ID, "stale")
+    tools("demo-ethan-ae")["saleswiki.flag_stale_or_wrong"](COMPANY_ID, "stale")
     pid2 = "proposal-0002"
-    rep.check("curator can reject", tools("demo-marina-curator")["saleswiki.reject_proposal"](pid2, "not a real issue")["status"] == "rejected")
+    rep.check("curator can reject", tools("demo-sophie-curator")["saleswiki.reject_proposal"](pid2, "not a real issue")["status"] == "rejected")
     summary2 = worker.apply_approved(vault, proposals, audit, runtime, now=lambda: at(3))
     rep.check("rejected proposal is never applied", pid2 not in summary2["applied"])
 
     # 6b. Governed ingest (Drive connector) rides the same propose->approve->apply loop.
     rep.section("== Governed ingest (Drive) ==")
-    ipid = svc.ingest_resource(who("demo-ivan-ae"), COMPANY_ID,
+    ipid = svc.ingest_resource(who("demo-ethan-ae"), COMPANY_ID,
                                "Drive gd-001: discovery transcript [synthetic]")
     rep.check("ingest proposal captured", ipid.startswith("proposal-"))
-    tools("demo-marina-curator")["saleswiki.approve_proposal"](ipid)
+    tools("demo-sophie-curator")["saleswiki.approve_proposal"](ipid)
     isum = worker.apply_approved(vault, proposals, audit, runtime, now=lambda: at(4))
     rep.check("worker applies ingest to the card", ipid in isum["applied"])
     rep.check("ingest note lands in Review Needed", "Ingest proposed" in card.read_text(encoding="utf-8"))
@@ -162,7 +162,7 @@ def run(quiet: bool) -> int:
     rep.section("== Answer Contract envelope ==")
     keys = {"title", "access", "conclusion", "sections", "citations", "text"}
     access_ok = {"allowed", "sanitized", "aggregated", "blocked", "not-found", "ambiguous"}
-    ivan = who("demo-ivan-ae")
+    ethan = who("demo-ethan-ae")
     envelope_ok = True
     for name in (
         "company_brief", "deal_risk", "call_prep", "lead_priority",
@@ -170,7 +170,7 @@ def run(quiet: bool) -> int:
         "my_day", "pipeline_risk_digest",
     ):
         arg = {"company_brief": COMPANY, "call_prep": COMPANY, "event_brief": "Sales Tech Summit 2026", "campaign_brief": "Q3 ROI Push"}.get(name)
-        out = getattr(svc, name)(ivan, arg) if arg is not None else getattr(svc, name)(ivan)
+        out = getattr(svc, name)(ethan, arg) if arg is not None else getattr(svc, name)(ethan)
         if not keys.issubset(out) or out["access"] not in access_ok:
             envelope_ok = False
     rep.check("every read tool returns the Answer envelope", envelope_ok)

@@ -40,8 +40,8 @@ class WorkerTransaction(unittest.TestCase):
         self.audit = self.tmp / "audit.jsonl"
         self.runtime = self.tmp / "runtime"
         self.svc = build_default_service(self.vault, self.audit, self.proposals, now=lambda: "t")
-        self.pid = self.svc.flag_stale_or_wrong(actor("demo-ivan-ae"), TARGET, "pricing looks stale")
-        self.svc.approve_proposal(actor("demo-marina-curator"), self.pid)
+        self.pid = self.svc.flag_stale_or_wrong(actor("demo-ethan-ae"), TARGET, "pricing looks stale")
+        self.svc.approve_proposal(actor("demo-sophie-curator"), self.pid)
         self.card = self.vault / "broad" / "wiki" / "entities" / "companies" / "Company - BluePeak Energy.md"
 
     def test_post_apply_validation_failure_reverts_card(self) -> None:

@@ -54,13 +54,13 @@ context and deal risk into role-shaped next actions.
 flowchart LR
     subgraph Roles
         V["demo-broad-viewer<br/>(employee-viewer)"]
-        N["demo-nina-marketing<br/>(marketing)"]
+        N["demo-olivia-marketing<br/>(marketing)"]
         SDR["demo-sam-sdr<br/>(sales / SDR)"]
-        I["demo-ivan-ae<br/>(sales-owner, owns BluePeak,<br/>team sales-west)"]
-        E["demo-elena-hos<br/>(hos)"]
+        I["demo-ethan-ae<br/>(sales-owner, owns BluePeak,<br/>team sales-west)"]
+        E["demo-claire-hos<br/>(hos)"]
         R["demo-raj-revops<br/>(revops)"]
-        M["demo-marina-curator<br/>(curator, approver)"]
-        LG["demo-lena-legal<br/>(legal-reviewer)"]
+        M["demo-sophie-curator<br/>(curator, approver)"]
+        LG["demo-hannah-legal<br/>(legal-reviewer)"]
         A["demo-ada-admin<br/>(admin)"]
     end
     subgraph Boundaries
@@ -93,13 +93,13 @@ flowchart LR
 | Actor (env `SALESWIKI_DEMO_ACTOR`) | Role | broad | sales-confidential | personal-data | Can approve? |
 | --- | --- | --- | --- | --- | --- |
 | `demo-broad-viewer` | employee-viewer | yes | no | handle only | no |
-| `demo-nina-marketing` | marketing | yes | no | handle only | no |
+| `demo-olivia-marketing` | marketing | yes | no | handle only | no |
 | `demo-sam-sdr` | sales (SDR) | yes | only assigned to them | handle only | no |
-| `demo-ivan-ae` | sales-owner | yes | owned/team (BluePeak, Atlas) | handle only | no |
-| `demo-elena-hos` | hos | yes | all deals | handle only | **yes** |
+| `demo-ethan-ae` | sales-owner | yes | owned/team (BluePeak, Atlas) | handle only | no |
+| `demo-claire-hos` | hos | yes | all deals | handle only | **yes** |
 | `demo-raj-revops` | revops | yes | all deals | handle only | no (review only) |
-| `demo-marina-curator` | curator | yes | all | handle only | **yes** |
-| `demo-lena-legal` | legal-reviewer | yes | no (broad + legal-review) | handle only | no |
+| `demo-sophie-curator` | curator | yes | all | handle only | **yes** |
+| `demo-hannah-legal` | legal-reviewer | yes | no (broad + legal-review) | handle only | no |
 | `demo-ada-admin` | admin | yes | all | **full (raw)** | yes |
 
 ## Data Layout
@@ -129,11 +129,11 @@ them all):
 
 | Company | entity_id | Sales owner / team | Lead band | Story |
 | --- | --- | --- | --- | --- |
-| BluePeak Energy | `demo-company-bluepeak-energy` | demo-ivan-ae / sales-west | hot | cost-reduction buyer (demo hero) |
+| BluePeak Energy | `demo-company-bluepeak-energy` | demo-ethan-ae / sales-west | hot | cost-reduction buyer (demo hero) |
 | Northstar Robotics | `demo-company-northstar-robotics` | demo-maria-ae / sales-east | warm | automation expansion, competitive |
-| Atlas Foods | `demo-company-atlas-foods` | demo-ivan-ae / sales-west | warm | compliance-driven, early stage |
-| Meridian Payments | `demo-company-meridian-payments` | demo-ivan-ae / sales-west | hot | security-gated negotiation |
-| Cedar Health | `demo-company-cedar-health` | demo-ivan-ae / sales-west | warm | HIPAA-sensitive, COO not engaged |
+| Atlas Foods | `demo-company-atlas-foods` | demo-ethan-ae / sales-west | warm | compliance-driven, early stage |
+| Meridian Payments | `demo-company-meridian-payments` | demo-ethan-ae / sales-west | hot | security-gated negotiation |
+| Cedar Health | `demo-company-cedar-health` | demo-ethan-ae / sales-west | warm | HIPAA-sensitive, COO not engaged |
 | Solara Hospitality | `demo-company-solara-hospitality` | demo-maria-ae / sales-east | warm | renewal at risk: champion departed, save play |
 | Ironclad Freight | `demo-company-ironclad-freight` | demo-maria-ae / sales-east | hot | closed-won pilot with quantified proof, multi-site expansion |
 
@@ -198,10 +198,10 @@ cannot change it). Run from the repo root:
 {
   "mcpServers": {
     "saleswiki-viewer":    {"command": ".venv/bin/python", "args": ["-m", "saleswiki_mcp.server"], "env": {"SALESWIKI_DEMO_ACTOR": "demo-broad-viewer"}},
-    "saleswiki-marketing": {"command": ".venv/bin/python", "args": ["-m", "saleswiki_mcp.server"], "env": {"SALESWIKI_DEMO_ACTOR": "demo-nina-marketing"}},
-    "saleswiki-ae":        {"command": ".venv/bin/python", "args": ["-m", "saleswiki_mcp.server"], "env": {"SALESWIKI_DEMO_ACTOR": "demo-ivan-ae"}},
-    "saleswiki-hos":       {"command": ".venv/bin/python", "args": ["-m", "saleswiki_mcp.server"], "env": {"SALESWIKI_DEMO_ACTOR": "demo-elena-hos"}},
-    "saleswiki-curator":   {"command": ".venv/bin/python", "args": ["-m", "saleswiki_mcp.server"], "env": {"SALESWIKI_DEMO_ACTOR": "demo-marina-curator"}}
+    "saleswiki-marketing": {"command": ".venv/bin/python", "args": ["-m", "saleswiki_mcp.server"], "env": {"SALESWIKI_DEMO_ACTOR": "demo-olivia-marketing"}},
+    "saleswiki-ae":        {"command": ".venv/bin/python", "args": ["-m", "saleswiki_mcp.server"], "env": {"SALESWIKI_DEMO_ACTOR": "demo-ethan-ae"}},
+    "saleswiki-hos":       {"command": ".venv/bin/python", "args": ["-m", "saleswiki_mcp.server"], "env": {"SALESWIKI_DEMO_ACTOR": "demo-claire-hos"}},
+    "saleswiki-curator":   {"command": ".venv/bin/python", "args": ["-m", "saleswiki_mcp.server"], "env": {"SALESWIKI_DEMO_ACTOR": "demo-sophie-curator"}}
   }
 }
 ```
@@ -243,11 +243,11 @@ Two things to keep in mind:
 
 Ask each persona's server the **same** question and contrast the answers.
 
-| Tool call | Viewer / Marketing | Sales owner (Ivan) | HoS (Elena) |
+| Tool call | Viewer / Marketing | Sales owner (Ethan) | HoS (Claire) |
 | --- | --- | --- | --- |
 | `company_brief("BluePeak Energy")` | sanitized summary; no pricing; transcript = `restricted://` handle | full sales-confidential block (pricing, discount floor, ACV) | full block |
 | `deal_risk("")` | **aggregated count only**, no named deals | own sales-west deals + next actions (never Northstar, Solara or Ironclad — sales-east) | **all seven** deals |
-| `call_prep("BluePeak Energy")` | sanitized "sales feedback only" note, no detail | sanitized takeaway + raw transcript handle | same as Ivan |
+| `call_prep("BluePeak Energy")` | sanitized "sales feedback only" note, no detail | sanitized takeaway + raw transcript handle | same as Ethan |
 | `lead_priority("")` | ranked leads (band, why-now); contact = handle; **no** linked deal risk | same list **plus** linked deal risk for owned accounts | list + deal risk for all |
 | `event_brief("Sales Tech Summit 2026")` | target accounts + content angle; no deal detail | accounts + deal context + outreach | accounts + deal context |
 | `my_day()` | broad lead list, no deal detail | own leads + own at-risk deals | leads + all deal risk |
@@ -276,9 +276,9 @@ text is treated as data. (This is what `tests/test_prompt_injection.py` asserts.
 
 ```mermaid
 sequenceDiagram
-    participant N as Nina (marketing)
+    participant N as Olivia (marketing)
     participant G as Gateway
-    participant M as Marina (curator)
+    participant M as Sophie (curator)
     participant W as Worker (CLI)
     N->>G: request_redaction_review("demo-company-bluepeak-energy", "contact PII may be exposed")
     G-->>N: Captured proposal-0001 (draft) - production unchanged
@@ -292,7 +292,7 @@ sequenceDiagram
 Commands (gateway tools run via your MCP client; the worker is a CLI step):
 
 ```bash
-# After Nina proposes and Marina approves via the MCP tools, apply:
+# After Olivia proposes and Sophie approves via the MCP tools, apply:
 SALESWIKI_VAULT_ROOT=demo/permissioned SALESWIKI_RUNTIME_DIR=demo/runtime \
   .venv/bin/python -m saleswiki_mcp.worker
 # -> prints a summary: {'applied': ['proposal-0001'], 'failed': [], 'dead_letter': [], 'locked': False}
@@ -307,7 +307,7 @@ grep -A3 "## Review Needed" "demo/permissioned/broad/wiki/entities/companies/Com
 Show the **governance inbox** (Curator/RevOps): a reviewer lists and inspects the queue; an approver can reject instead of approve. RevOps can inspect but not decide.
 
 ```text
-# as Marina (curator):   saleswiki.review_queue()        -> lists pending proposals
+# as Sophie (curator):   saleswiki.review_queue()        -> lists pending proposals
 #                         saleswiki.get_proposal(pid)     -> one proposal's full state
 #                         saleswiki.reject_proposal(pid, "not a real issue")  -> draft -> rejected (append-only)
 # as Raj (revops):        saleswiki.review_queue()        -> allowed (inspect); reject_proposal -> blocked
@@ -335,13 +335,13 @@ from saleswiki_mcp.identity import FixtureIdentityProvider
 from saleswiki_mcp.service import build_default_service
 svc = build_default_service("demo/permissioned", "demo/runtime/audit.jsonl", "demo/runtime/proposals.jsonl")
 who = lambda i: FixtureIdentityProvider(i, config.identity_config()).resolve()
-# Marketing: no pricing at all. Ivan: pricing IS shown, but the PII transcript
+# Marketing: no pricing at all. Ethan: pricing IS shown, but the PII transcript
 # stays a handle, so the brief is still labelled "sanitized".
-print(svc.company_brief(who("demo-nina-marketing"), "BluePeak Energy")["access"])  # sanitized
-print(svc.company_brief(who("demo-ivan-ae"), "BluePeak Energy")["access"])          # sanitized (pricing visible)
+print(svc.company_brief(who("demo-olivia-marketing"), "BluePeak Energy")["access"])  # sanitized
+print(svc.company_brief(who("demo-ethan-ae"), "BluePeak Energy")["access"])          # sanitized (pricing visible)
 # Crispest contrast is deal_risk:
-print(svc.deal_risk(who("demo-nina-marketing"), None)["access"])  # aggregated (no named deals)
-print(svc.deal_risk(who("demo-elena-hos"), None)["access"])        # allowed (all deals)
+print(svc.deal_risk(who("demo-olivia-marketing"), None)["access"])  # aggregated (no named deals)
+print(svc.deal_risk(who("demo-claire-hos"), None)["access"])        # allowed (all deals)
 PY
 ```
 

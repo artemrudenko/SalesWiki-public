@@ -17,7 +17,7 @@ tags:
   - call
   - demo
 company: demo-company-meridian-payments
-owner: demo-ivan-ae
+owner: demo-ethan-ae
 team: sales-west
 call_date: 2026-08-29
 ---
@@ -27,7 +27,7 @@ call_date: 2026-08-29
 ## Controlled Profile
 
 - Company: [[Company - Meridian Payments]]
-- Owner: demo-ivan-ae
+- Owner: demo-ethan-ae
 - Team: sales-west
 - Raw transcript: restricted://personal-data/demo-meridian-payments-callrecording
 

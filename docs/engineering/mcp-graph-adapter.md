@@ -114,7 +114,7 @@ Small example:
       "label": "BluePeak Energy",
       "subtitle": "Target account",
       "detail": "ROI-focused pilot evaluation.",
-      "metadata": {"owner": "Ivan Petrov"},
+      "metadata": {"owner": "Ethan Cole"},
       "evidence_ids": ["evidence_01"]
     }
   ],

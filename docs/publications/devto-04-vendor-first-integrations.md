@@ -1,5 +1,5 @@
 ---
-title: "We built one chat integration, then stopped: a vendor-first MCP strategy"
+title: "One chat integration was enough: my vendor-first MCP strategy"
 published: false
 description: "How SalesWiki separates chat adapters, MCP clients, source connectors and controlled writes without building one bot per vendor."
 tags: mcp, architecture, opensource, python
@@ -7,7 +7,7 @@ series: "Building SalesWiki in the open"
 cover_image: https://raw.githubusercontent.com/artemrudenko/SalesWiki-public/main/assets/publication/devto-04-connector-paths.png
 ---
 
-Our first chat integration worked. That was the problem.
+The first chat integration worked. That created a new problem.
 
 SalesWiki could answer role-aware questions inside Rocket.Chat. Once that demo
 was running, it was easy to imagine the next tickets: add Telegram, add Slack,
@@ -17,8 +17,8 @@ That list looks like progress. It can also turn a small project into five OAuth
 implementations, five retry systems and five slightly different copies of the
 same conversation state.
 
-We paused and asked a simpler question: which parts do we need to own, and which
-parts should a vendor maintain for us?
+I paused and asked a simpler question: which parts does SalesWiki need to own,
+and which parts should a vendor maintain?
 
 ## Four jobs that should not share one interface
 
@@ -31,11 +31,11 @@ The word "connector" hid several different jobs:
 | Source connector | HubSpot, Drive, Slack history | Reads evidence or structured records from another system |
 | Notification sink | Slack digest, Teams digest, email | Sends an approved report or alert |
 
-Identity is separate again. A Rocket.Chat user ID or Slack user ID helps us find
+Identity is separate again. A Rocket.Chat user ID or Slack user ID can identify
 a person, but it must never become a SalesWiki role by itself.
 
 Trying to hide all four jobs behind a universal `ConnectorAdapter` would produce
-a vague interface with many optional methods. We chose narrow contracts instead.
+a vague interface with many optional methods. I chose narrow contracts instead.
 
 ![MCP clients call SalesWiki, custom chats use a shared runtime, and controlled ingest uses official vendor MCP servers](https://raw.githubusercontent.com/artemrudenko/SalesWiki-public/main/diagrams/saleswiki-integration-platform.png)
 
@@ -71,10 +71,10 @@ approval -> single writer -> vault
 ```
 
 The second flow is not allowed to write straight into a production card. Vendor
-tools may simplify authentication and API access, but they do not replace our
+tools may simplify authentication and API access, but they do not replace the
 proposal, approval and audit rules.
 
-We also avoid putting broad vendor write tools next to SalesWiki tools in a
+I also avoid putting broad vendor write tools next to SalesWiki tools in a
 general-purpose client. Otherwise a user could skip the governed path and ask
 the vendor tool to make the change directly.
 
@@ -179,9 +179,9 @@ python3 -m saleswiki_runtime doctor
 an explicit opt-in, so an old shell profile cannot make an accidental network
 connection.
 
-## What we plan to buy, reuse and build
+## What I plan to buy, reuse and build
 
-Our current choices are based on official product documentation:
+My current choices are based on official product documentation:
 
 | Need | First choice | Why |
 | --- | --- | --- |
@@ -202,7 +202,7 @@ wrong tool for nightly synchronization.
 
 A real sync needs stable IDs, pagination, checkpoints, delta reads, rate-limit
 handling, replay safety and reconciliation. If the vendor MCP does not expose
-those controls, we will use its API, webhook support or a managed connector.
+those controls, I will use its API, webhook support or a managed connector.
 
 The decision order is:
 
@@ -217,7 +217,7 @@ payload hash, idempotency key, previous value, provider result and recovery path
 
 ## The rollout order matters
 
-We are not connecting every vendor at once.
+I am not connecting every vendor at once.
 
 1. The typed configuration and shared chat runtime are complete.
 2. Next comes a hosted SalesWiki MCP endpoint with OAuth 2.1 and per-request
@@ -235,7 +235,7 @@ credential a named purpose.
 
 The approach reduces provider code, keeps SalesWiki replaceable and lets Slack
 or Microsoft maintain their own client experience. The shared runtime also makes
-small custom channels cheaper when we truly need one.
+small custom channels cheaper when there is demonstrated demand for one.
 
 There are costs. Vendor MCP tools can change, preview services are risky for
 production, and an interactive tool catalog may be a poor fit for bulk sync.

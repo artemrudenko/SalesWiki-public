@@ -47,7 +47,7 @@ class RuntimeConfig(unittest.TestCase):
         self.assertTrue(settings.workbench.allow_fixture_persona_switching)
         self.assertEqual(settings.vault.root, ROOT / "demo" / "permissioned")
         self.assertEqual(settings.vault.runtime, ROOT / ".runtime" / "workbench")
-        with mock.patch.dict(os.environ, {"SALESWIKI_DEMO_ACTOR": "demo-ivan-ae"}, clear=False):
+        with mock.patch.dict(os.environ, {"SALESWIKI_DEMO_ACTOR": "demo-ethan-ae"}, clear=False):
             passed, failed = _doctor(settings)
         self.assertEqual(failed, [])
         self.assertTrue(any("Workbench fixture actor resolves" in item for item in passed))

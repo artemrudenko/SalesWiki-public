@@ -17,7 +17,7 @@ tags:
   - call
   - demo
 company: demo-company-summit-grid-logistics
-owner: demo-ivan-ae
+owner: demo-ethan-ae
 team: sales-west
 ---
 

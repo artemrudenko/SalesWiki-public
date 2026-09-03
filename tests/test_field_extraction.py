@@ -71,7 +71,7 @@ class FieldExtractionContract(unittest.TestCase):
             self.vault, self.tmp / "a.jsonl", self.tmp / "p.jsonl",
             now=lambda: "t",
         )
-        out = svc.deal_risk(actor("demo-ivan-ae"), None)
+        out = svc.deal_risk(actor("demo-ethan-ae"), None)
         self.assertIn("economic buyer", out["text"], "default profile still extracts demo risk")
 
     def test_unmapped_field_returns_empty_not_error(self) -> None:

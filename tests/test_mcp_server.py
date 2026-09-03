@@ -43,7 +43,7 @@ def _runtime(actor_id: str):
 
 class ToolHandlers(unittest.TestCase):
     def test_tool_names(self) -> None:
-        _, _, tools = _runtime("demo-ivan-ae")
+        _, _, tools = _runtime("demo-ethan-ae")
         self.assertIn("saleswiki.company_brief", tools)
         self.assertIn("saleswiki.company_search", tools)
         self.assertIn("saleswiki.entity_graph", tools)
@@ -64,35 +64,35 @@ class ToolHandlers(unittest.TestCase):
         self.assertIn("saleswiki.reject_proposal", tools)
 
     def test_governance_inbox_is_role_gated(self) -> None:
-        tmp, svc, curator = _runtime("demo-marina-curator")
+        tmp, svc, curator = _runtime("demo-sophie-curator")
         pid = svc.flag_stale_or_wrong(
-            FixtureIdentityProvider("demo-ivan-ae", config.identity_config()).resolve(),
+            FixtureIdentityProvider("demo-ethan-ae", config.identity_config()).resolve(),
             "demo-company-bluepeak-energy", "stale",
         )
-        _, _, mkt = _runtime("demo-nina-marketing")
+        _, _, mkt = _runtime("demo-olivia-marketing")
         self.assertIn("Review Queue", curator["saleswiki.review_queue"]("")["text"])
         self.assertIn("Blocked", mkt["saleswiki.review_queue"]("")["text"])
         self.assertIn("rejected", curator["saleswiki.reject_proposal"](pid, "no")["text"].lower())
 
     def test_marketing_workbench_tools(self) -> None:
-        _, _, owner = _runtime("demo-ivan-ae")
-        _, _, mkt = _runtime("demo-nina-marketing")
+        _, _, owner = _runtime("demo-ethan-ae")
+        _, _, mkt = _runtime("demo-olivia-marketing")
         self.assertIn("Energy cost volatility", mkt["saleswiki.content_opportunities"]("")["text"])
         self.assertIn("economic buyer", owner["saleswiki.campaign_brief"]("Q3 ROI Push")["text"])
         self.assertNotIn("economic buyer", mkt["saleswiki.campaign_brief"]("Q3 ROI Push")["text"])
 
     def test_my_day_and_pipeline_digest_are_role_shaped(self) -> None:
-        _, _, owner = _runtime("demo-ivan-ae")
-        _, _, mkt = _runtime("demo-nina-marketing")
+        _, _, owner = _runtime("demo-ethan-ae")
+        _, _, mkt = _runtime("demo-olivia-marketing")
         self.assertIn("economic buyer", owner["saleswiki.my_day"]("")["text"])
         self.assertNotIn("economic buyer", mkt["saleswiki.my_day"]("")["text"])
-        _, _, hos = _runtime("demo-elena-hos")
+        _, _, hos = _runtime("demo-claire-hos")
         digest = hos["saleswiki.pipeline_risk_digest"]("")["text"]
         self.assertIn("Pipeline Risk Digest", digest)
         self.assertIn("Northstar Robotics", digest)
 
     def test_request_redaction_review_captures_proposal(self) -> None:
-        tmp, _, tools = _runtime("demo-nina-marketing")
+        tmp, _, tools = _runtime("demo-olivia-marketing")
         out = tools["saleswiki.request_redaction_review"]("demo-company-bluepeak-energy", "contact PII exposed")
         self.assertIn("proposal-", out["text"])
         records = [json.loads(l) for l in (tmp / "proposals.jsonl").read_text().splitlines() if l.strip()]
@@ -100,7 +100,7 @@ class ToolHandlers(unittest.TestCase):
         self.assertEqual(records[0]["status"], "draft")
 
     def test_import_summary_is_captured_as_a_governed_draft(self) -> None:
-        tmp, _, tools = _runtime("demo-ivan-ae")
+        tmp, _, tools = _runtime("demo-ethan-ae")
         out = tools["saleswiki.ingest_resource"]("demo-company-bluepeak-energy", "company: BluePeak; next-step: review")
         self.assertEqual(out["status"], "draft")
         records = [json.loads(line) for line in (tmp / "proposals.jsonl").read_text().splitlines() if line.strip()]
@@ -108,13 +108,13 @@ class ToolHandlers(unittest.TestCase):
         self.assertEqual(records[0]["note"], "company: BluePeak; next-step: review")
 
     def test_approve_proposal_is_role_gated(self) -> None:
-        tmp, svc, curator_tools = _runtime("demo-marina-curator")
+        tmp, svc, curator_tools = _runtime("demo-sophie-curator")
         pid = svc.flag_stale_or_wrong(
-            FixtureIdentityProvider("demo-ivan-ae", config.identity_config()).resolve(),
+            FixtureIdentityProvider("demo-ethan-ae", config.identity_config()).resolve(),
             "demo-company-bluepeak-energy",
             "stale pricing",
         )
-        _, _, sales_tools = _runtime("demo-ivan-ae")
+        _, _, sales_tools = _runtime("demo-ethan-ae")
         denied = sales_tools["saleswiki.approve_proposal"](pid)
         self.assertIn("not", denied["text"].lower())
         self.assertEqual(denied["status"], "blocked")
@@ -132,7 +132,7 @@ class ToolHandlers(unittest.TestCase):
             now=lambda: "2026-06-14T00:00:00Z",
         )
         viewer = FixtureIdentityProvider("demo-broad-viewer", config.identity_config()).resolve()
-        curator = FixtureIdentityProvider("demo-marina-curator", config.identity_config()).resolve()
+        curator = FixtureIdentityProvider("demo-sophie-curator", config.identity_config()).resolve()
         pid = svc.request_access(viewer, "demo-company-bluepeak-energy", "need deal risk")
         return svc, server.build_tools(svc, curator), pid
 
@@ -165,8 +165,8 @@ class ToolHandlers(unittest.TestCase):
         self.assertNotIn("worker will apply", second["text"])
 
     def test_lead_priority_is_role_shaped(self) -> None:
-        _, _, owner_tools = _runtime("demo-ivan-ae")
-        _, _, mkt_tools = _runtime("demo-nina-marketing")
+        _, _, owner_tools = _runtime("demo-ethan-ae")
+        _, _, mkt_tools = _runtime("demo-olivia-marketing")
         owner_text = owner_tools["saleswiki.lead_priority"]("")["text"]
         mkt_text = mkt_tools["saleswiki.lead_priority"]("")["text"]
         self.assertIn("BluePeak Energy", owner_text)
@@ -175,8 +175,8 @@ class ToolHandlers(unittest.TestCase):
         self.assertNotIn("economic buyer", mkt_text, "marketing gets no linked deal detail")
 
     def test_event_brief_is_role_shaped(self) -> None:
-        _, _, owner_tools = _runtime("demo-ivan-ae")
-        _, _, mkt_tools = _runtime("demo-nina-marketing")
+        _, _, owner_tools = _runtime("demo-ethan-ae")
+        _, _, mkt_tools = _runtime("demo-olivia-marketing")
         owner_text = owner_tools["saleswiki.event_brief"]("Sales Tech Summit 2026")["text"]
         mkt_text = mkt_tools["saleswiki.event_brief"]("Sales Tech Summit 2026")["text"]
         for name in ("BluePeak Energy", "Northstar Robotics", "Atlas Foods"):
@@ -186,16 +186,16 @@ class ToolHandlers(unittest.TestCase):
         self.assertNotIn("economic buyer", mkt_text)
 
     def test_deal_risk_is_role_shaped(self) -> None:
-        _, _, hos_tools = _runtime("demo-elena-hos")
-        _, _, mkt_tools = _runtime("demo-nina-marketing")
+        _, _, hos_tools = _runtime("demo-claire-hos")
+        _, _, mkt_tools = _runtime("demo-olivia-marketing")
         hos_text = hos_tools["saleswiki.deal_risk"]("")["text"]
         mkt_text = mkt_tools["saleswiki.deal_risk"]("")["text"]
         self.assertIn("Northstar Robotics", hos_text, "HoS sees all named deals")
         self.assertNotIn("Northstar Robotics", mkt_text, "marketing gets no named deals")
 
     def test_call_prep_is_role_shaped(self) -> None:
-        _, _, owner_tools = _runtime("demo-ivan-ae")
-        _, _, mkt_tools = _runtime("demo-nina-marketing")
+        _, _, owner_tools = _runtime("demo-ethan-ae")
+        _, _, mkt_tools = _runtime("demo-olivia-marketing")
         owner_text = owner_tools["saleswiki.call_prep"]("BluePeak Energy")["text"]
         mkt_text = mkt_tools["saleswiki.call_prep"]("BluePeak Energy")["text"]
         self.assertIn("Sanitized takeaway", owner_text)
@@ -205,8 +205,8 @@ class ToolHandlers(unittest.TestCase):
             self.assertNotIn(secret, mkt_text)
 
     def test_company_brief_is_role_shaped(self) -> None:
-        _, _, owner_tools = _runtime("demo-ivan-ae")
-        _, _, mkt_tools = _runtime("demo-nina-marketing")
+        _, _, owner_tools = _runtime("demo-ethan-ae")
+        _, _, mkt_tools = _runtime("demo-olivia-marketing")
         owner_text = owner_tools["saleswiki.company_brief"]("BluePeak Energy")["text"]
         mkt_text = mkt_tools["saleswiki.company_brief"]("BluePeak Energy")["text"]
         self.assertTrue(any(s in owner_text for s in SALES_SECRETS))
@@ -214,7 +214,7 @@ class ToolHandlers(unittest.TestCase):
             self.assertNotIn(secret, mkt_text)
 
     def test_entity_graph_handler_returns_graph_view(self) -> None:
-        _, _, owner_tools = _runtime("demo-ivan-ae")
+        _, _, owner_tools = _runtime("demo-ethan-ae")
         graph = owner_tools["saleswiki.entity_graph"]("BluePeak Energy")
         self.assertEqual(graph["contract"], "saleswiki.graph-view")
         self.assertEqual(graph["version"], 1)
@@ -222,7 +222,7 @@ class ToolHandlers(unittest.TestCase):
         self.assertIn("BluePeak", graph["text"])
 
     def test_flag_is_append_only(self) -> None:
-        tmp, _, tools = _runtime("demo-ivan-ae")
+        tmp, _, tools = _runtime("demo-ethan-ae")
         before = {p: p.read_bytes() for p in (tmp / "permissioned").rglob("*.md")}
         out = tools["saleswiki.flag_stale_or_wrong"]("demo-company-bluepeak-energy", "stale pricing")
         self.assertIn("proposal-", out["text"])
@@ -238,21 +238,21 @@ class StructuredEnvelopes(unittest.TestCase):
     change cannot flip a decision."""
 
     def test_read_envelope_carries_access_and_text(self) -> None:
-        _, _, tools = _runtime("demo-ivan-ae")
+        _, _, tools = _runtime("demo-ethan-ae")
         env = tools["saleswiki.company_brief"]("BluePeak Energy")
         self.assertIn("BluePeak", env["text"])
         self.assertIn("access", env)
 
     def test_review_queue_envelope_is_machine_readable(self) -> None:
-        _, _, curator = _runtime("demo-marina-curator")
-        _, _, mkt = _runtime("demo-nina-marketing")
+        _, _, curator = _runtime("demo-sophie-curator")
+        _, _, mkt = _runtime("demo-olivia-marketing")
         self.assertEqual(curator["saleswiki.review_queue"]("")["access"], "allowed")
         blocked = mkt["saleswiki.review_queue"]("")
         self.assertEqual(blocked["access"], "blocked")
         self.assertIn("Blocked", blocked["text"])
 
     def test_propose_envelope_carries_proposal_id(self) -> None:
-        _, _, tools = _runtime("demo-ivan-ae")
+        _, _, tools = _runtime("demo-ethan-ae")
         env = tools["saleswiki.flag_stale_or_wrong"]("demo-company-bluepeak-energy", "stale")
         self.assertEqual(env["status"], "draft")
         self.assertRegex(env["proposal_id"], r"^proposal-\d+$")
@@ -283,7 +283,7 @@ class FastMcpWiring(unittest.TestCase):
         vault = tmp / "permissioned"
         gdv.generate_permissioned_demo(vault)
         svc = build_default_service(vault, tmp / "audit.jsonl", tmp / "proposals.jsonl", now=lambda: "t")
-        actor = FixtureIdentityProvider("demo-ivan-ae", config.identity_config()).resolve()
+        actor = FixtureIdentityProvider("demo-ethan-ae", config.identity_config()).resolve()
         app = server.create_server(svc, actor)
         self.assertIsNotNone(app)
 

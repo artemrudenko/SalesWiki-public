@@ -17,7 +17,7 @@ tags:
   - call
   - demo
 company: demo-company-cedar-health
-owner: demo-ivan-ae
+owner: demo-ethan-ae
 team: sales-west
 call_date: 2026-08-29
 ---
@@ -27,7 +27,7 @@ call_date: 2026-08-29
 ## Controlled Profile
 
 - Company: [[Company - Cedar Health]]
-- Owner: demo-ivan-ae
+- Owner: demo-ethan-ae
 - Team: sales-west
 - Raw transcript: restricted://personal-data/demo-cedar-health-callrecording
 

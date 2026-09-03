@@ -45,7 +45,7 @@ class Approval(unittest.TestCase):
     def setUp(self) -> None:
         self.tmp = Path(tempfile.mkdtemp(prefix="approval-"))
         self.svc = make_service(self.tmp)
-        self.pid = self.svc.flag_stale_or_wrong(actor("demo-ivan-ae"), TARGET, "pricing looks stale")
+        self.pid = self.svc.flag_stale_or_wrong(actor("demo-ethan-ae"), TARGET, "pricing looks stale")
         self.proposals = self.tmp / "proposals.jsonl"
 
     def _states(self):
@@ -57,32 +57,32 @@ class Approval(unittest.TestCase):
         self.assertTrue(draft.get("payload_hash"), "draft must carry a payload hash")
 
     def test_curator_can_approve(self) -> None:
-        result = self.svc.approve_proposal(actor("demo-marina-curator"), self.pid)
+        result = self.svc.approve_proposal(actor("demo-sophie-curator"), self.pid)
         self.assertEqual(result["status"], "approved")
         merged = self.svc.proposal_state(self.pid)
         self.assertEqual(merged["status"], "approved")
-        self.assertEqual(merged["approver"], "demo-marina-curator")
+        self.assertEqual(merged["approver"], "demo-sophie-curator")
 
     def test_sales_owner_cannot_approve(self) -> None:
-        result = self.svc.approve_proposal(actor("demo-ivan-ae"), self.pid)
+        result = self.svc.approve_proposal(actor("demo-ethan-ae"), self.pid)
         self.assertEqual(result["status"], "blocked")
         self.assertEqual(self.svc.proposal_state(self.pid)["status"], "draft", "rejected approval must leave draft")
 
     def test_approval_is_append_only_and_no_card_mutation(self) -> None:
         before_cards = {p: p.read_bytes() for p in (self.tmp / "permissioned").rglob("*.md")}
         before_lines = len(self._states())
-        self.svc.approve_proposal(actor("demo-marina-curator"), self.pid)
+        self.svc.approve_proposal(actor("demo-sophie-curator"), self.pid)
         self.assertEqual(len(self._states()), before_lines + 1, "approval appends one record")
         self.assertEqual(self._states()[0]["status"], "draft", "original draft line is untouched")
         for p, h in before_cards.items():
             self.assertEqual(p.read_bytes(), h, f"{p} mutated by approval")
 
     def test_unknown_proposal_is_safe(self) -> None:
-        result = self.svc.approve_proposal(actor("demo-marina-curator"), "proposal-9999")
+        result = self.svc.approve_proposal(actor("demo-sophie-curator"), "proposal-9999")
         self.assertEqual(result["status"], "not-found")
 
     def test_audit_records_approval(self) -> None:
-        self.svc.approve_proposal(actor("demo-marina-curator"), self.pid)
+        self.svc.approve_proposal(actor("demo-sophie-curator"), self.pid)
         events = [json.loads(l) for l in (self.tmp / "audit.jsonl").read_text().splitlines() if l.strip()]
         self.assertTrue(any(e["tool"] == "approve_proposal" and e["decision"] == "allow" for e in events))
 

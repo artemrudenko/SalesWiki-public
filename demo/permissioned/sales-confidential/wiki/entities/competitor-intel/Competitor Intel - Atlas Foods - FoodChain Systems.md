@@ -17,7 +17,7 @@ tags:
   - competitor-intel
   - demo
 company: demo-company-atlas-foods
-owner: demo-ivan-ae
+owner: demo-ethan-ae
 team: sales-west
 competitor: FoodChain Systems
 ---
@@ -28,7 +28,7 @@ competitor: FoodChain Systems
 
 - Company: [[Company - Atlas Foods]]
 - Competitor: FoodChain Systems
-- Owner: demo-ivan-ae
+- Owner: demo-ethan-ae
 - Team: sales-west
 
 ## Live Intelligence

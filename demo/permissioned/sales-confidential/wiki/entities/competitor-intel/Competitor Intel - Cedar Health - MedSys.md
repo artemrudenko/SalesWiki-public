@@ -17,7 +17,7 @@ tags:
   - competitor-intel
   - demo
 company: demo-company-cedar-health
-owner: demo-ivan-ae
+owner: demo-ethan-ae
 team: sales-west
 competitor: MedSys
 ---
@@ -28,7 +28,7 @@ competitor: MedSys
 
 - Company: [[Company - Cedar Health]]
 - Competitor: MedSys
-- Owner: demo-ivan-ae
+- Owner: demo-ethan-ae
 - Team: sales-west
 
 ## Live Intelligence

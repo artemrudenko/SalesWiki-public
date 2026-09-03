@@ -40,31 +40,31 @@ class EndToEndLifecycle(unittest.TestCase):
         self.runtime = self.tmp / "runtime"
         self.svc = build_default_service(self.vault, self.audit, self.proposals, now=lambda: "t")
         self.tools = {who: server.build_tools(self.svc, actor(who)) for who in (
-            "demo-nina-marketing", "demo-ivan-ae", "demo-marina-curator", "demo-raj-revops",
+            "demo-olivia-marketing", "demo-ethan-ae", "demo-sophie-curator", "demo-raj-revops",
         )}
         self.card = self.vault / "broad" / "wiki" / "entities" / "companies" / "Company - BluePeak Energy.md"
 
     def test_full_governed_lifecycle(self) -> None:
         # 1. Read-contrast through the gateway tools.
-        nina = self.tools["demo-nina-marketing"]
-        ivan = self.tools["demo-ivan-ae"]
-        self.assertTrue(any(s in ivan["saleswiki.company_brief"]("BluePeak Energy")["text"] for s in SALES_SECRETS))
+        olivia = self.tools["demo-olivia-marketing"]
+        ethan = self.tools["demo-ethan-ae"]
+        self.assertTrue(any(s in ethan["saleswiki.company_brief"]("BluePeak Energy")["text"] for s in SALES_SECRETS))
         for secret in SALES_SECRETS:
-            self.assertNotIn(secret, nina["saleswiki.company_brief"]("BluePeak Energy")["text"])
+            self.assertNotIn(secret, olivia["saleswiki.company_brief"]("BluePeak Energy")["text"])
 
         # 2. Marketing proposes a redaction review.
-        msg = nina["saleswiki.request_redaction_review"]("demo-company-bluepeak-energy", "contact PII exposed")
+        msg = olivia["saleswiki.request_redaction_review"]("demo-company-bluepeak-energy", "contact PII exposed")
         self.assertIn("proposal-", msg["text"])
         pid = "proposal-0001"
 
         # 3. Curator sees it in the queue; a sales role cannot approve.
-        self.assertIn(pid, self.tools["demo-marina-curator"]["saleswiki.review_queue"]("")["text"])
-        self.assertIn("not", ivan["saleswiki.approve_proposal"](pid)["text"].lower())
+        self.assertIn(pid, self.tools["demo-sophie-curator"]["saleswiki.review_queue"]("")["text"])
+        self.assertIn("not", ethan["saleswiki.approve_proposal"](pid)["text"].lower())
         # RevOps can inspect but not approve.
         self.assertIn(pid, self.tools["demo-raj-revops"]["saleswiki.review_queue"]("")["text"])
 
         # 4. Curator approves; production is still unchanged until the worker runs.
-        self.assertIn("approved", self.tools["demo-marina-curator"]["saleswiki.approve_proposal"](pid)["text"].lower())
+        self.assertIn("approved", self.tools["demo-sophie-curator"]["saleswiki.approve_proposal"](pid)["text"].lower())
         self.assertNotIn("contact PII exposed", self.card.read_text(encoding="utf-8"))
 
         # 5. Single-writer worker applies it.
@@ -78,9 +78,9 @@ class EndToEndLifecycle(unittest.TestCase):
         self.assertEqual(self.svc.proposal_state(pid)["status"], "rolled-back")
 
     def test_reject_path_never_applies(self) -> None:
-        self.tools["demo-ivan-ae"]["saleswiki.flag_stale_or_wrong"]("demo-company-bluepeak-energy", "stale")
+        self.tools["demo-ethan-ae"]["saleswiki.flag_stale_or_wrong"]("demo-company-bluepeak-energy", "stale")
         pid = "proposal-0001"
-        self.assertIn("rejected", self.tools["demo-marina-curator"]["saleswiki.reject_proposal"](pid, "no")["text"].lower())
+        self.assertIn("rejected", self.tools["demo-sophie-curator"]["saleswiki.reject_proposal"](pid, "no")["text"].lower())
         summary = worker.apply_approved(self.vault, self.proposals, self.audit, self.runtime, now=lambda: "t2")
         self.assertNotIn(pid, summary["applied"])
 

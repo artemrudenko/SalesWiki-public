@@ -50,44 +50,44 @@ class EventBrief(unittest.TestCase):
         self.svc = make_service(self.tmp)
 
     def test_all_roles_see_target_accounts(self) -> None:
-        for who in ("demo-ivan-ae", "demo-nina-marketing", "demo-broad-viewer"):
+        for who in ("demo-ethan-ae", "demo-olivia-marketing", "demo-broad-viewer"):
             out = self.svc.event_brief(actor(who), EVENT)
             self.assertEqual(out["access"], "allowed", who)
             for name in COMPANY_NAMES:
                 self.assertIn(name, out["text"], f"{who} should see target account {name}")
 
     def test_sales_sees_deal_detail_marketing_does_not(self) -> None:
-        owner = self.svc.event_brief(actor("demo-ivan-ae"), EVENT)
-        mkt = self.svc.event_brief(actor("demo-nina-marketing"), EVENT)
+        owner = self.svc.event_brief(actor("demo-ethan-ae"), EVENT)
+        mkt = self.svc.event_brief(actor("demo-olivia-marketing"), EVENT)
         self.assertIn(RISK_HINT, owner["text"], "owner must see deal context for their accounts")
         self.assertNotIn(RISK_HINT, mkt["text"], "marketing must get no restricted deal detail")
 
     def test_no_sales_secret_leaks_to_marketing(self) -> None:
-        out = self.svc.event_brief(actor("demo-nina-marketing"), EVENT)
+        out = self.svc.event_brief(actor("demo-olivia-marketing"), EVENT)
         for secret in SALES_SECRETS:
             self.assertNotIn(secret, out["text"])
 
     def test_deal_context_reads_cleanly(self) -> None:
-        owner = self.svc.event_brief(actor("demo-ivan-ae"), EVENT)["text"]
+        owner = self.svc.event_brief(actor("demo-ethan-ae"), EVENT)["text"]
         self.assertNotIn(".;", owner, "risk period should not collide with the guidance separator")
         self.assertIn("tie the message to it", owner)
 
     def test_no_salesconf_path_in_marketing_citations(self) -> None:
-        out = self.svc.event_brief(actor("demo-nina-marketing"), EVENT)
+        out = self.svc.event_brief(actor("demo-olivia-marketing"), EVENT)
         self.assertNotIn("sales-confidential/wiki", json.dumps(out["citations"]))
 
     def test_unknown_event_is_safe(self) -> None:
-        out = self.svc.event_brief(actor("demo-ivan-ae"), "Nonexistent Expo")
+        out = self.svc.event_brief(actor("demo-ethan-ae"), "Nonexistent Expo")
         self.assertEqual(out["access"], "not-found")
 
     def test_audit_records_event_brief(self) -> None:
-        self.svc.event_brief(actor("demo-ivan-ae"), EVENT)
+        self.svc.event_brief(actor("demo-ethan-ae"), EVENT)
         events = [json.loads(l) for l in (self.tmp / "audit.jsonl").read_text().splitlines() if l.strip()]
         self.assertTrue(any(e["tool"] == "event_brief" for e in events))
 
     def test_does_not_mutate_production(self) -> None:
         before = {p: p.read_bytes() for p in (self.tmp / "permissioned").rglob("*.md")}
-        self.svc.event_brief(actor("demo-ivan-ae"), EVENT)
+        self.svc.event_brief(actor("demo-ethan-ae"), EVENT)
         for p, h in before.items():
             self.assertEqual(p.read_bytes(), h, f"{p} mutated by a read")
 

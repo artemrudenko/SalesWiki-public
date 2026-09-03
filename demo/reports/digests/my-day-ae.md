@@ -1,4 +1,4 @@
-# Morning Digest — Account Executive (Ivan)
+# Morning Digest — Account Executive (Ethan)
 
 > Synthetic demo data (`dataset: demo`) — safe to share. Regenerate with `python3 scripts/generate_demo_digests.py`.
 
@@ -6,7 +6,7 @@ What an AE finds in the inbox before the first call:
 
 ---
 
-# My Day: Ivan AE
+# My Day: Ethan AE
 
 **Conclusion:** Act on your top leads first, then protect your at-risk deals.
 

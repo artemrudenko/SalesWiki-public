@@ -132,9 +132,9 @@ test("company search uses a dedicated bounded endpoint and fixture search hides 
   assert.deepEqual(await bff.search({ query: "Blue" }), { status: "ready", items: [{ id: "bluepeak", label: "BluePeak", freshness: "fresh" }] });
   assert.equal(requestedUrl, "/api/v1/company-search?q=Blue");
   const fixture = createFixtureCompanySearchClient({ accounts: [...fixtures, { id: "bluepeak", name: "BluePeak", code: "COMP-3", nodes: [], edges: [], sources: [] }] });
-  await createFixtureSessionClient().switchPersona("demo-nina-marketing");
+  await createFixtureSessionClient().switchPersona("demo-olivia-marketing");
   assert.deepEqual((await fixture.search({ query: "Blue" })).items, []);
-  await createFixtureSessionClient().switchPersona("demo-ivan-ae");
+  await createFixtureSessionClient().switchPersona("demo-ethan-ae");
 });
 
 test("demo persona transport sends only an allowlisted actor id, never a role", async () => {
@@ -157,20 +157,20 @@ test("fixture persona switch changes access, daily context, review permission, a
   const daily = createFixtureDailyClient({ accounts: fixtures });
   const review = createFixtureReviewClient();
   const intake = createFixtureImportClient();
-  await session.switchPersona("demo-nina-marketing");
+  await session.switchPersona("demo-olivia-marketing");
   assert.equal((await graph.getEntityGraph({ accountId: "bluepeak" })).status, "blocked");
   const blockedQueue = await review.getQueue();
   assert.equal(blockedQueue.data.access, "blocked");
   assert.equal(blockedQueue.data.can_decide, false);
   assert.deepEqual(blockedQueue.data.items, []);
-  assert.match((await daily.getMyDay()).data.title, /Nina Marketing/);
+  assert.match((await daily.getMyDay()).data.title, /Olivia Marketing/);
   const proposal = await intake.submit({ target: "one", summary: "company: One" });
   assert.equal((await review.getQueue()).data.access, "blocked", "a contributor cannot use the reviewer queue to discover proposals");
-  await session.switchPersona("demo-marina-curator");
+  await session.switchPersona("demo-sophie-curator");
   assert.equal((await review.getQueue()).data.can_decide, true);
   assert.ok((await review.getQueue()).data.items.some((item) => item.proposal_id === proposal.proposalId));
   assert.equal((await review.decide({ proposalId: proposal.proposalId, action: "approve" })).status, "ready");
-  await session.switchPersona("demo-ivan-ae");
+  await session.switchPersona("demo-ethan-ae");
 });
 
 test("fixture Today dashboard changes its queue, decision lens, and account boundary for each role", async () => {
@@ -183,13 +183,13 @@ test("fixture Today dashboard changes its queue, decision lens, and account boun
   const session = createFixtureSessionClient();
   const daily = createFixtureDailyClient({ accounts });
 
-  await session.switchPersona("demo-ivan-ae");
+  await session.switchPersona("demo-ethan-ae");
   const ae = (await daily.getMyDay()).data;
   assert.equal(ae.workbench.profile.label, "Account executive");
   assert.match(ae.workbench.profile.focus, /active opportunities/i);
   assert.deepEqual(ae.workbench.actions.map((item) => item.name), ["BluePeak", "Summit", "Atlas"]);
 
-  await session.switchPersona("demo-nina-marketing");
+  await session.switchPersona("demo-olivia-marketing");
   const marketing = (await daily.getMyDay()).data;
   assert.equal(marketing.workbench.profile.label, "Marketing");
   assert.match(marketing.workbench.profile.focus, /permitted signals/i);
@@ -197,10 +197,10 @@ test("fixture Today dashboard changes its queue, decision lens, and account boun
   assert.ok(marketing.workbench.actions.every((item) => item.name !== "BluePeak"));
   assert.match(marketing.workbench.actions[0].title, /automation proof angle/i);
 
-  await session.switchPersona("demo-marina-curator");
+  await session.switchPersona("demo-sophie-curator");
   const curator = (await daily.getMyDay()).data;
   assert.equal(curator.workbench.profile.label, "Knowledge curator");
   assert.match(curator.workbench.profile.focus, /traceable/i);
   assert.match(curator.workbench.actions[0].title, /Review competitor evidence/i);
-  await session.switchPersona("demo-ivan-ae");
+  await session.switchPersona("demo-ethan-ae");
 });

@@ -1,4 +1,4 @@
-# Morning Digest — Marketing (Nina)
+# Morning Digest — Marketing (Olivia)
 
 > Synthetic demo data (`dataset: demo`) — safe to share. Regenerate with `python3 scripts/generate_demo_digests.py`.
 
@@ -6,7 +6,7 @@ The same digest for marketing — deal economics stay invisible:
 
 ---
 
-# My Day: Nina Marketing
+# My Day: Olivia Marketing
 
 **Conclusion:** Act on your top leads first, then protect your at-risk deals.
 

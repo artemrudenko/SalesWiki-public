@@ -46,7 +46,7 @@ class GrantAccessTest(unittest.TestCase):
         self.assertNotIn("deal", {node["type"] for node in before_graph["nodes"]})
         pid = self.svc.request_access(self.who("demo-broad-viewer"), COMPANY_ID, "need deal risk")
         self.assertEqual(
-            self.svc.approve_proposal(self.who("demo-marina-curator"), pid)["status"], "approved"
+            self.svc.approve_proposal(self.who("demo-sophie-curator"), pid)["status"], "approved"
         )
         # After: same viewer role now reads BluePeak's deal risk...
         self.assertEqual(self.deal_access("demo-broad-viewer", "BluePeak Energy"), "allowed")
@@ -61,7 +61,7 @@ class GrantAccessTest(unittest.TestCase):
 
     def test_rejected_request_grants_nothing(self) -> None:
         pid = self.svc.request_access(self.who("demo-broad-viewer"), COMPANY_ID, "x")
-        self.svc.reject_proposal(self.who("demo-marina-curator"), pid, "not now")
+        self.svc.reject_proposal(self.who("demo-sophie-curator"), pid, "not now")
         self.assertEqual(self.deal_access("demo-broad-viewer", "BluePeak Energy"), "blocked")
 
 

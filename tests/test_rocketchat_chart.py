@@ -99,7 +99,7 @@ class ChartCommand(unittest.TestCase):
         self.assertNotIn("$", out)  # no deal figures may leak through the refusal
 
     def test_ae_chart_shows_only_own_team_deals(self) -> None:
-        # ABAC shaping must hold for the chart exactly like for text: Ivan
+        # ABAC shaping must hold for the chart exactly like for text: Ethan
         # (sales-west) gets fewer deals drawn than Head of Sales sees.
         import re
 

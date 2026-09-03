@@ -12,19 +12,19 @@ export const graphDemoScenarios = [
 const result = (status, extra = {}) => ({ status, ...extra });
 
 const fixturePersonas = [
-  { id: "demo-ivan-ae", name: "Ivan AE", role: "sales-owner", team: "sales-west" },
+  { id: "demo-ethan-ae", name: "Ethan AE", role: "sales-owner", team: "sales-west" },
   { id: "demo-sam-sdr", name: "Sam SDR", role: "sales", team: "sales-west" },
-  { id: "demo-elena-hos", name: "Elena HoS", role: "hos", team: "sales" },
+  { id: "demo-claire-hos", name: "Claire HoS", role: "hos", team: "sales" },
   { id: "demo-raj-revops", name: "Raj RevOps", role: "revops", team: "revops" },
-  { id: "demo-marina-curator", name: "Marina Curator", role: "curator", team: "knowledge" },
-  { id: "demo-nina-marketing", name: "Nina Marketing", role: "marketing", team: "marketing" },
+  { id: "demo-sophie-curator", name: "Sophie Curator", role: "curator", team: "knowledge" },
+  { id: "demo-olivia-marketing", name: "Olivia Marketing", role: "marketing", team: "marketing" },
   { id: "demo-ada-admin", name: "Ada Admin", role: "admin", team: "ops" },
 ];
 let fixturePerson = fixturePersonas[0];
 let fixtureProposalNumber = 50;
 let fixtureProposals = [
-  { proposal_id: "proposal-0042", status: "draft", type: "ingest_resource", target: "bluepeak", note: "Workbench draft import for BluePeak Energy.", requester: "demo-ivan-ae", role: "sales", created: "2026-08-30T09:15:00Z" },
-  { proposal_id: "proposal-0041", status: "draft", type: "flag_stale_or_wrong", target: "atlas", note: "Confirm the proposed technical-validation date before the next call.", requester: "demo-ivan-ae", role: "sales", created: "2026-08-30T08:40:00Z" },
+  { proposal_id: "proposal-0042", status: "draft", type: "ingest_resource", target: "bluepeak", note: "Workbench draft import for BluePeak Energy.", requester: "demo-ethan-ae", role: "sales", created: "2026-08-30T09:15:00Z" },
+  { proposal_id: "proposal-0041", status: "draft", type: "flag_stale_or_wrong", target: "atlas", note: "Confirm the proposed technical-validation date before the next call.", requester: "demo-ethan-ae", role: "sales", created: "2026-08-30T08:40:00Z" },
 ];
 const fixtureAccountVisibility = {
   "sales-owner": ["bluepeak", "atlas", "summit-grid"],

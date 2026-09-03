@@ -92,7 +92,7 @@ above — one human, one machine, no shared channel:
       "command": "/path/to/SalesWiki/.venv/bin/python",
       "args": ["-m", "saleswiki_mcp.server"],
       "env": {
-        "SALESWIKI_DEMO_ACTOR": "demo-ivan-ae",
+        "SALESWIKI_DEMO_ACTOR": "demo-ethan-ae",
         "SALESWIKI_VAULT_ROOT": "/path/to/SalesWiki-pilot",
         "SALESWIKI_RUNTIME_DIR": "/path/to/SalesWiki-pilot/runtime",
         "SALESWIKI_ALLOW_PROD_VAULT": "1",
@@ -105,8 +105,8 @@ above — one human, one machine, no shared channel:
 
 Notes:
 
-- Map fixture actors to real people 1:1 for the pilot (e.g. `demo-ivan-ae` = the
-  rep, `demo-marina-curator` = you) and set `owner:` on lead cards accordingly;
+- Map fixture actors to real people 1:1 for the pilot (e.g. `demo-ethan-ae` = the
+  rep, `demo-sophie-curator` = you) and set `owner:` on lead cards accordingly;
   add a second server entry per extra role when needed.
 - The **Rocket.Chat bridge stays demo-only**: channel members self-assert roles,
   which must never happen over real data (auth-review H5). Pre-SSO, pilot access

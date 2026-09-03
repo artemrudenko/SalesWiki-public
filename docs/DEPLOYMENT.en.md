@@ -37,7 +37,7 @@ Example Claude Desktop-style entry:
       "command": "/absolute/path/to/SalesWiki/.venv/bin/python",
       "args": ["-m", "saleswiki_mcp.server"],
       "env": {
-        "SALESWIKI_DEMO_ACTOR": "demo-ivan-ae",
+        "SALESWIKI_DEMO_ACTOR": "demo-ethan-ae",
         "PYTHONPATH": "/absolute/path/to/SalesWiki"
       }
     }
@@ -58,7 +58,7 @@ is deliberately a **synthetic demo path**, not SSO or production hosting.
 Install the optional MCP SDK in `.venv`, then start the loopback BFF:
 
 ```bash
-export SALESWIKI_DEMO_ACTOR=demo-marina-curator
+export SALESWIKI_DEMO_ACTOR=demo-sophie-curator
 .venv/bin/python -m integrations.workbench.server \
   --config config/workbench-demo.example.toml
 ```

@@ -1,12 +1,12 @@
 {
   "version": 1,
   "description": "Identity provider config for the permissioned-knowledge MVP. The active provider is 'fixture' (demo users, role resolved server-side from session/env, never chosen by the client). The 'google-oidc' block is a forward-compatible placeholder; no real client id or secret may be committed. See docs/engineering/permissioned-knowledge-sso-design.md.",
-  "updated": "2026-06-03",
+  "updated": "2026-09-03",
   "active_provider": "fixture",
   "session_actor_env": "SALESWIKI_DEMO_ACTOR",
   "org": {
     "description": "Valid owner ids and team names for ABAC ownership attributes. Broader than demo-login fixtures (an account can be owned by someone who is not a demo login). health_check validates that sales-confidential cards' owner/team are in this roster, so a typo cannot silently mis-route access.",
-    "actors": ["demo-ivan-ae", "demo-maria-ae", "demo-sam-sdr", "demo-elena-hos", "demo-raj-revops", "demo-marina-curator", "demo-lena-legal", "demo-ada-admin", "demo-nina-marketing", "demo-broad-viewer", "demo-curator", "demo-sdr"],
+    "actors": ["demo-ethan-ae", "demo-maria-ae", "demo-sam-sdr", "demo-claire-hos", "demo-raj-revops", "demo-sophie-curator", "demo-hannah-legal", "demo-ada-admin", "demo-olivia-marketing", "demo-broad-viewer", "demo-curator", "demo-sdr"],
     "teams": ["sales-west", "sales-east", "sales", "revops", "knowledge", "legal", "ops", "marketing", "company"]
   },
   "providers": {
@@ -14,14 +14,14 @@
       "type": "fixture",
       "users": [
         {"id": "demo-broad-viewer", "name": "Broad Viewer", "email": "viewer@demo.invalid", "role": "employee-viewer", "team": "company", "owns": []},
-        {"id": "demo-ivan-ae", "name": "Ivan AE", "email": "ivan@demo.invalid", "role": "sales-owner", "team": "sales-west", "owns": ["demo-company-bluepeak-energy"]},
+        {"id": "demo-ethan-ae", "name": "Ethan AE", "email": "ethan@demo.invalid", "role": "sales-owner", "team": "sales-west", "owns": ["demo-company-bluepeak-energy"]},
         {"id": "demo-sam-sdr", "name": "Sam SDR", "email": "sam@demo.invalid", "role": "sales", "team": "sales-west", "owns": []},
-        {"id": "demo-elena-hos", "name": "Elena HoS", "email": "elena@demo.invalid", "role": "hos", "team": "sales", "owns": []},
+        {"id": "demo-claire-hos", "name": "Claire HoS", "email": "claire@demo.invalid", "role": "hos", "team": "sales", "owns": []},
         {"id": "demo-raj-revops", "name": "Raj RevOps", "email": "raj@demo.invalid", "role": "revops", "team": "revops", "owns": []},
-        {"id": "demo-marina-curator", "name": "Marina Curator", "email": "marina@demo.invalid", "role": "curator", "team": "knowledge", "owns": []},
-        {"id": "demo-lena-legal", "name": "Lena Legal", "email": "lena@demo.invalid", "role": "legal-reviewer", "team": "legal", "owns": []},
+        {"id": "demo-sophie-curator", "name": "Sophie Curator", "email": "sophie@demo.invalid", "role": "curator", "team": "knowledge", "owns": []},
+        {"id": "demo-hannah-legal", "name": "Hannah Legal", "email": "hannah@demo.invalid", "role": "legal-reviewer", "team": "legal", "owns": []},
         {"id": "demo-ada-admin", "name": "Ada Admin", "email": "ada@demo.invalid", "role": "admin", "team": "ops", "owns": []},
-        {"id": "demo-nina-marketing", "name": "Nina Marketing", "email": "nina@demo.invalid", "role": "marketing", "team": "marketing", "owns": []}
+        {"id": "demo-olivia-marketing", "name": "Olivia Marketing", "email": "olivia@demo.invalid", "role": "marketing", "team": "marketing", "owns": []}
       ]
     },
     "google-oidc": {

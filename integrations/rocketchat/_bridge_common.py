@@ -23,12 +23,12 @@ USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36
 ROLES: dict[str, tuple[str, str]] = {
     "employee": ("demo-broad-viewer", "Employee: general public cards, no sales-confidential."),
     "sales-rep": ("demo-sam-sdr", "Sales Rep (SDR): general access, no private deal details and no deal risk."),
-    "account-exec": ("demo-ivan-ae", "Account Executive (account owner): pricing, competitor intel, deal risk on own deals."),
-    "head-of-sales": ("demo-elena-hos", "Head of Sales: deal risk and pipeline across the whole team."),
+    "account-exec": ("demo-ethan-ae", "Account Executive (account owner): pricing, competitor intel, deal risk on own deals."),
+    "head-of-sales": ("demo-claire-hos", "Head of Sales: deal risk and pipeline across the whole team."),
     "revenue-ops": ("demo-raj-revops", "Revenue Ops: deal risk and operational pipeline data."),
-    "marketing": ("demo-nina-marketing", "Marketing: aggregated/sanitized data, market signals, content opportunities; no secrets."),
-    "legal": ("demo-lena-legal", "Legal: limited access, personal-data review; no commercial secrets."),
-    "curator": ("demo-marina-curator", "Knowledge Curator: governance, review queue, proposal approvals."),
+    "marketing": ("demo-olivia-marketing", "Marketing: aggregated/sanitized data, market signals, content opportunities; no secrets."),
+    "legal": ("demo-hannah-legal", "Legal: limited access, personal-data review; no commercial secrets."),
+    "curator": ("demo-sophie-curator", "Knowledge Curator: governance, review queue, proposal approvals."),
     "admin": ("demo-ada-admin", "Admin: full access to everything."),
 }
 DEFAULT_ROLE = "employee"

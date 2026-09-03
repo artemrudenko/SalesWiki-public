@@ -31,13 +31,13 @@ class GuidedAssistantTests(unittest.TestCase):
         self.service = build_default_service(vault, tmp / "audit.jsonl", tmp / "proposals.jsonl", now=lambda: "t")
 
     def test_allowlisted_prompt_routes_to_a_cited_answer(self) -> None:
-        out = self.service.guided_answer(actor("demo-ivan-ae"), "call_prep", "BluePeak Energy")
+        out = self.service.guided_answer(actor("demo-ethan-ae"), "call_prep", "BluePeak Energy")
         self.assertEqual(out["intent"], "call_prep")
         self.assertIn("Call Prep", out["title"])
         self.assertTrue(out["citations"])
 
     def test_marketing_cannot_get_commercial_detail_through_guided_route(self) -> None:
-        out = self.service.guided_answer(actor("demo-nina-marketing"), "deal_risk", "BluePeak Energy")
+        out = self.service.guided_answer(actor("demo-olivia-marketing"), "deal_risk", "BluePeak Energy")
         payload = json.dumps(out)
         self.assertEqual(out["access"], "blocked")
         self.assertNotIn("Discount floor", payload)
@@ -45,8 +45,8 @@ class GuidedAssistantTests(unittest.TestCase):
 
     def test_route_does_not_accept_client_selected_tool_name(self) -> None:
         with self.assertRaises(ValueError):
-            self.service.guided_answer(actor("demo-ivan-ae"), "saleswiki.pipeline_risk_digest", "BluePeak Energy")
-        tools = build_tools(self.service, actor("demo-ivan-ae"))
+            self.service.guided_answer(actor("demo-ethan-ae"), "saleswiki.pipeline_risk_digest", "BluePeak Energy")
+        tools = build_tools(self.service, actor("demo-ethan-ae"))
         self.assertIn("saleswiki.guided_answer", tools)
 
 

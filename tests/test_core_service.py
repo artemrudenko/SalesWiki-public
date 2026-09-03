@@ -40,13 +40,13 @@ def actor(actor_id: str):
 
 class IdentityResolution(unittest.TestCase):
     def test_fixture_user_maps_to_role(self) -> None:
-        ivan = actor("demo-ivan-ae")
-        self.assertEqual(ivan.role, "sales-owner")
-        self.assertEqual(ivan.team, "sales-west")
-        self.assertIn("demo-company-bluepeak-energy", ivan.owns)
+        ethan = actor("demo-ethan-ae")
+        self.assertEqual(ethan.role, "sales-owner")
+        self.assertEqual(ethan.team, "sales-west")
+        self.assertIn("demo-company-bluepeak-energy", ethan.owns)
 
     def test_role_resolved_from_env_not_client(self) -> None:
-        env = {"SALESWIKI_DEMO_ACTOR": "demo-nina-marketing"}
+        env = {"SALESWIKI_DEMO_ACTOR": "demo-olivia-marketing"}
         resolved = FixtureIdentityProvider.from_env(config.identity_config(), env=env).resolve()
         self.assertEqual(resolved.role, "marketing")
 
@@ -61,11 +61,11 @@ class CompanyBriefRoleContrast(unittest.TestCase):
         self.svc = make_service(self.tmp)
 
     def test_sales_owner_sees_private_pricing(self) -> None:
-        brief = self.svc.company_brief(actor("demo-ivan-ae"), "BluePeak Energy")
+        brief = self.svc.company_brief(actor("demo-ethan-ae"), "BluePeak Energy")
         self.assertTrue(any(s in brief["text"] for s in SALES_SECRETS), "owner must see sales-confidential detail")
 
     def test_marketing_blocked_from_named_deal(self) -> None:
-        brief = self.svc.company_brief(actor("demo-nina-marketing"), "BluePeak Energy")
+        brief = self.svc.company_brief(actor("demo-olivia-marketing"), "BluePeak Energy")
         for secret in SALES_SECRETS:
             self.assertNotIn(secret, brief["text"], f"secret {secret} leaked to marketing")
         self.assertEqual(brief["access"], "sanitized")
@@ -77,22 +77,22 @@ class CompanyBriefRoleContrast(unittest.TestCase):
         self.assertIn("BluePeak Energy", brief["text"])
 
     def test_no_salesconf_path_in_unauthorized_citations(self) -> None:
-        brief = self.svc.company_brief(actor("demo-nina-marketing"), "BluePeak Energy")
+        brief = self.svc.company_brief(actor("demo-olivia-marketing"), "BluePeak Energy")
         joined = json.dumps(brief["citations"])
         self.assertNotIn("sales-confidential/wiki", joined, "restricted file path leaked in citations")
 
     def test_personal_data_shown_as_handle_for_non_admin(self) -> None:
-        brief = self.svc.company_brief(actor("demo-ivan-ae"), "BluePeak Energy")
+        brief = self.svc.company_brief(actor("demo-ethan-ae"), "BluePeak Energy")
         self.assertIn("restricted://", brief["text"], "personal-data must appear as opaque handle, not raw body")
 
     def test_unknown_company_is_safe(self) -> None:
-        brief = self.svc.company_brief(actor("demo-ivan-ae"), "Nonexistent Corp")
+        brief = self.svc.company_brief(actor("demo-ethan-ae"), "Nonexistent Corp")
         self.assertEqual(brief["access"], "not-found")
         self.assertIn("missing", brief["text"].lower())
 
     def test_company_search_returns_only_discoverable_companies(self) -> None:
-        owner = self.svc.company_search(actor("demo-ivan-ae"), "Blue")
-        marketing = self.svc.company_search(actor("demo-nina-marketing"), "Blue")
+        owner = self.svc.company_search(actor("demo-ethan-ae"), "Blue")
+        marketing = self.svc.company_search(actor("demo-olivia-marketing"), "Blue")
         self.assertEqual(owner["status"], "ok")
         self.assertEqual([item["label"] for item in owner["items"]], ["BluePeak Energy"])
         self.assertEqual([item["label"] for item in marketing["items"]], ["BluePeak Energy"])
@@ -105,19 +105,19 @@ class AuditAndProposals(unittest.TestCase):
         self.svc = make_service(self.tmp)
 
     def test_audit_records_block_and_handle(self) -> None:
-        self.svc.company_brief(actor("demo-nina-marketing"), "BluePeak Energy")
+        self.svc.company_brief(actor("demo-olivia-marketing"), "BluePeak Energy")
         events = [json.loads(l) for l in (self.tmp / "audit.jsonl").read_text().splitlines() if l.strip()]
         decisions = {e["decision"] for e in events}
         self.assertIn("block", decisions)
         self.assertIn("handle", decisions)
         for e in events:
-            self.assertEqual(e["actor"], "demo-nina-marketing")
+            self.assertEqual(e["actor"], "demo-olivia-marketing")
             self.assertEqual(e["role"], "marketing")
 
     def test_flag_is_append_only_proposal(self) -> None:
         before = sorted((self.tmp / "permissioned").rglob("*.md"))
         before_hashes = {p: p.read_bytes() for p in before}
-        pid = self.svc.flag_stale_or_wrong(actor("demo-ivan-ae"), "demo-company-bluepeak-energy", "pricing looks stale")
+        pid = self.svc.flag_stale_or_wrong(actor("demo-ethan-ae"), "demo-company-bluepeak-energy", "pricing looks stale")
         self.assertRegex(pid, r"^proposal-\d+$", "proposal id must follow the documented format")
         records = [json.loads(l) for l in (self.tmp / "proposals.jsonl").read_text().splitlines() if l.strip()]
         self.assertEqual(len(records), 1)

@@ -41,7 +41,7 @@ class WorkerApply(unittest.TestCase):
         self.audit = self.tmp / "audit.jsonl"
         self.runtime = self.tmp / "runtime"
         self.svc = build_default_service(self.vault, self.audit, self.proposals, now=lambda: "2026-06-03T00:00:00Z")
-        self.pid = self.svc.flag_stale_or_wrong(actor("demo-ivan-ae"), TARGET, "pricing looks stale")
+        self.pid = self.svc.flag_stale_or_wrong(actor("demo-ethan-ae"), TARGET, "pricing looks stale")
         self.card = self.vault / "broad" / "wiki" / "entities" / "companies" / "Company - BluePeak Energy.md"
 
     def _run(self):
@@ -54,7 +54,7 @@ class WorkerApply(unittest.TestCase):
         )
 
     def _approve(self):
-        self.svc.approve_proposal(actor("demo-marina-curator"), self.pid)
+        self.svc.approve_proposal(actor("demo-sophie-curator"), self.pid)
 
     def test_approved_proposal_is_applied(self) -> None:
         self._approve()

@@ -23,7 +23,7 @@ It is not a production gateway:
 Run it with the curator demo profile to inspect and decide proposals:
 
 ```bash
-export SALESWIKI_DEMO_ACTOR=demo-marina-curator
+export SALESWIKI_DEMO_ACTOR=demo-sophie-curator
 .venv/bin/python -m integrations.workbench.server \
   --config config/workbench-demo.example.toml
 ```

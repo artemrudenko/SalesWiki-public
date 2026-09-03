@@ -17,7 +17,7 @@ tags:
   - competitor-intel
   - demo
 company: demo-company-meridian-payments
-owner: demo-ivan-ae
+owner: demo-ethan-ae
 team: sales-west
 competitor: PayRival
 ---
@@ -28,7 +28,7 @@ competitor: PayRival
 
 - Company: [[Company - Meridian Payments]]
 - Competitor: PayRival
-- Owner: demo-ivan-ae
+- Owner: demo-ethan-ae
 - Team: sales-west
 
 ## Live Intelligence

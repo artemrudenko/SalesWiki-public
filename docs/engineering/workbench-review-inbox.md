@@ -60,7 +60,7 @@ sequenceDiagram
 
 ## Local demo roles
 
-Run the BFF as `demo-marina-curator` to inspect and decide synthetic proposals.
+Run the BFF as `demo-sophie-curator` to inspect and decide synthetic proposals.
 When `allow_fixture_persona_switching = true`, the top bar can switch to a
 different listed synthetic person without restarting. The browser sends only an
 allowlisted fixture id; the BFF resolves its role in an opaque `HttpOnly`,

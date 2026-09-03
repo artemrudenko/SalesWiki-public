@@ -46,7 +46,7 @@ class RequestAccessTest(unittest.TestCase):
             self.who("demo-broad-viewer"), COMPANY_ID, "need personal-data for discovery"
         )
         self.assertTrue(pid)
-        queue = self.svc.review_queue(self.who("demo-marina-curator"))
+        queue = self.svc.review_queue(self.who("demo-sophie-curator"))
         self.assertEqual(queue["access"], "allowed")
         match = [i for i in queue["items"] if i.get("proposal_id") == pid]
         self.assertEqual(len(match), 1)
@@ -57,7 +57,7 @@ class RequestAccessTest(unittest.TestCase):
         pid = self.svc.request_access(
             self.who("demo-broad-viewer"), COMPANY_ID, "need discovery notes"
         )
-        approved = self.svc.approve_proposal(self.who("demo-marina-curator"), pid)
+        approved = self.svc.approve_proposal(self.who("demo-sophie-curator"), pid)
         self.assertEqual(approved["status"], "approved")
         summary = worker.apply_approved(
             self.vault, self.proposals, self.audit, self.runtime,

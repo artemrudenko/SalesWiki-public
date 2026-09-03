@@ -47,15 +47,15 @@ class RedactionAndDispatch(unittest.TestCase):
         return worker.apply_approved(self.vault, self.proposals, self.audit, self.runtime, now=lambda: "t2")
 
     def test_redaction_proposal_is_drafted_with_hash(self) -> None:
-        pid = self.svc.request_redaction_review(actor("demo-nina-marketing"), TARGET, "contact PII may be exposed")
+        pid = self.svc.request_redaction_review(actor("demo-olivia-marketing"), TARGET, "contact PII may be exposed")
         state = self.svc.proposal_state(pid)
         self.assertEqual(state["type"], "request_redaction_review")
         self.assertEqual(state["status"], "draft")
         self.assertTrue(state.get("payload_hash"))
 
     def test_approved_redaction_applies_with_redaction_note(self) -> None:
-        pid = self.svc.request_redaction_review(actor("demo-nina-marketing"), TARGET, "contact PII may be exposed")
-        self.svc.approve_proposal(actor("demo-marina-curator"), pid)
+        pid = self.svc.request_redaction_review(actor("demo-olivia-marketing"), TARGET, "contact PII may be exposed")
+        self.svc.approve_proposal(actor("demo-sophie-curator"), pid)
         summary = self._run()
         self.assertIn(pid, summary["applied"])
         text = self.card.read_text(encoding="utf-8")
@@ -69,7 +69,7 @@ class RedactionAndDispatch(unittest.TestCase):
             "type": "bogus_type", "status": "draft", "target": TARGET, "note": "x",
             "payload_hash": payload_hash("bogus_type", TARGET, "x"), "base_hash": body,
         })
-        self.svc.approve_proposal(actor("demo-marina-curator"), pid)
+        self.svc.approve_proposal(actor("demo-sophie-curator"), pid)
         before = self.card.read_bytes()
         summary = self._run()
         self.assertEqual(summary["applied"], [])

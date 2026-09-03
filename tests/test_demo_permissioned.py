@@ -252,9 +252,9 @@ class DemoVaultDateCoherence(unittest.TestCase):
 class PermissionedFixtures(unittest.TestCase):
     def test_hos_fixture_exists(self) -> None:
         users = config.identity_config()["providers"]["fixture"]["users"]
-        elena = next((u for u in users if u["id"] == "demo-elena-hos"), None)
-        self.assertIsNotNone(elena, "demo-elena-hos HoS fixture must exist")
-        self.assertEqual(elena["role"], "hos")
+        claire = next((u for u in users if u["id"] == "demo-claire-hos"), None)
+        self.assertIsNotNone(claire, "demo-claire-hos HoS fixture must exist")
+        self.assertEqual(claire["role"], "hos")
 
 
 if __name__ == "__main__":

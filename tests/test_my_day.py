@@ -41,7 +41,7 @@ class MyDay(unittest.TestCase):
         self.svc = build_default_service(self.vault, self.tmp / "audit.jsonl", self.tmp / "proposals.jsonl", now=lambda: "t")
 
     def test_owner_sees_leads_and_deal_risk(self) -> None:
-        out = self.svc.my_day(actor("demo-ivan-ae"))
+        out = self.svc.my_day(actor("demo-ethan-ae"))
         self.assertEqual(out["access"], "allowed")
         self.assertIn("title", out)
         self.assertIn("sections", out)
@@ -51,20 +51,20 @@ class MyDay(unittest.TestCase):
         self.assertIn(RISK_HINT, out["text"], "owner should see at-risk deals in their day")
 
     def test_marketing_sees_leads_but_no_deal_detail(self) -> None:
-        out = self.svc.my_day(actor("demo-nina-marketing"))
+        out = self.svc.my_day(actor("demo-olivia-marketing"))
         self.assertIn("BluePeak Energy", out["text"], "marketing still gets the broad lead list")
         self.assertNotIn(RISK_HINT, out["text"], "marketing gets no deal detail")
         for secret in SALES_SECRETS:
             self.assertNotIn(secret, out["text"])
 
     def test_audit_records_my_day(self) -> None:
-        self.svc.my_day(actor("demo-ivan-ae"))
+        self.svc.my_day(actor("demo-ethan-ae"))
         events = [json.loads(l) for l in (self.tmp / "audit.jsonl").read_text().splitlines() if l.strip()]
         self.assertTrue(any(e["tool"] == "my_day" for e in events))
 
     def test_does_not_mutate_production(self) -> None:
         before = {p: p.read_bytes() for p in self.vault.rglob("*.md")}
-        self.svc.my_day(actor("demo-ivan-ae"))
+        self.svc.my_day(actor("demo-ethan-ae"))
         for p, h in before.items():
             self.assertEqual(p.read_bytes(), h, f"{p} mutated by a read")
 

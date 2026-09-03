@@ -65,18 +65,18 @@ class FailSafeBoundaryGate(unittest.TestCase):
 
     def test_misfiled_lead_not_emitted_to_marketing(self) -> None:
         self._misfile("leads", "Lead - Leak.md", "lead", "demo-lead-leak", f"contact {SECRET}")
-        out = self.svc.lead_priority(actor("demo-nina-marketing"), None)
+        out = self.svc.lead_priority(actor("demo-olivia-marketing"), None)
         self.assertNotIn(SECRET, out["text"])
         self.assertNotIn("sales-confidential", json.dumps(out["citations"]))
 
     def test_misfiled_pain_not_emitted_to_marketing(self) -> None:
         self._misfile("pain-points", "Pain Point - Leak.md", "pain-point", "demo-pain-leak", "")
-        out = self.svc.content_opportunities(actor("demo-nina-marketing"))
+        out = self.svc.content_opportunities(actor("demo-olivia-marketing"))
         self.assertNotIn(SECRET, out["text"])
 
     def test_misfiled_campaign_blocked_for_marketing(self) -> None:
         self._misfile("campaigns", "Campaign - Leak.md", "campaign", "demo-campaign-leak", "")
-        out = self.svc.campaign_brief(actor("demo-nina-marketing"), "Leak")
+        out = self.svc.campaign_brief(actor("demo-olivia-marketing"), "Leak")
         self.assertNotIn(SECRET, out["text"])
         self.assertEqual(out["access"], "blocked")
 
@@ -97,9 +97,9 @@ class NoLeakChannels(unittest.TestCase):
     def test_injection_in_broad_card_does_not_unlock_deal(self) -> None:
         broad = self.vault / "broad" / "wiki" / "entities" / "leads" / "Lead - BluePeak Energy.md"
         broad.write_text(broad.read_text(encoding="utf-8") + f"\n\n## Note\n\n{INJECTION}\n", encoding="utf-8")
-        out = self.svc.lead_priority(actor("demo-nina-marketing"), None)
+        out = self.svc.lead_priority(actor("demo-olivia-marketing"), None)
         self.assertNotIn("economic buyer", out["text"], "injection must not unlock deal risk")
-        graph = self.svc.entity_graph(actor("demo-nina-marketing"), "BluePeak Energy")
+        graph = self.svc.entity_graph(actor("demo-olivia-marketing"), "BluePeak Energy")
         self.assertNotIn("economic buyer", json.dumps(graph), "injection must not unlock graph nodes")
 
     def test_misfiled_restricted_graph_card_does_not_leak_canary(self) -> None:
@@ -111,13 +111,13 @@ class NoLeakChannels(unittest.TestCase):
             f"# Source: Graph Leak\n\n## Live Intelligence\n\n{SECRET}\n",
             encoding="utf-8",
         )
-        graph = self.svc.entity_graph(actor("demo-nina-marketing"), "BluePeak Energy")
+        graph = self.svc.entity_graph(actor("demo-olivia-marketing"), "BluePeak Energy")
         self.assertNotIn(SECRET, json.dumps(graph))
 
     def test_audit_log_never_stores_card_secrets(self) -> None:
         # Drive every read tool as marketing, then assert the audit log holds no
         # sales-confidential secret content (it records ids/decisions, not bodies).
-        a = actor("demo-nina-marketing")
+        a = actor("demo-olivia-marketing")
         self.svc.company_brief(a, "BluePeak Energy")
         self.svc.deal_risk(a, None)
         self.svc.call_prep(a, "BluePeak Energy")
@@ -126,7 +126,7 @@ class NoLeakChannels(unittest.TestCase):
             self.assertNotIn(secret, audit, f"{secret} leaked into the audit log")
 
     def test_proposal_log_records_no_card_body(self) -> None:
-        self.svc.flag_stale_or_wrong(actor("demo-ivan-ae"), "demo-company-bluepeak-energy", "note")
+        self.svc.flag_stale_or_wrong(actor("demo-ethan-ae"), "demo-company-bluepeak-energy", "note")
         log = (self.tmp / "proposals.jsonl").read_text()
         for secret in ("Discount floor", "Pricing:", "ACV"):
             self.assertNotIn(secret, log)

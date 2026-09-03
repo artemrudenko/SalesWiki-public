@@ -17,7 +17,7 @@ tags:
   - deal
   - demo
 company: demo-company-atlas-foods
-owner: demo-ivan-ae
+owner: demo-ethan-ae
 team: sales-west
 stage: Qualification
 ---
@@ -27,7 +27,7 @@ stage: Qualification
 ## Controlled Profile
 
 - Company: [[Company - Atlas Foods]]
-- Owner: demo-ivan-ae
+- Owner: demo-ethan-ae
 - Team: sales-west
 - Stage: Qualification
 

@@ -32,7 +32,7 @@ class DashboardReadModelTests(unittest.TestCase):
         )
 
     def test_sales_dashboard_uses_dated_observations_and_excludes_unowned_deals(self) -> None:
-        result = self.service.dashboard(actor("demo-ivan-ae"))
+        result = self.service.dashboard(actor("demo-ethan-ae"))
         self.assertEqual((result["contract"], result["version"], result["history_status"]), ("saleswiki.dashboard-view", 1, "available"))
         self.assertTrue(result["synthetic"])
         names = {item["label"] for item in result["risk"]}
@@ -42,7 +42,7 @@ class DashboardReadModelTests(unittest.TestCase):
         self.assertEqual(bluepeak["history"], [61, 65, 69, 74])
 
     def test_marketing_gets_no_commercial_risk_or_secret(self) -> None:
-        result = self.service.dashboard(actor("demo-nina-marketing"))
+        result = self.service.dashboard(actor("demo-olivia-marketing"))
         self.assertEqual(result["risk"], [])
         payload = json.dumps(result)
         for secret in ("RivalCorp", "Discount floor", "ACV", "economic buyer"):
@@ -52,7 +52,7 @@ class DashboardReadModelTests(unittest.TestCase):
         observations = self.vault / "state" / "dashboard-observations.jsonl"
         first = observations.read_text(encoding="utf-8").splitlines()[0]
         observations.write_text(first + "\n", encoding="utf-8")
-        result = self.service.dashboard(actor("demo-ivan-ae"))
+        result = self.service.dashboard(actor("demo-ethan-ae"))
         self.assertEqual(result["history_status"], "insufficient-history")
         self.assertEqual(result["risk"], [])
 
