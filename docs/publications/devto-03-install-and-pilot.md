@@ -1,11 +1,15 @@
 ---
-title: Run SalesWiki locally, connect MCP, and plan a safe pilot
+title: From synthetic demo to safe pilot: test SalesWiki on one real decision
 published: false
-description: A hands-on guide to the SalesWiki public preview, including Obsidian, Docker, MCP clients, health checks and private pilot data.
+description: Run the SalesWiki preview, inspect its trust boundaries, and design a private pilot around one repeated sales or marketing decision.
 tags: tutorial, opensource, docker, mcp
 series: Building SalesWiki in the open
 cover_image: https://raw.githubusercontent.com/artemrudenko/SalesWiki-public/main/assets/publication/devto-03-safe-pilot.png
 ---
+
+A broad product idea becomes useful only when it improves a repeated decision.
+For SalesWiki, that means moving from "can the architecture work?" to "does this
+help a sales or marketing team act with less searching and more confidence?"
 
 I wrote this tutorial to take SalesWiki from a fresh clone to a working synthetic
 demo. It also marks the point where you should stop before adding real customer
@@ -194,9 +198,12 @@ The repository includes a pilot runbook at:
 docs/engineering/permissioned-knowledge-pilot-runbook.md
 ```
 
-The smallest useful pilot tests one repeated decision. The current runbook focuses
-on `lead_priority`: can a user get a better, faster, cited answer about what to do
-today than from the current CRM and manual notes?
+The smallest useful pilot tests one repeated decision. The current runbook starts
+with `lead_priority`: can a user get a better, faster, cited answer about what to
+do today than from the current CRM and manual notes? This is the first measurable
+sales workflow, not the limit of the product. A later marketing pilot can apply
+the same method to a recurring campaign or content decision once its evidence
+and success criteria are explicit.
 
 A useful pilot should prove more than search. Continue only if real work validates
 all three points:
@@ -238,5 +245,10 @@ After one hour with the demo, you should be able to answer these questions:
 
 If those properties match your requirements, clone the
 [SalesWiki repository](https://github.com/artemrudenko/SalesWiki-public) and run
-the demo. If you try it on a real workflow, I would like to know where the model
-holds up and where it gets in your way.
+the demo. Then choose one repeated sales or marketing decision and compare the
+cited workflow with the way the team handles it today. That comparison, including
+where SalesWiki gets in the way, is the evidence the next version needs.
+
+Part 4 follows the question that comes after a useful pilot: how should CRM,
+documents and chat systems connect without moving vendor complexity into the
+knowledge core?

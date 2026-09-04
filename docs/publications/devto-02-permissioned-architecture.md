@@ -1,19 +1,22 @@
 ---
-title: How I keep an AI client from rewriting the sales knowledge base
+title: How I designed permissioned AI for a sales and marketing knowledge base
 published: false
-description: A practical look at role-aware retrieval, extract-only answers, proposals, approval and a single-writer worker in SalesWiki.
+description: How SalesWiki gives different sales and marketing roles cited answers while keeping retrieval, proposals, approval and production writes separate.
 tags: architecture, security, mcp, python
 series: Building SalesWiki in the open
 cover_image: https://raw.githubusercontent.com/artemrudenko/SalesWiki-public/main/assets/publication/devto-02-trust-boundary.png
 ---
 
-A read tool that can also edit production knowledge is convenient. It is also a
-large trust surface.
+The first SalesWiki question was broad: can sales and marketing teams turn
+scattered context into decisions they can check? The next question forced an
+architecture choice. What happens when an account executive, a marketer and a
+curator use the same knowledge but should not retrieve or change the same facts?
 
-If the same process answers questions, interprets untrusted text and writes
-cards, a bad instruction or a simple bug can move from retrieval to mutation.
-Parallel writers add another problem: two valid edits can corrupt the card or
-the audit sequence.
+A read tool that can also edit production knowledge creates a large trust
+surface. If the same process answers questions, interprets untrusted text and
+writes cards, a bad instruction or a simple bug can move from retrieval to
+mutation. Parallel writers add another problem: two valid edits can corrupt the
+card or the audit sequence.
 
 I separated those jobs in SalesWiki.
 
@@ -206,6 +209,10 @@ replaced by per-request SSO. Approval records need production-grade identity and
 secret handling. Connector credentials, backups, rate limits and incident
 response need an operating environment outside the public repository.
 
+This part of the experiment answers one question: the same shared knowledge can
+support different decisions only when identity and policy filter retrieval before
+an answer is assembled, and when changes follow a separate governed path.
+
 The code and ADRs are available in the [SalesWiki repository](https://github.com/artemrudenko/SalesWiki-public).
-Part 3 covers the complete local setup and the boundary between a safe demo and a
-private real-data pilot.
+Part 3 tests the next question: how far can a synthetic demo take us before a
+private real-data pilot becomes necessary?

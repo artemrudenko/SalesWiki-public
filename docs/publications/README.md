@@ -6,13 +6,14 @@ installation instructions they reference.
 
 ## Recommended publishing order
 
-1. `devto-01-why-saleswiki.md`: the problem, product idea and first demo.
-2. `devto-02-permissioned-architecture.md`: access control, cited answers and
-   governed writes.
-3. `devto-03-install-and-pilot.md`: local setup, Docker, MCP and the path to a
-   private pilot.
-4. `devto-04-vendor-first-integrations.md`: the chat adapter refactor,
-   config-first runtime and vendor-first MCP strategy.
+1. `devto-01-why-saleswiki.md`: how scattered sales and marketing context
+   becomes a decision someone can check.
+2. `devto-02-permissioned-architecture.md`: how the same knowledge safely serves
+   different roles and governed changes.
+3. `devto-03-install-and-pilot.md`: how to test one repeated decision between a
+   synthetic demo and a private pilot.
+4. `devto-04-vendor-first-integrations.md`: how CRM, document and chat context
+   connects without moving vendor complexity into the core.
 
 The four DEV articles use the same `series` value in front matter, so DEV can
 group them. DEV supports no more than four tags per article. Its editor uses
@@ -47,7 +48,11 @@ Each diagram has four forms under `diagrams/`:
 
 ## Editorial position
 
-The strongest honest claim is narrow: SalesWiki is a public-preview starter kit
-for teams that need cited extraction, governed changes and an owned Markdown
-data plane at the same time. It is not a CRM replacement or a finished hosted
-enterprise product.
+The series follows one learning journey: how can sales and marketing teams turn
+scattered context into decisions they can trust? Each article answers a narrower
+question about the knowledge model, permission boundary, pilot or integrations.
+
+The strongest honest product claim is narrow: SalesWiki is a public-preview
+starter kit for teams that need cited extraction, governed changes and an owned
+Markdown data plane at the same time. It is not a CRM replacement or a finished
+hosted enterprise product.

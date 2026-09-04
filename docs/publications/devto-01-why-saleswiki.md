@@ -1,22 +1,23 @@
 ---
-title: Why I built a sales knowledge base that refuses to guess
+title: Why I built a sales and marketing knowledge base that refuses to guess
 published: false
-description: SalesWiki keeps GTM knowledge in Markdown, answers from cited fields, and makes missing data visible instead of inventing an answer.
-tags: opensource, sales, knowledgebase, ai
+description: I am exploring how sales and marketing teams can turn scattered context into cited decisions without letting AI fill the gaps.
+tags: sales, marketing, knowledgebase, ai
 series: Building SalesWiki in the open
 cover_image: https://raw.githubusercontent.com/artemrudenko/SalesWiki-public/main/assets/publication/devto-01-evidence-flow.png
 ---
 
-Sales knowledge rarely disappears all at once. It leaks away in small pieces.
+Sales and marketing context rarely disappears all at once. It leaks away in
+small pieces.
 
 A useful detail stays in a call transcript. A pricing objection lives in a CRM
-note. An account brief sits in someone's private document. Two weeks later, a
-salesperson asks a simple question:
+note. Market research sits in one document and the campaign plan in another.
+Sooner or later, someone asks a practical question:
 
-> What should I do about this account today?
+> What should we do next, and why?
 
-The answer exists, but nobody can assemble it quickly or explain where each
-part came from.
+The context may exist, but nobody can assemble it quickly or explain where each
+part came from. That can block a sales call, an account decision or a campaign.
 
 I started building [SalesWiki](https://github.com/artemrudenko/SalesWiki-public) to test a different operating model. The
 durable source of truth is a folder of Markdown files that opens directly in
@@ -30,9 +31,9 @@ for a governed sales and marketing knowledge base.
 ## This started as a research question
 
 I did not begin with "let's build another knowledge product." I wanted to
-learn whether a plain wiki could act as a useful brain for a sales team without
-becoming an unstructured folder. I also wanted to know whether agents could
-help maintain it without changing protected facts behind the scenes.
+learn whether a plain wiki could help sales and marketing teams make decisions
+without becoming an unstructured folder. I also wanted to know whether agents
+could maintain it without changing protected facts behind the scenes.
 
 Sales and marketing are a useful stress test. Evidence arrives in many shapes,
 ages quickly and has mixed sensitivity. The output also has to support a decision,
@@ -217,7 +218,11 @@ Brief me on BluePeak Energy.
 Which deals are at risk?
 ```
 
-For a small B2B team, that question is often more useful than a new dashboard.
+These are sales examples because they are the most complete demo path today.
+The same knowledge model also supports marketing campaign briefs and content
+opportunities from permitted pains, objections and account signals.
+
+For a small B2B team, a bounded question is often more useful than a new dashboard.
 The current Workbench starts with a short role-aware daily queue, then lets the
 user open the account graph when they need context. It also shows an explainable
 account temperature: hot, warm, cold or at risk, with a reason drawn only from
@@ -236,14 +241,13 @@ switcher is a visible fixture comparison, not authorization. The optional local
 BFF resolves an allowlisted synthetic person on the server. In a shared
 deployment, both demo mechanisms are replaced by SSO.
 
-The public Workbench now has a guided tour because screenshots were not enough
-to explain this contrast. The full 12-step route moves through the role-aware
-daily queue, decision signals, safe search, the account graph, dated evidence,
-the bounded assistant, local monitoring, controlled import and curator review.
-You can also choose a shorter route for one synthetic role. It opens the real
-demo screens but does not submit a proposal or change a card. That distinction
-matters: the tour explains the workflow without pretending that a browser demo
-is a production identity system.
+The public Workbench has a guided tour because screenshots were not enough to
+explain this contrast. The recommended six-step route follows one decision from
+a role-specific priority to account context, evidence, a bounded assistant and
+curator review. The 12-step technical route also covers safe search, graph
+controls, local monitoring and controlled import. Focused role tours contain
+only the workflows available to that person. The tour opens real demo screens
+but does not submit a proposal or change a card.
 
 If you want to see the interface before cloning, open the
 [synthetic Knowledge Workbench](https://knowledge-workbench-seven.vercel.app/).
@@ -285,8 +289,9 @@ external erasable personal-data store.
 That boundary matters. Fixture identities are useful for a demo and a
 single-operator pilot. They are not production authentication.
 
-Part 2 explains the permission model, the read/propose boundary and why only one
-worker can update cards. Part 3 walks through installation and the safe path from
-the synthetic demo to a private pilot.
+This is the first part of the learning path: can a small owned knowledge layer
+turn scattered context into a decision someone can check? Part 2 asks what must
+change when the same context serves sales, marketing and curators with different
+permissions. Part 3 moves the idea from a synthetic demo to one private pilot.
 
 Repository: [SalesWiki](https://github.com/artemrudenko/SalesWiki-public)

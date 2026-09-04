@@ -1,17 +1,21 @@
 ---
-title: "One chat integration was enough: my vendor-first MCP strategy"
+title: "How I am connecting SalesWiki without rebuilding every vendor integration"
 published: false
-description: "How SalesWiki separates chat adapters, MCP clients, source connectors and controlled writes without building one bot per vendor."
+description: "A vendor-first strategy for bringing CRM, document and chat context into SalesWiki without moving integration complexity into the knowledge core."
 tags: mcp, architecture, opensource, python
 series: "Building SalesWiki in the open"
 cover_image: https://raw.githubusercontent.com/artemrudenko/SalesWiki-public/main/assets/publication/devto-04-connector-paths.png
 ---
 
-The first chat integration worked. That created a new problem.
+Once SalesWiki could assemble a cited answer for different sales and marketing
+roles, the next question was where the context should come from. CRM records,
+call notes, documents and conversations live in different systems. Connecting
+them all could easily become a larger project than the knowledge workflow itself.
 
-SalesWiki could answer role-aware questions inside Rocket.Chat. Once that demo
-was running, it was easy to imagine the next tickets: add Telegram, add Slack,
-add Teams, add HubSpot, add Google Drive.
+The first chat integration made that risk concrete. SalesWiki could answer
+role-aware questions inside Rocket.Chat. Once that demo was running, it was easy
+to imagine the next tickets: add Telegram, add Slack, add Teams, add HubSpot, add
+Google Drive.
 
 That list looks like progress. It can also turn a small project into five OAuth
 implementations, five retry systems and five slightly different copies of the
@@ -259,6 +263,12 @@ python3 -m unittest tests.test_chat_runtime tests.test_code_structure
 ```
 
 Read the implementation plan and ADR in the
-[SalesWiki repository](https://github.com/artemrudenko/SalesWiki-public). If you extend it, start with one workflow
-and one read scope. A connector that exists only because its API was available
-will be expensive long before it becomes useful.
+[SalesWiki repository](https://github.com/artemrudenko/SalesWiki-public). If you
+extend it, start with one validated sales or marketing decision and one read
+scope. The connector has a job only when it supplies evidence for that decision
+or returns the resulting answer where someone already works. An available API
+is not enough reason to add another integration.
+
+That completes the first arc of the series: define the decision, make its
+evidence and access rules visible, test it on a narrow workflow, then connect
+only the systems that the validated workflow needs.
