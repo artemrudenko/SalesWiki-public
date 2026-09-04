@@ -54,6 +54,11 @@ narrowing the options with cited, permitted evidence while leaving the final
 choice with the person. Each article answers a narrower question about the
 knowledge model, permission boundary, pilot or integrations.
 
+The wiki model comes before the assistant in this story. One set of linked cards
+holds the current shared understanding; raw evidence is preserved; proposals,
+review records and history explain changes; role policy creates permitted views.
+External systems can remain the source of their original records.
+
 The strongest honest product claim is narrow: SalesWiki is a public-preview
 starter kit for teams that need cited extraction, governed changes and an owned
 Markdown data plane at the same time. It is not a CRM replacement or a finished

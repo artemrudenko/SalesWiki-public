@@ -420,7 +420,10 @@ How answers are shaped and why you can trust them: every read answer follows one
 ## Knowledge Workbench help
 
 The optional Knowledge Workbench is a visual, synthetic demo of the same
-permissioned system. Select **Tour** in its top bar to choose a full product
+permissioned system. Its role views are projections of the same linked card
+model; they are not separate sales and marketing copies. Raw evidence remains
+attached while proposals and review preserve the route by which shared
+knowledge changes. Select **Tour** in its top bar to choose a full product
 walkthrough or a walkthrough for one synthetic role. The six-step quick tour
 shows how shared evidence produces a sales priority and a different marketing
 action. The 12-step full tour also covers decision signals, safe search, graph

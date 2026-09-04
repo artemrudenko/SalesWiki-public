@@ -10,6 +10,12 @@ The same context must support daily decisions, but it has different owners,
 freshness windows and access levels. A fluent answer is not enough: the user
 needs to know where it came from, whether it is stale and what to do next.
 
+The wiki model is the product hypothesis underneath those answers. One linked
+set of company, person, deal, call, campaign and source cards holds the team's
+current shared understanding. Raw evidence stays immutable. Card history,
+proposals and review records preserve how that understanding changed. Policy
+then produces different permitted views for sales, marketing and other roles.
+
 We are not claiming that "wiki brain" is a proven product category. SalesWiki is
 a public reference implementation and an experiment that makes its hypothesis
 inspectable. The synthetic demo proves the mechanics. A private pilot must still

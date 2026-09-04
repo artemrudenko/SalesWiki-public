@@ -111,6 +111,10 @@ The 12-step technical route also covers safe search, graph controls, local-only
 monitoring and controlled import. Focused role tours contain only the workflows
 that person can use.
 
+Watch for the wiki model underneath the interface. The role views are derived
+from the same linked cards, evidence remains attached and Review records the
+route by which a proposed conclusion may enter shared knowledge.
+
 The tour opens real demo views, but it never submits a proposal, saves a
 monitoring plan or changes a card. It is a guided explanation of the system,
 not a production login flow.
@@ -241,6 +245,8 @@ mount for the private vault. Docker does not replace authorization or identity.
 After one hour with the demo, you should be able to answer these questions:
 
 - Can I trace each answer back to a card?
+- Can sales and marketing navigate the same linked account model without keeping
+  separate copies of the shared context?
 - Does a missing company produce `not-found` instead of a guess?
 - Do two roles receive different allowed views of the same account?
 - Can the gateway propose a correction without writing the card?

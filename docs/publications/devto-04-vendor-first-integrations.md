@@ -29,6 +29,12 @@ when it closes a specific evidence gap or shortens the path to a defensible
 action. Connecting a system because it contains interesting data only widens
 the search again.
 
+HubSpot can remain the CRM system of record, Drive can retain the source
+document and a call provider can retain the original recording. SalesWiki owns
+the linked, cited understanding that those sources support. This avoids a fresh
+sales summary, marketing summary and chat summary drifting apart while also
+avoiding a second copy of every source system.
+
 ## Four jobs that should not share one interface
 
 The word "connector" hid several different jobs:

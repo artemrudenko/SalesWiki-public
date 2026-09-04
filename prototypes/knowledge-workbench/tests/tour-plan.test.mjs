@@ -5,6 +5,7 @@ import { buildTourSteps, roleLabel } from "../src/tourPlan.js";
 test("quick tour proves the operating loop in six steps", () => {
   const steps = buildTourSteps({ mode: "quick", role: "sales-owner" });
   assert.deepEqual(steps.map((step) => step.id), ["today", "role-contrast", "graph", "evidence", "assistant", "review"]);
+  assert.match(steps[0].title, /shared knowledge/i);
   assert.equal(steps[1].role, "marketing");
   assert.match(steps[1].title, /different decision/i);
   assert.match(steps[4].title, /marketing should do next/i);

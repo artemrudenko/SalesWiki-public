@@ -41,6 +41,11 @@ deciding how to move a commercial conversation forward. Marketing is deciding
 which signal and proof can support a useful message. Shared storage helps only
 if retrieval preserves that difference before an answer is assembled.
 
+This is one logical knowledge model, not one unrestricted storage location.
+Stable links connect the broad and protected cards, while physical boundaries
+keep sensitive material out of a role's retrieval path. The user experiences a
+shared account map; the server decides which part of that map can be assembled.
+
 The gateway processes the request in this order:
 
 ```text

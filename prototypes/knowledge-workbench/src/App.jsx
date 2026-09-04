@@ -436,6 +436,7 @@ function HelpPanel({ onClose }) {
   return <aside className="help-panel" role="dialog" aria-modal="true" aria-label="How SalesWiki Workbench works">
     <div className="ask-panel__head"><div><span className="eyebrow">Workbench help</span><h2>Work with evidence, not guesses</h2></div><button onClick={onClose} aria-label="Close help"><X size={18} /></button></div>
     <div className="help-panel__body">
+      <details className="help-topic"><summary>Use one shared knowledge model</summary><p>Linked cards represent companies, people, activity, campaigns and sources once. Each role receives a permitted view instead of maintaining a separate copy of the account story.</p></details>
       <details className="help-topic"><summary>Start with Today</summary><p>It shows the priorities that your current role is allowed to see. Open an account to inspect the supporting evidence.</p></details>
       <details className="help-topic"><summary>Compare roles</summary><p>In this synthetic demo, changing the person also changes the Today queue, permitted accounts, decision-signal cards and Review access. It demonstrates a server-owned role boundary; it is not an account switcher for production use.</p></details>
       <details className="help-topic"><summary>Explore safely</summary><p>Search returns accessible companies only. Some graph detail can be hidden when it belongs to another team or a protected boundary.</p></details>

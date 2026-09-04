@@ -9,7 +9,7 @@ export function TourChooser({ personas, currentRole, onClose, onStart }) {
       <button type="button" className="modal-close" onClick={onClose} aria-label="Close tour chooser"><X size={18} /></button>
       <span className="eyebrow"><Compass size={15} weight="fill" />Guided product tour</span>
       <h2 id="tour-title">How does scattered context become a trusted decision?</h2>
-      <p>Each step opens a real part of the synthetic demo and follows the path from a signal to a role-specific action. The tour never creates a proposal, changes a card or connects to customer data.</p>
+      <p>Follow linked cards and stable evidence through different role views, then see how that shared knowledge supports an action. The tour never creates a proposal, changes a card or connects to customer data.</p>
       <div className="tour-options">
         <button type="button" className="tour-option--recommended" onClick={() => onStart({ mode: "quick", role })}><strong>Quick product tour <em>Recommended · about 90 sec</em></strong><span>See how sales and marketing use shared evidence to reach different, inspectable next steps.</span><ArrowRight size={16} /></button>
         <button type="button" onClick={() => onStart({ mode: "full", role })}><strong>Full technical tour <em>12 steps · about 3 min</em></strong><span>Also inspect safe search, graph controls, monitoring and controlled import.</span><ArrowRight size={16} /></button>
@@ -54,8 +54,8 @@ export function GuidedTour({ tour, onNext, onPrevious, onClose }) {
       <div className="tour-card__head"><span>Guided tour · Complete</span><button type="button" onClick={onClose} aria-label="Close guided tour"><X size={18} /></button></div>
       <div className="tour-card__complete-mark"><Compass size={22} weight="fill" /></div>
       <h2>From scattered context to a decision you can inspect</h2>
-      <p>SalesWiki narrows the search for a solution: it connects permitted evidence, shapes the next step around the person's role and keeps the reasoning open to challenge.</p>
-      <ul><li>The system suggests a defensible direction; the person still makes the decision.</li><li>Missing or disputed context can enter a governed review path.</li></ul>
+      <p>SalesWiki keeps one linked knowledge model, preserves its evidence and turns it into a permitted, role-specific path toward a solution.</p>
+      <ul><li>Cards make the shared context navigable instead of duplicating it across team notes.</li><li>Proposals and review preserve how the shared conclusion changes.</li><li>The system suggests a defensible direction; the person still makes the decision.</li></ul>
       <div className="tour-card__complete-actions"><button type="button" onClick={onClose}>Explore on your own</button><a href="https://github.com/artemrudenko/SalesWiki-public" target="_blank" rel="noreferrer"><GithubLogo size={16} weight="fill" />View GitHub<ArrowSquareOut size={14} /></a></div>
     </section>
   </div>;

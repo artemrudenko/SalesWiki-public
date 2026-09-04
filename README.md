@@ -3,6 +3,11 @@
 SalesWiki is an Obsidian-first, Markdown-based GTM knowledge starter kit for
 small B2B sales, marketing and RevOps teams.
 
+Its central idea is one shared, navigable knowledge model instead of separate
+copies of account context in sales notes, marketing documents and private
+spreadsheets. Companies, people, deals, calls, campaigns, sources and decisions
+become linked cards. Each role receives a permitted view of that shared model.
+
 It is not a CRM and not a hosted SaaS. It is a reference implementation for a
 specific operating model: keep sales knowledge portable, cited, role-aware and
 governed before it becomes another opaque AI search box.
@@ -82,14 +87,17 @@ the governed proposal flow without connecting to real data.
 Use SalesWiki when a small team needs a governed GTM knowledge base, not a
 generic chatbot over company docs.
 
-The project is built around three differentiators:
+The project is built around four differentiators:
 
-1. **Deterministic extract-only answers.** Answers are assembled from cited
+1. **One linked knowledge model.** Sales, marketing and RevOps navigate the
+   same canonical cards and relationships instead of maintaining separate
+   summaries of the same account.
+2. **Deterministic extract-only answers.** Answers are assembled from cited
    Markdown cards and explicit fields/sections instead of generated guesses.
-2. **Governed transactional changes.** Sensitive changes move through
+3. **Governed transactional changes.** Sensitive changes move through
    proposal, review, approval and a single-writer worker instead of direct
    uncontrolled edits.
-3. **Owned portable data plane.** The durable source of truth is Markdown,
+4. **Owned portable data plane.** The durable source of truth is Markdown,
    JSONL/CSV indexes and explicit ledgers that can live outside any vendor.
 
 Good fit:

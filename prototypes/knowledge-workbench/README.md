@@ -1,6 +1,11 @@
 # SalesWiki Knowledge Workbench prototype
 
-This is a local, interactive prototype of the graph-led SalesWiki Entity Explorer. It demonstrates how a non-technical sales or marketing user can understand one account, inspect the evidence behind a conclusion, ask a grounded question, and submit a governed update proposal.
+This is a local, interactive prototype of the graph-led SalesWiki Entity
+Explorer. It demonstrates how one shared model of linked company, person,
+activity, campaign and source cards becomes a permitted sales or marketing
+view. A non-technical user can navigate an account, inspect stable evidence,
+ask a grounded question and submit a governed update proposal without keeping
+a separate copy of the account story.
 
 The prototype defaults to synthetic in-browser fixtures. Set
 `VITE_SALESWIKI_GRAPH_ENDPOINT=/api/v1/entity-graph` to use the optional local

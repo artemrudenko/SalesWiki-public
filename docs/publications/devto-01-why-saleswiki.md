@@ -55,6 +55,27 @@ That led to four questions:
 The synthetic demo answers only the engineering part. A real pilot still has to
 prove that people prefer the workflow.
 
+## One knowledge model, several permitted views
+
+"Central" does not mean copying every CRM field, transcript and document into
+one unrestricted folder. Those systems can remain the source of their original
+records, and sensitive material can stay in a separate physical boundary.
+
+SalesWiki centralizes the team's compiled understanding. A company, person,
+deal, call, campaign, source or reusable case becomes a typed card with stable
+links to related cards. Sales and marketing navigate the same account map, while
+policy decides which cards and fields each role may retrieve.
+
+The layers have different jobs:
+
+- raw evidence is preserved instead of silently rewritten;
+- linked cards hold the current shared conclusion;
+- proposals, review records and Git history show how that conclusion changed;
+- indexes and dashboards are generated views that can be rebuilt from the cards.
+
+This is the reason for choosing a wiki model. The goal is not a larger folder.
+It is a durable map that people and tools can navigate, question and correct.
+
 ## The folder is simple on purpose
 
 The core flow looks like this:
