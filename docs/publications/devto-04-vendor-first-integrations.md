@@ -24,6 +24,11 @@ same conversation state.
 I paused and asked a simpler question: which parts does SalesWiki need to own,
 and which parts should a vendor maintain?
 
+The answer depends on the decision being improved. A connector earns its place
+when it closes a specific evidence gap or shortens the path to a defensible
+action. Connecting a system because it contains interesting data only widens
+the search again.
+
 ## Four jobs that should not share one interface
 
 The word "connector" hid several different jobs:

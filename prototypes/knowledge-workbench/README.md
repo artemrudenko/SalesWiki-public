@@ -28,8 +28,10 @@ Open `http://localhost:4173/`.
 - Filter the graph by people, deals, calls, or evidence.
 - Select a node or an evidence-trace item to inspect its context.
 - Search within the current account.
-- Choose **Ask assistant** for one of five focused, cited questions in the
-  current account context. It is guided, not free-form AI chat.
+- Choose **Ask assistant** for a short set of focused, cited questions shaped
+  around the current role. Marketing sees questions about usable context and
+  the next marketing action instead of sales-only deal and call prompts. It is
+  guided, not free-form AI chat.
 - Use **Help** in the top bar for a short explanation of access, evidence,
   monitoring, review and the demo boundary. Small `i` icons explain the most
   easily misunderstood dashboard and assistant concepts.

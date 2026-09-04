@@ -421,20 +421,22 @@ How answers are shaped and why you can trust them: every read answer follows one
 
 The optional Knowledge Workbench is a visual, synthetic demo of the same
 permissioned system. Select **Tour** in its top bar to choose a full product
-walkthrough or a walkthrough for one synthetic role. The 12-step full tour
-visibly switches between role-shaped Today views and covers decision signals,
-safe search, graph controls, dated evidence, the bounded assistant, local-only
-monitoring, controlled import and governed Review. A role tour includes only
-the workflows that role can use. It is presentational only: it never creates a
-proposal, changes a card or connects to customer data. **Help** remains the
-short reference guide.
+walkthrough or a walkthrough for one synthetic role. The six-step quick tour
+shows how shared evidence produces a sales priority and a different marketing
+action. The 12-step full tour also covers decision signals, safe search, graph
+controls, dated evidence, the guided assistant, local-only monitoring,
+controlled import and governed Review. A role tour includes only the workflows
+that role can use. It is presentational only: it never creates a proposal,
+changes a card or connects to customer data. **Help** remains the short
+reference guide.
 
 1. Start with **Today** for role-visible priorities, then open an account.
 2. Use **Explore** to inspect the graph and dated evidence. Search returns only
    companies you may access.
-3. Select **Ask assistant** for a focused question: account brief, what changed,
-   next step, deal risk or call preparation. This is a guided, cited flow — not
-   a free-form AI chat.
+3. Select **Ask assistant** for a focused question shaped around the current
+   role. Sales can ask about calls and deal risk; marketing sees permitted
+   context and next-action questions. This is a guided, cited flow — not a
+   free-form AI chat.
 4. Use **Import** and **Propose an update** to create review proposals. They do
    not write cards directly.
 5. **Review** appears only to roles that can inspect the shared proposal queue.

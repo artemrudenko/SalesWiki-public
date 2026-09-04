@@ -11,6 +11,10 @@ A broad product idea becomes useful only when it improves a repeated decision.
 For SalesWiki, that means moving from "can the architecture work?" to "does this
 help a sales or marketing team act with less searching and more confidence?"
 
+The pilot therefore measures a search process, not the attractiveness of an AI
+answer. Can a person move from a new signal to a defensible action faster? Can
+they see which options were ruled out by missing, stale or restricted context?
+
 I wrote this tutorial to take SalesWiki from a fresh clone to a working synthetic
 demo. It also marks the point where you should stop before adding real customer
 data.
@@ -205,12 +209,13 @@ sales workflow, not the limit of the product. A later marketing pilot can apply
 the same method to a recurring campaign or content decision once its evidence
 and success criteria are explicit.
 
-A useful pilot should prove more than search. Continue only if real work validates
-all three points:
+A useful pilot should prove more than document retrieval. Continue only if real
+work validates all four points:
 
 1. Users prefer the cited extract-only answer for the chosen decision.
 2. At least one correction benefits from proposal, approval and controlled apply.
 3. Owning the policy and data plane solves a real operating requirement.
+4. Users can explain why they chose the action and what evidence would change it.
 
 If the pilot mainly proves that people want document search or summarization, an
 existing product may be the cheaper answer.

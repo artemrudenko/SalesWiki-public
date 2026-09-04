@@ -24,17 +24,17 @@ to represent traceability, permissioned paths and deliberate discovery.
 the in-product guided tour. The recordings do not contain customer data, browser
 profiles or a manual cursor overlay.
 
-- `tours/saleswiki-tour-teaser.gif` — short three-step looping preview for DEV,
-  README or a social-post preview.
-- `tours/saleswiki-full-tour.mp4` — full product route: role contrast, evidence,
-  bounded assistant, monitoring, controlled import and review.
+- `tours/saleswiki-tour-teaser.gif` — short looping preview for DEV, README or
+  a social-post preview.
+- `tours/saleswiki-full-tour.mp4` — full product route: different role
+  decisions from shared evidence, guided next actions, monitoring, controlled
+  import and review.
 - `tours/saleswiki-ae-tour.mp4` — account-executive route.
 - `tours/saleswiki-marketing-tour.mp4` — marketing route.
 - `tours/saleswiki-curator-tour.mp4` — curator route, including review access.
 
 Use MP4 when the platform supports video. It gives readers enough time to follow
-each step. The GIF is a lightweight three-step autoplay preview, not the source
-recording.
+each step. The GIF is a lightweight autoplay preview, not the source recording.
 
 Use the files as source assets. Upload a platform-hosted copy before inserting
 it into DEV front matter or a social post; do not rely on a local relative path.

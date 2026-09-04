@@ -13,6 +13,7 @@ Before making substantial visual changes, use the Product Design plugin's `get-c
 - Keep evidence, freshness, confidence, citations, and access state visible near every conclusion.
 - Never edit the source vault directly from the UI. Writes become proposals, then pass through review, an authorized worker, validation, and audit.
 - Keep the main non-technical path short: choose an account, understand what matters, inspect evidence, ask in context, or propose an update.
+- Frame the product around finding a defensible next action. The Workbench narrows the search with permitted evidence and visible gaps; the person still decides.
 
 When implementing from a selected generated mock, treat that image as the source of truth for layout, component anatomy, density, spacing, color, typography, visible content, and hierarchy.
 

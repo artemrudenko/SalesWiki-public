@@ -8,10 +8,10 @@ export function TourChooser({ personas, currentRole, onClose, onStart }) {
     <section className="proposal-modal tour-chooser" role="dialog" aria-modal="true" aria-labelledby="tour-title">
       <button type="button" className="modal-close" onClick={onClose} aria-label="Close tour chooser"><X size={18} /></button>
       <span className="eyebrow"><Compass size={15} weight="fill" />Guided product tour</span>
-      <h2 id="tour-title">Choose how to explore SalesWiki</h2>
-      <p>Each step opens a real part of the synthetic demo. The tour never creates a proposal, changes a card or connects to customer data.</p>
+      <h2 id="tour-title">How does scattered context become a trusted decision?</h2>
+      <p>Each step opens a real part of the synthetic demo and follows the path from a signal to a role-specific action. The tour never creates a proposal, changes a card or connects to customer data.</p>
       <div className="tour-options">
-        <button type="button" className="tour-option--recommended" onClick={() => onStart({ mode: "quick", role })}><strong>Quick product tour <em>Recommended · about 90 sec</em></strong><span>Follow the shortest route from a role-specific priority to cited evidence and governed review.</span><ArrowRight size={16} /></button>
+        <button type="button" className="tour-option--recommended" onClick={() => onStart({ mode: "quick", role })}><strong>Quick product tour <em>Recommended · about 90 sec</em></strong><span>See how sales and marketing use shared evidence to reach different, inspectable next steps.</span><ArrowRight size={16} /></button>
         <button type="button" onClick={() => onStart({ mode: "full", role })}><strong>Full technical tour <em>12 steps · about 3 min</em></strong><span>Also inspect safe search, graph controls, monitoring and controlled import.</span><ArrowRight size={16} /></button>
         <div className="tour-role-option"><label htmlFor="tour-role">Tour for one role</label><select id="tour-role" value={role} onChange={(event) => setRole(event.target.value)}>{personas.map((person) => <option key={person.role} value={person.role}>{roleLabel(person.role)} · {person.name}</option>)}</select><button type="button" onClick={() => onStart({ mode: "role", role })}><strong>Explore this role</strong><ArrowRight size={16} /></button></div>
       </div>
@@ -53,9 +53,9 @@ export function GuidedTour({ tour, onNext, onPrevious, onClose }) {
     <section className="tour-card tour-card--complete">
       <div className="tour-card__head"><span>Guided tour · Complete</span><button type="button" onClick={onClose} aria-label="Close guided tour"><X size={18} /></button></div>
       <div className="tour-card__complete-mark"><Compass size={22} weight="fill" /></div>
-      <h2>You have seen the operating loop</h2>
-      <p>SalesWiki turns permitted evidence into role-specific priorities, keeps conclusions traceable and routes proposed changes through review.</p>
-      <ul><li>Explore the synthetic workspace on your own.</li><li>Inspect the public code and architecture.</li></ul>
+      <h2>From scattered context to a decision you can inspect</h2>
+      <p>SalesWiki narrows the search for a solution: it connects permitted evidence, shapes the next step around the person's role and keeps the reasoning open to challenge.</p>
+      <ul><li>The system suggests a defensible direction; the person still makes the decision.</li><li>Missing or disputed context can enter a governed review path.</li></ul>
       <div className="tour-card__complete-actions"><button type="button" onClick={onClose}>Explore on your own</button><a href="https://github.com/artemrudenko/SalesWiki-public" target="_blank" rel="noreferrer"><GithubLogo size={16} weight="fill" />View GitHub<ArrowSquareOut size={14} /></a></div>
     </section>
   </div>;

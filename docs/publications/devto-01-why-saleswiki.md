@@ -19,6 +19,11 @@ Sooner or later, someone asks a practical question:
 The context may exist, but nobody can assemble it quickly or explain where each
 part came from. That can block a sales call, an account decision or a campaign.
 
+I use "find a solution" carefully here. SalesWiki does not choose for the team.
+It reduces the search space by bringing the relevant signals, constraints and
+missing facts into one view. A person can compare the remaining options and see
+why a suggested next step exists.
+
 I started building [SalesWiki](https://github.com/artemrudenko/SalesWiki-public) to test a different operating model. The
 durable source of truth is a folder of Markdown files that opens directly in
 Obsidian. Raw evidence stays separate from compiled knowledge. Answers copy
@@ -229,9 +234,10 @@ account temperature: hot, warm, cold or at risk, with a reason drawn only from
 records that role may already see.
 
 The same Workbench now adds a small decision-signal dashboard and a guided
-assistant. The assistant deliberately offers focused, cited questions rather
-than a free-form chat box, so a user can inspect what changed or choose a next
-step without turning access-controlled data into an opaque prompt.
+assistant. Its questions change with the role. An account executive can ask
+about a call or deal risk; marketing can ask which permitted signal changed and
+what marketing should do next. The answer narrows the options and cites the
+supporting records. The person still chooses the action.
 
 One small interface lesson changed the demo as I built it: a role switch has to
 change the job, not just an access badge. The synthetic account executive,
@@ -242,12 +248,13 @@ BFF resolves an allowlisted synthetic person on the server. In a shared
 deployment, both demo mechanisms are replaced by SSO.
 
 The public Workbench has a guided tour because screenshots were not enough to
-explain this contrast. The recommended six-step route follows one decision from
-a role-specific priority to account context, evidence, a bounded assistant and
-curator review. The 12-step technical route also covers safe search, graph
-controls, local monitoring and controlled import. Focused role tours contain
-only the workflows available to that person. The tour opens real demo screens
-but does not submit a proposal or change a card.
+explain this contrast. The recommended six-step route starts with a sales
+priority, switches to a marketing decision, opens the account context, checks
+the evidence and asks for a role-specific next step before showing curator
+review. The 12-step technical route also covers safe search, graph controls,
+local monitoring and controlled import. Focused role tours contain only the
+workflows available to that person. The tour opens real demo screens but does
+not submit a proposal or change a card.
 
 If you want to see the interface before cloning, open the
 [synthetic Knowledge Workbench](https://knowledge-workbench-seven.vercel.app/).

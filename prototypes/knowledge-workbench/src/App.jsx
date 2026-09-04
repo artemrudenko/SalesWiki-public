@@ -410,9 +410,27 @@ function ProposalModal({ account, onClose, onSubmit }) {
   );
 }
 
-const guidedQuestions = [
+const salesGuidedQuestions = [
   ["account_brief", "Account brief"], ["what_changed", "What changed?"], ["next_step", "What should I do next?"], ["deal_risk", "What puts this at risk?"], ["call_prep", "Prepare me for a call"],
 ];
+
+const guidedQuestionsByRole = {
+  marketing: [
+    ["next_step", "What should marketing do next?"],
+    ["what_changed", "Which signal changed?"],
+    ["account_brief", "What context can we use?"],
+  ],
+  curator: [
+    ["what_changed", "What changed?"],
+    ["account_brief", "What evidence supports this?"],
+    ["next_step", "What should be checked next?"],
+  ],
+  admin: [
+    ["what_changed", "What changed?"],
+    ["account_brief", "What evidence is available?"],
+    ["next_step", "What should be checked next?"],
+  ],
+};
 
 function HelpPanel({ onClose }) {
   return <aside className="help-panel" role="dialog" aria-modal="true" aria-label="How SalesWiki Workbench works">
@@ -429,11 +447,12 @@ function HelpPanel({ onClose }) {
   </aside>;
 }
 
-function AskPanel({ account, onClose, onAsk }) {
+function AskPanel({ account, role, onClose, onAsk }) {
+  const guidedQuestions = guidedQuestionsByRole[role] ?? salesGuidedQuestions;
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [selectedIntent, setSelectedIntent] = useState("account_brief");
+  const [selectedIntent, setSelectedIntent] = useState(guidedQuestions[0][0]);
   const [answeredIntent, setAnsweredIntent] = useState(null);
   function select(intent) {
     setSelectedIntent(intent);
@@ -785,7 +804,7 @@ export function App() {
       {importOpen && <ImportModal account={account ?? accountFallback} onClose={() => setImportOpen(false)} onSubmit={submitImport} />}
       {starterOpen && <PolishStarter onClose={() => setStarterOpen(false)} />}
       {monitorOpen && <MonitorModal account={account ?? accountFallback} initialPlan={monitoringPlans[(account ?? accountFallback).id]} onClose={() => setMonitorOpen(false)} onSave={({ topics, cadence }) => { const selectedAccount = account ?? accountFallback; setMonitoringPlans((plans) => ({ ...plans, [selectedAccount.id]: { topics, cadence } })); setMonitorOpen(false); recordActivity("Monitoring plan saved", `${selectedAccount.name}: ${topics.length} signals, ${cadence}`); setToast(`Monitoring plan saved: ${topics.length} signal types, ${cadence}`); window.setTimeout(() => setToast(""), 3200); }} />}
-      {askOpen && account && <AskPanel account={account} onClose={() => setAskOpen(false)} onAsk={loadGuidedAnswer} />}
+      {askOpen && account && <AskPanel account={account} role={fixtureRole} onClose={() => setAskOpen(false)} onAsk={loadGuidedAnswer} />}
       {helpOpen && <HelpPanel onClose={() => setHelpOpen(false)} />}
       {tourChooserOpen && <TourChooser personas={sessionResult.status === "ready" ? sessionResult.data.personas : []} currentRole={fixtureRole} onClose={() => setTourChooserOpen(false)} onStart={startTour} />}
       {activeTour && <GuidedTour tour={activeTour} onNext={() => advanceTour(1)} onPrevious={() => advanceTour(-1)} onClose={() => setActiveTour(null)} />}

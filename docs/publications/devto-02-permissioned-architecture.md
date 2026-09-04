@@ -36,6 +36,11 @@ Marketing may need an approved company summary, public signals and a sanitized
 case-study angle. Both users asked the same question, but they should not receive
 the same fields.
 
+They are also searching for different solutions. The account executive is
+deciding how to move a commercial conversation forward. Marketing is deciding
+which signal and proof can support a useful message. Shared storage helps only
+if retrieval preserves that difference before an answer is assembled.
+
 The gateway processes the request in this order:
 
 ```text

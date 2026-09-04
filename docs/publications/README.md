@@ -49,8 +49,10 @@ Each diagram has four forms under `diagrams/`:
 ## Editorial position
 
 The series follows one learning journey: how can sales and marketing teams turn
-scattered context into decisions they can trust? Each article answers a narrower
-question about the knowledge model, permission boundary, pilot or integrations.
+scattered context into decisions they can trust? "Finding a solution" means
+narrowing the options with cited, permitted evidence while leaving the final
+choice with the person. Each article answers a narrower question about the
+knowledge model, permission boundary, pilot or integrations.
 
 The strongest honest product claim is narrow: SalesWiki is a public-preview
 starter kit for teams that need cited extraction, governed changes and an owned
