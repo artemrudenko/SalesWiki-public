@@ -728,7 +728,7 @@ export function App() {
       const nextIndex = current.index + offset;
       const steps = buildTourSteps(current);
       if (nextIndex < 0) return current;
-      if (nextIndex >= steps.length) return null;
+      if (nextIndex > steps.length) return current;
       return { ...current, index: nextIndex };
     });
   }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft, ArrowRight, Compass, CursorClick, X } from "@phosphor-icons/react";
+import { ArrowLeft, ArrowRight, ArrowSquareOut, Compass, CursorClick, GithubLogo, X } from "@phosphor-icons/react";
 import { buildTourSteps, roleLabel } from "../tourPlan";
 
 export function TourChooser({ personas, currentRole, onClose, onStart }) {
@@ -11,7 +11,8 @@ export function TourChooser({ personas, currentRole, onClose, onStart }) {
       <h2 id="tour-title">Choose how to explore SalesWiki</h2>
       <p>Each step opens a real part of the synthetic demo. The tour never creates a proposal, changes a card or connects to customer data.</p>
       <div className="tour-options">
-        <button type="button" onClick={() => onStart({ mode: "full", role })}><strong>Full product tour</strong><span>See role boundaries, evidence, the assistant and the review loop.</span><ArrowRight size={16} /></button>
+        <button type="button" className="tour-option--recommended" onClick={() => onStart({ mode: "quick", role })}><strong>Quick product tour <em>Recommended · about 90 sec</em></strong><span>Follow the shortest route from a role-specific priority to cited evidence and governed review.</span><ArrowRight size={16} /></button>
+        <button type="button" onClick={() => onStart({ mode: "full", role })}><strong>Full technical tour <em>12 steps · about 3 min</em></strong><span>Also inspect safe search, graph controls, monitoring and controlled import.</span><ArrowRight size={16} /></button>
         <div className="tour-role-option"><label htmlFor="tour-role">Tour for one role</label><select id="tour-role" value={role} onChange={(event) => setRole(event.target.value)}>{personas.map((person) => <option key={person.role} value={person.role}>{roleLabel(person.role)} · {person.name}</option>)}</select><button type="button" onClick={() => onStart({ mode: "role", role })}><strong>Explore this role</strong><ArrowRight size={16} /></button></div>
       </div>
     </section>
@@ -23,21 +24,46 @@ export function GuidedTour({ tour, onNext, onPrevious, onClose }) {
   const step = steps[tour.index];
   const [rect, setRect] = useState(null);
   useEffect(() => {
-    function updateSpotlight() {
-      const target = document.querySelector(`[data-tour-target="${step.target}"]`);
+    if (!step) { setRect(null); return undefined; }
+    const targetName = window.matchMedia("(max-width: 760px)").matches && step.mobileTarget ? step.mobileTarget : step.target;
+    const target = document.querySelector(`[data-tour-target="${targetName}"]`);
+    function measureSpotlight() {
       if (!target) { setRect(null); return; }
       const next = target.getBoundingClientRect();
-      setRect({ top: Math.max(8, next.top - 7), left: Math.max(8, next.left - 7), width: next.width + 14, height: next.height + 14 });
+      const width = Math.min(next.width + 14, window.innerWidth - 16);
+      const height = Math.min(next.height + 14, window.innerHeight - 16);
+      setRect({
+        top: Math.max(8, Math.min(next.top - 7, window.innerHeight - height - 8)),
+        left: Math.max(8, Math.min(next.left - 7, window.innerWidth - width - 8)),
+        width,
+        height,
+      });
+    }
+    function updateSpotlight() {
+      if (!target) { setRect(null); return; }
       target.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+      measureSpotlight();
     }
     const timer = window.setTimeout(updateSpotlight, 80);
-    window.addEventListener("resize", updateSpotlight);
-    return () => { window.clearTimeout(timer); window.removeEventListener("resize", updateSpotlight); };
+    window.addEventListener("resize", measureSpotlight);
+    document.addEventListener("scroll", measureSpotlight, true);
+    return () => { window.clearTimeout(timer); window.removeEventListener("resize", measureSpotlight); document.removeEventListener("scroll", measureSpotlight, true); };
   }, [step]);
+  if (!step) return <div className="tour-layer" role="dialog" aria-modal="true" aria-label="Guided tour complete">
+    <section className="tour-card tour-card--complete">
+      <div className="tour-card__head"><span>Guided tour · Complete</span><button type="button" onClick={onClose} aria-label="Close guided tour"><X size={18} /></button></div>
+      <div className="tour-card__complete-mark"><Compass size={22} weight="fill" /></div>
+      <h2>You have seen the operating loop</h2>
+      <p>SalesWiki turns permitted evidence into role-specific priorities, keeps conclusions traceable and routes proposed changes through review.</p>
+      <ul><li>Explore the synthetic workspace on your own.</li><li>Inspect the public code and architecture.</li></ul>
+      <div className="tour-card__complete-actions"><button type="button" onClick={onClose}>Explore on your own</button><a href="https://github.com/artemrudenko/SalesWiki-public" target="_blank" rel="noreferrer"><GithubLogo size={16} weight="fill" />View GitHub<ArrowSquareOut size={14} /></a></div>
+    </section>
+  </div>;
+  const tourName = tour.mode === "quick" ? "Quick product" : tour.mode === "full" ? "Full technical" : roleLabel(tour.role);
   return <div className="tour-layer" role="dialog" aria-modal="true" aria-label={`Tour step ${tour.index + 1}: ${step.title}`}>
     {rect && <div className="tour-spotlight" style={rect}><CursorClick size={18} weight="fill" /></div>}
-    <section className="tour-card">
-      <div className="tour-card__head"><span>Guided tour · {tour.mode === "full" ? "Full product" : roleLabel(tour.role)}</span><button type="button" onClick={onClose} aria-label="Close guided tour"><X size={18} /></button></div>
+    <section className={`tour-card ${step.id === "evidence" ? "tour-card--top" : ""}`}>
+      <div className="tour-card__head"><span>Guided tour · {tourName}</span><button type="button" onClick={onClose} aria-label="Close guided tour"><X size={18} /></button></div>
       <div className="tour-card__progress"><i style={{ width: `${((tour.index + 1) / steps.length) * 100}%` }} /></div>
       <small>Step {tour.index + 1} of {steps.length}</small>
       <h2>{step.title}</h2>
