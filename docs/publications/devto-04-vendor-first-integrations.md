@@ -25,9 +25,9 @@ I paused and asked a simpler question: which parts does SalesWiki need to own,
 and which parts should a vendor maintain?
 
 The answer depends on the decision being improved. A connector earns its place
-when it closes a specific evidence gap or shortens the path to a defensible
-action. Connecting a system because it contains interesting data only widens
-the search again.
+when it closes a specific evidence gap or shortens the path to an action someone
+can explain and check. Connecting a system because it contains interesting data
+only widens the search again.
 
 HubSpot can remain the CRM system of record, Drive can retain the source
 document and a call provider can retain the original recording. SalesWiki owns

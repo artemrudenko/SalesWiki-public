@@ -12,8 +12,9 @@ For SalesWiki, that means moving from "can the architecture work?" to "does this
 help a sales or marketing team act with less searching and more confidence?"
 
 The pilot therefore measures a search process, not the attractiveness of an AI
-answer. Can a person move from a new signal to a defensible action faster? Can
-they see which options were ruled out by missing, stale or restricted context?
+answer. Can a person move from a new signal to an action they can explain and
+check faster? Can they see which options were ruled out by missing, stale or
+restricted context?
 
 I wrote this tutorial to take SalesWiki from a fresh clone to a working synthetic
 demo. It also marks the point where you should stop before adding real customer

@@ -55,11 +55,11 @@ That led to four questions:
 The synthetic demo answers only the engineering part. A real pilot still has to
 prove that people prefer the workflow.
 
-## One knowledge model, several permitted views
+## One knowledge model, different allowed views
 
 "Central" does not mean copying every CRM field, transcript and document into
 one unrestricted folder. Those systems can remain the source of their original
-records, and sensitive material can stay in a separate physical boundary.
+records, and sensitive material can stay in a separate protected store.
 
 SalesWiki centralizes the team's compiled understanding. A company, person,
 deal, call, campaign, source or reusable case becomes a typed card with stable
@@ -246,7 +246,7 @@ Which deals are at risk?
 
 These are sales examples because they are the most complete demo path today.
 The same knowledge model also supports marketing campaign briefs and content
-opportunities from permitted pains, objections and account signals.
+opportunities from pains, objections and account signals that the role can use.
 
 For a small B2B team, a bounded question is often more useful than a new dashboard.
 The current Workbench starts with a short role-aware daily queue, then lets the
@@ -256,7 +256,7 @@ records that role may already see.
 
 The same Workbench now adds a small decision-signal dashboard and a guided
 assistant. Its questions change with the role. An account executive can ask
-about a call or deal risk; marketing can ask which permitted signal changed and
+about a call or deal risk; marketing can ask which available signal changed and
 what marketing should do next. The answer narrows the options and cites the
 supporting records. The person still chooses the action.
 
