@@ -19,10 +19,10 @@ Sooner or later, someone asks a practical question:
 The context may exist, but nobody can assemble it quickly or explain where each
 part came from. That can block a sales call, an account decision or a campaign.
 
-I use "find a solution" carefully here. SalesWiki does not choose for the team.
-It reduces the search space by bringing the relevant signals, constraints and
-missing facts into one view. A person can compare the remaining options and see
-why a suggested next step exists.
+I use the phrase "find a solution" carefully. SalesWiki does not choose for the
+team. It brings the relevant signals, constraints and missing facts into one
+view, so a person can compare the remaining options and see why a suggested next
+step exists.
 
 I started building [SalesWiki](https://github.com/artemrudenko/SalesWiki-public) to test a different operating model. The
 durable source of truth is a folder of Markdown files that opens directly in
@@ -40,9 +40,9 @@ learn whether a plain wiki could help sales and marketing teams make decisions
 without becoming an unstructured folder. I also wanted to know whether agents
 could maintain it without changing protected facts behind the scenes.
 
-Sales and marketing are a useful stress test. Evidence arrives in many shapes,
-ages quickly and has mixed sensitivity. The output also has to support a decision,
-rather than retrieve a paragraph. A good answer should say what matters, where the
+Sales and marketing are a useful stress test. Evidence arrives in many forms,
+ages quickly and has mixed sensitivity. The result has to support a decision,
+not simply retrieve a paragraph. A good answer should say what matters, where a
 fact came from, how fresh it is and what the user can do next.
 
 That led to four questions:
@@ -55,7 +55,7 @@ That led to four questions:
 The synthetic demo answers only the engineering part. A real pilot still has to
 prove that people prefer the workflow.
 
-## One knowledge model, different allowed views
+## One knowledge model, different views for each role
 
 "Central" does not mean copying every CRM field, transcript and document into
 one unrestricted folder. Those systems can remain the source of their original
@@ -63,8 +63,8 @@ records, and sensitive material can stay in a separate protected store.
 
 SalesWiki centralizes the team's compiled understanding. A company, person,
 deal, call, campaign, source or reusable case becomes a typed card with stable
-links to related cards. Sales and marketing navigate the same account map, while
-policy decides which cards and fields each role may retrieve.
+links to related cards. Sales and marketing use the same account map, while
+policy determines which cards and fields each role can read.
 
 The layers have different jobs:
 
@@ -73,8 +73,8 @@ The layers have different jobs:
 - proposals, review records and Git history show how that conclusion changed;
 - indexes and dashboards are generated views that can be rebuilt from the cards.
 
-This is the reason for choosing a wiki model. The goal is not a larger folder.
-It is a durable map that people and tools can navigate, question and correct.
+This is why I chose a wiki model. The goal is not a larger folder. It is a
+durable map that people and tools can navigate, question and correct.
 
 ## The folder is simple on purpose
 
@@ -82,7 +82,7 @@ The core flow looks like this:
 
 ![Calls, CRM notes and research become immutable evidence, typed Markdown cards, generated indexes, dashboards and cited MCP answers](https://raw.githubusercontent.com/artemrudenko/SalesWiki-public/main/diagrams/saleswiki-knowledge-flow.png)
 
-The repository separates five kinds of work:
+The repository separates five areas of work:
 
 | Folder | What belongs there |
 | --- | --- |
@@ -95,8 +95,8 @@ The repository separates five kinds of work:
 This choice has an obvious trade-off. A Markdown vault cannot hide behind a
 database schema. The structure must be explicit and checked.
 
-SalesWiki therefore treats every card type as a small contract. A deal card has
-known YAML properties and required sections. A health check fails when templates,
+SalesWiki treats every card type as a small contract. A deal card has known YAML
+properties and required sections. A health check fails when templates,
 properties, dashboards or links drift out of shape.
 
 Here is a shortened synthetic deal card from the demo:
@@ -125,15 +125,14 @@ freshness: needs-action
 - Evidence: demo call and lead cards.
 ```
 
-A person can read this file. Git can diff it. Obsidian can link it. A script can
+People can read this file. Git can diff it. Obsidian can link it. A script can
 validate it. The permissioned gateway can extract its fields without asking a
 model to reconstruct the deal from loose prose.
 
 ## Why answers are extracted instead of generated
 
-Most AI knowledge tools optimize for a fluent answer. SalesWiki makes a
-different trade-off for the permissioned core: an incomplete cited answer is
-safer than a confident invented one.
+SalesWiki makes a deliberate trade-off in its permissioned core: an incomplete
+cited answer is safer than a confident invented one.
 
 Every read tool returns the same Answer Contract:
 
@@ -248,11 +247,11 @@ These are sales examples because they are the most complete demo path today.
 The same knowledge model also supports marketing campaign briefs and content
 opportunities from pains, objections and account signals that the role can use.
 
-For a small B2B team, a bounded question is often more useful than a new dashboard.
-The current Workbench starts with a short role-aware daily queue, then lets the
-user open the account graph when they need context. It also shows an explainable
-account temperature: hot, warm, cold or at risk, with a reason drawn only from
-records that role may already see.
+For a small B2B team, a focused question is often more useful than a new
+dashboard. The Workbench starts with a short daily queue that changes with the
+role, then lets the user open the account graph when they need context. It also
+shows an account temperature, hot, warm, cold or at risk, with a reason drawn
+only from records that role can already see.
 
 The same Workbench now adds a small decision-signal dashboard and a guided
 assistant. Its questions change with the role. An account executive can ask
@@ -260,13 +259,13 @@ about a call or deal risk; marketing can ask which available signal changed and
 what marketing should do next. The answer narrows the options and cites the
 supporting records. The person still chooses the action.
 
-One small interface lesson changed the demo as I built it: a role switch has to
-change the job, not just an access badge. The synthetic account executive,
-marketing and curator views therefore have different permitted accounts, daily
-queues, decision signals and review access. In the public static Workbench, the
-switcher is a visible fixture comparison, not authorization. The optional local
-BFF resolves an allowlisted synthetic person on the server. In a shared
-deployment, both demo mechanisms are replaced by SSO.
+One interface lesson changed the demo as I built it: a role switch has to change
+the job, not just an access badge. The synthetic account executive, marketing
+and curator views therefore have different visible accounts, daily queues,
+decision signals and review access. In the public Workbench, the switcher lets
+visitors compare fixtures. It is not authorization. The optional local BFF
+resolves an allowlisted synthetic person on the server. In a shared deployment,
+both demo mechanisms are replaced by SSO.
 
 The public Workbench has a guided tour because screenshots were not enough to
 explain this contrast. The recommended six-step route starts with a sales
@@ -290,7 +289,7 @@ or an external connector.
 Ask the same question as an account executive and as marketing. The difference
 is enforced before the answer is assembled, not added later by a prompt.
 
-## If you want to develop it further
+## Where to take it next
 
 Start narrower than the repository looks. Pick one repeated decision, such as
 "which lead needs action today?", and test it with a private vault.
