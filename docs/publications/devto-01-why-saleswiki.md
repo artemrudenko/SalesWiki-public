@@ -90,7 +90,7 @@ challenge the evidence or decide that another option is better.
 
 The core flow looks like this:
 
-![Calls, CRM notes and research become immutable evidence, typed Markdown cards, generated indexes, dashboards and cited MCP answers](https://raw.githubusercontent.com/artemrudenko/SalesWiki-public/main/diagrams/saleswiki-knowledge-flow.png)
+![Calls, CRM notes and research become immutable evidence, typed Markdown cards, generated indexes, dashboards and cited MCP answers](https://raw.githubusercontent.com/artemrudenko/SalesWiki-public/main/diagrams/saleswiki-knowledge-flow-dark.png)
 
 The repository separates five areas of work:
 

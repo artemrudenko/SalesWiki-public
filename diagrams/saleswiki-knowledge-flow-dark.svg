@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1709" viewBox="0 0 497.75 709.2" role="img" aria-labelledby="title description">
+  <title id="title">SalesWiki knowledge flow</title>
+  <desc id="description">Source evidence becomes typed cards, indexes, a permissioned gateway, and a cited answer for the right team.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#65c7ff"/></marker>
+    <style>
+      .node { fill:#102a48; stroke:#65c7ff; stroke-width:1.5; }
+      .label { fill:#e7f4ff; font-family:Arial, sans-serif; font-size:14px; font-weight:600; text-anchor:middle; }
+      .small { fill:#9fc8e6; font-family:Arial, sans-serif; font-size:11px; text-anchor:middle; }
+      .link { fill:none; stroke:#65c7ff; stroke-width:1.5; marker-end:url(#arrow); }
+      .dashed { fill:none; stroke:#9fc8e6; stroke-width:1.25; stroke-dasharray:5 4; marker-end:url(#arrow); }
+    </style>
+  </defs>
+  <rect width="497.75" height="709.2" rx="18" fill="#071b33"/>
+
+  <path class="link" d="M248 92 V132"/>
+  <path class="link" d="M248 191 V231"/>
+  <path class="link" d="M248 290 V322 H128 V332"/>
+  <path class="link" d="M248 290 V322 H369 V332"/>
+  <path class="link" d="M128 391 V420 H248 V430"/>
+  <path class="link" d="M248 489 V529"/>
+  <path class="link" d="M248 588 V628"/>
+  <path class="dashed" d="M399 260 H456 V161 H402"/>
+  <text class="small" x="452" y="215">source</text><text class="small" x="452" y="228">links</text>
+
+  <rect class="node" x="98" y="32" width="300" height="60" rx="12"/>
+  <text class="label" x="248" y="58">Calls, CRM, notes,</text><text class="label" x="248" y="76">research</text>
+
+  <rect class="node" x="98" y="132" width="300" height="60" rx="12"/>
+  <text class="label" x="248" y="168">Immutable raw evidence</text>
+
+  <rect class="node" x="98" y="231" width="300" height="60" rx="12"/>
+  <text class="label" x="248" y="267">Typed Markdown cards</text>
+
+  <rect class="node" x="28" y="332" width="200" height="60" rx="12"/>
+  <text class="label" x="128" y="368">Generated indexes</text>
+  <rect class="node" x="269" y="332" width="200" height="60" rx="12"/>
+  <text class="label" x="369" y="368">Obsidian dashboards</text>
+
+  <rect class="node" x="98" y="430" width="300" height="60" rx="12"/>
+  <text class="label" x="248" y="456">Permissioned MCP</text><text class="label" x="248" y="474">gateway</text>
+
+  <rect class="node" x="98" y="529" width="300" height="60" rx="12"/>
+  <text class="label" x="248" y="565">Cited answer</text>
+
+  <rect class="node" x="98" y="628" width="300" height="60" rx="12"/>
+  <text class="label" x="248" y="654">Sales, Marketing,</text><text class="label" x="248" y="672">RevOps</text>
+</svg>
