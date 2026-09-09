@@ -129,6 +129,10 @@ flag stale or wrong
 The proposal includes the target entity, requested change, source evidence, risk
 and base version. Approval and apply are separate steps.
 
+The worker changes the compiled card, not the original source. Raw evidence
+stays as captured; a correction creates a new, reviewed conclusion with a clear
+reason and audit record.
+
 The worker then checks the approved payload and the current card version. It
 holds an operating-system file lock so only one writer runs at a time. The card
 is written atomically through a temporary file and replacement. Failed work goes

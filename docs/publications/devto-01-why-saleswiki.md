@@ -73,6 +73,10 @@ The layers have different jobs:
 - proposals, review records and Git history show how that conclusion changed;
 - indexes and dashboards are generated views that can be rebuilt from the cards.
 
+Raw evidence stays as captured. The shared conclusion can change, but only
+through a proposal, review and controlled apply step that leaves the earlier
+evidence and the reason for the change visible.
+
 This is why I chose a wiki model. The goal is not a larger folder. It is a
 durable map that people and tools can navigate, question and correct.
 
@@ -227,6 +231,13 @@ If you want to inspect the files and run the checks locally, Part 3 contains the
 full fresh-clone and private-pilot path. That separation is deliberate: this
 article explains why the model exists; the next practical article explains how
 to test it safely.
+
+## Demo boundary
+
+The public Workbench uses synthetic data. It is a preview of the workflow, not
+a system that makes commercial decisions. A suggested next step is a prompt for
+review: the responsible person must check the cited records, the current context
+and their own company policy before acting.
 
 ## Where to take it next
 
