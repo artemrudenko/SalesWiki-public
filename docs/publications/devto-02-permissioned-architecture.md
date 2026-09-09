@@ -7,10 +7,9 @@ series: Building SalesWiki in the open
 cover_image: https://raw.githubusercontent.com/artemrudenko/SalesWiki-public/main/assets/publication/devto-02-trust-boundary.png
 ---
 
-The first SalesWiki question was broad: can sales and marketing teams turn
-scattered context into decisions they can check? The next question forced an
-architecture choice. What happens when an account executive, a marketer and a
-curator use the same knowledge but should not retrieve or change the same facts?
+Part 1 described the shared map. This part asks what makes that map safe to use.
+What happens when an account executive, a marketer and a curator use the same
+knowledge but should not retrieve or change the same facts?
 
 A read tool that can also edit production knowledge creates a large trust
 surface. If the same process answers questions, interprets untrusted text and
@@ -219,9 +218,9 @@ replaced by per-request SSO. Approval records need production-grade identity and
 secret handling. Connector credentials, backups, rate limits and incident
 response need an operating environment outside the public repository.
 
-This part of the experiment answers one question: the same shared knowledge can
-support different decisions only when identity and policy filter retrieval before
-an answer is assembled, and when changes follow a separate governed path.
+This part answers one question: the same shared knowledge can support different
+decisions only when identity and policy filter retrieval before an answer is
+assembled, and when changes follow a separate governed path.
 
 The code and ADRs are available in the [SalesWiki repository](https://github.com/artemrudenko/SalesWiki-public).
 Part 3 tests the next question: how far can a synthetic demo take us before a

@@ -76,6 +76,17 @@ The layers have different jobs:
 This is why I chose a wiki model. The goal is not a larger folder. It is a
 durable map that people and tools can navigate, question and correct.
 
+## A small synthetic example
+
+The public demo contains a synthetic deal for Atlas Robotics. Its problem is
+simple: the next step has no confirmed owner. The deal card points to the demo
+call and lead cards, labels the confidence as medium, and suggests a follow-up
+to confirm the success criteria.
+
+The useful part is not that the system chose for the account executive. It made
+the reason for a proposed action inspectable. A person can follow the links,
+challenge the evidence or decide that another option is better.
+
 ## The folder is simple on purpose
 
 The core flow looks like this:
@@ -128,6 +139,8 @@ freshness: needs-action
 People can read this file. Git can diff it. Obsidian can link it. A script can
 validate it. The permissioned gateway can extract its fields without asking a
 model to reconstruct the deal from loose prose.
+
+![A short tour of the SalesWiki Workbench, from a role-specific priority to linked account context and evidence](https://raw.githubusercontent.com/artemrudenko/SalesWiki-public/main/assets/publication/tours/saleswiki-tour-teaser.gif)
 
 ## Why answers are extracted instead of generated
 
@@ -204,90 +217,16 @@ better choice.
 
 ## Try the synthetic demo
 
-You need Git and Python 3.11 or newer. Obsidian is recommended for browsing the
-vault, but the checks run without it.
-
-```bash
-git clone https://github.com/artemrudenko/SalesWiki-public.git SalesWiki
-cd SalesWiki
-python3 scripts/first_run.py
-```
-
-The first-run script creates a virtual environment, installs the MCP dependency,
-checks the public snapshot, validates the vault and runs the permissioned demo
-smoke test.
-
-Then open the repository root as an Obsidian vault and inspect:
-
-```text
-demo/reports/dashboard-snapshots/sales-today.md
-demo/reports/dashboard-snapshots/deal-risk.md
-demo/reports/digests/my-day-ae.md
-```
-
-The demo data is synthetic. Each demo card is marked with `dataset: demo` and
-`synthetic: true`.
-
-To connect an MCP client, generate ready-to-paste configuration:
-
-```bash
-.venv/bin/python scripts/generate_mcp_demo_config.py \
-  --personas ae,marketing,curator
-```
-
-Restart the client and ask:
-
-```text
-What should I do today?
-Brief me on BluePeak Energy.
-Which deals are at risk?
-```
-
-These are sales examples because they are the most complete demo path today.
-The same knowledge model also supports marketing campaign briefs and content
-opportunities from pains, objections and account signals that the role can use.
-
-For a small B2B team, a focused question is often more useful than a new
-dashboard. The Workbench starts with a short daily queue that changes with the
-role, then lets the user open the account graph when they need context. It also
-shows an account temperature, hot, warm, cold or at risk, with a reason drawn
-only from records that role can already see.
-
-The same Workbench now adds a small decision-signal dashboard and a guided
-assistant. Its questions change with the role. An account executive can ask
-about a call or deal risk; marketing can ask which available signal changed and
-what marketing should do next. The answer narrows the options and cites the
-supporting records. The person still chooses the action.
-
-One interface lesson changed the demo as I built it: a role switch has to change
-the job, not just an access badge. The synthetic account executive, marketing
-and curator views therefore have different visible accounts, daily queues,
-decision signals and review access. In the public Workbench, the switcher lets
-visitors compare fixtures. It is not authorization. The optional local BFF
-resolves an allowlisted synthetic person on the server. In a shared deployment,
-both demo mechanisms are replaced by SSO.
-
-The public Workbench has a guided tour because screenshots were not enough to
-explain this contrast. The recommended six-step route starts with a sales
-priority, switches to a marketing decision, opens the account context, checks
-the evidence and asks for a role-specific next step before showing curator
-review. The 12-step technical route also covers safe search, graph controls,
-local monitoring and controlled import. Focused role tours contain only the
-workflows available to that person. The tour opens real demo screens but does
-not submit a proposal or change a card.
-
-If you want to see the interface before cloning, open the
+The fastest way to see the idea is the six-step guided tour in the
 [synthetic Knowledge Workbench](https://knowledge-workbench-seven.vercel.app/).
-It contains no customer data and makes its demo mode explicit.
+It starts with a role-specific priority, opens the account context and follows
+the evidence to a proposed next step. The data is synthetic and the tour never
+changes a card.
 
-The demo includes a Polish starter panel for teams that want to try the flow
-without migrating a CRM. It is deliberately small: add one company, capture the
-last conversation and its next step, then check the daily queue. Account
-monitoring is currently a local configuration step, not an automatic news feed
-or an external connector.
-
-Ask the same question as an account executive and as marketing. The difference
-is enforced before the answer is assembled, not added later by a prompt.
+If you want to inspect the files and run the checks locally, Part 3 contains the
+full fresh-clone and private-pilot path. That separation is deliberate: this
+article explains why the model exists; the next practical article explains how
+to test it safely.
 
 ## Where to take it next
 

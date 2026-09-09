@@ -27,6 +27,14 @@ The public preview has two practical modes today:
 
 It is not a hosted multi-user service yet.
 
+## Pick the shortest path first
+
+If you want to understand the interaction before installing anything, take the
+guided Workbench tour. If you want to inspect the cards and controls, run the
+local demo. If you want to test whether the workflow helps a real team, use the
+private-pilot section and start with one repeated decision. These are different
+questions, so they should not become one large setup exercise.
+
 ## What you need
 
 Required:

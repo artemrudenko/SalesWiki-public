@@ -122,23 +122,10 @@ Each provider declares what it supports. If a channel cannot upload a file or
 delete history, the runtime says so. It does not pretend every chat has the same
 features.
 
-Adding a custom channel now means implementing a small protocol:
-
-```python
-class ChatAdapter(Protocol):
-    provider: str
-    tenant_id: str
-    conversation_id: str
-    capabilities: ChatCapabilities
-
-    def receive(self, cursor: str) -> InboundBatch: ...
-    def send_text(self, response: TextResponse, *, thread_id: str = "") -> None: ...
-    def send_file(self, response: FileResponse, *, thread_id: str = "") -> None: ...
-    def clear_conversation(self) -> tuple[int, int]: ...
-```
-
 The policy and knowledge core do not import chat integrations. An architecture
-test checks that boundary.
+test checks that boundary. The implementation detail belongs in the repository;
+the product decision is simpler: build a channel only when it lets people use a
+validated SalesWiki workflow where they already work.
 
 ## Configuration needed the same separation
 
@@ -154,45 +141,11 @@ SalesWiki now uses four configuration layers:
 | Secret value | password, token or OAuth secret | environment or secret manager |
 | Runtime state | cursor, session, retry and audit data | configured runtime directory |
 
-A demo profile looks like this:
-
-```toml
-version = 1
-profile = "demo"
-
-[vault]
-root = "../demo/permissioned"
-runtime = "../demo/runtime"
-
-[chat]
-session_store = "memory"
-default_trigger = "?"
-
-[chat.adapters.rocket-demo]
-provider = "rocketchat"
-enabled = true
-mode = "poll"
-identity_provider = "fixture"
-url_env = "ROCKETCHAT_URL"
-user_env = "ROCKETCHAT_USER"
-password_env = "ROCKETCHAT_PASSWORD"
-conversation = "saleswiki-demo"
-```
-
-The file contains names of environment variables, not their values. The CLI can
-validate it and show a redacted view:
-
-```bash
-cp config/runtime.example.toml config/runtime.toml
-export SALESWIKI_CONFIG=config/runtime.toml
-python3 -m saleswiki_runtime config validate
-python3 -m saleswiki_runtime config show --redacted
-python3 -m saleswiki_runtime doctor
-```
-
-`config/runtime.toml` is ignored by Git and Docker. Legacy `RC_*` variables need
-an explicit opt-in, so an old shell profile cannot make an accidental network
-connection.
+The configuration names environment variables rather than storing their values.
+It is validated before use and can be displayed in a redacted form. Local runtime
+files are ignored by Git and Docker, and legacy variables need explicit opt-in.
+Those are small details, but they prevent a demo convenience from becoming an
+accidental network connection.
 
 ## What I plan to buy, reuse and build
 
@@ -229,6 +182,12 @@ The decision order is:
 
 For writes, the standard is higher. An approved external action needs an exact
 payload hash, idempotency key, previous value, provider result and recovery path.
+
+Here is the practical test I use: a read-only CRM connection is justified if it
+closes a named evidence gap for a decision such as `lead_priority`. A document
+connection is justified if the linked source changes the action or its confidence.
+If it only makes more material searchable, it has not yet earned another
+integration to operate.
 
 ## The rollout order matters
 
