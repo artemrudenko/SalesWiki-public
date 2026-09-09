@@ -1,5 +1,5 @@
 ---
-title: "How I am connecting SalesWiki without rebuilding every vendor integration"
+title: "When should a sales knowledge base connect to CRM, docs and chat?"
 published: false
 description: "A vendor-first strategy for bringing CRM, document and chat context into SalesWiki without moving integration complexity into the knowledge core."
 tags: mcp, architecture, opensource, python

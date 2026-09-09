@@ -1,5 +1,5 @@
 ---
-title: How I designed permissioned AI for a sales and marketing knowledge base
+title: How I keep shared sales knowledge safe for different roles
 published: false
 description: How SalesWiki gives different sales and marketing roles cited answers while keeping retrieval, proposals, approval and production writes separate.
 tags: architecture, security, mcp, python
