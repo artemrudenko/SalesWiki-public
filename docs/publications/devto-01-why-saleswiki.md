@@ -7,28 +7,23 @@ series: Building SalesWiki in the open
 cover_image: https://raw.githubusercontent.com/artemrudenko/SalesWiki-public/main/assets/publication/devto-01-evidence-flow.png
 ---
 
-Sales and marketing context rarely disappears all at once. It leaks away in
-small pieces.
+Sales and marketing context rarely disappears in one big failure. It leaks away
+in small pieces.
 
 A useful detail stays in a call transcript. A pricing objection lives in a CRM
-note. Market research sits in one document and the campaign plan in another.
-Sooner or later, someone asks a practical question:
+note. Market research sits in one document that nobody opens before the next
+meeting. Then someone asks:
 
-> What should we do next, and why?
+> What should we do next — and why?
 
-The context may exist, but nobody can assemble it quickly or explain where each
-part came from. That can block a sales call, an account decision or a campaign.
+I built [SalesWiki](https://github.com/artemrudenko/SalesWiki-public) to test a
+simple idea: a shared knowledge base should help a person find the relevant
+evidence and narrow the options without inventing what it does not know.
 
-I use the phrase "find a solution" carefully. SalesWiki does not choose for the
-team. It brings the relevant signals, constraints and missing facts into one
-view, so a person can compare the remaining options and see why a suggested next
-step exists.
-
-I started building [SalesWiki](https://github.com/artemrudenko/SalesWiki-public) to test a different operating model. The
-durable source of truth is a folder of Markdown files that opens directly in
-Obsidian. Raw evidence stays separate from compiled knowledge. Answers copy
-facts from named fields and sections, attach citations, and say `not-found`
-when the vault has no evidence.
+The durable source of truth is a folder of Markdown files that opens directly in
+Obsidian. Raw evidence stays separate from compiled knowledge. Answers copy facts
+from named fields and sections, attach citations, and say `not-found` when the
+vault has no evidence.
 
 SalesWiki is not a CRM and it is not a hosted SaaS. It is an open starter kit
 for a governed sales and marketing knowledge base.

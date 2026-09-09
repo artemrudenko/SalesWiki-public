@@ -7,18 +7,17 @@ series: Building SalesWiki in the open
 cover_image: https://raw.githubusercontent.com/artemrudenko/SalesWiki-public/main/assets/publication/devto-03-safe-pilot.png
 ---
 
-A broad product idea becomes useful only when it improves a repeated decision.
-For SalesWiki, that means moving from "can the architecture work?" to "does this
-help a sales or marketing team act with less searching and more confidence?"
+If you want to test SalesWiki, start before customer data touches it. This
+tutorial takes a fresh clone to a working synthetic demo, then marks the point
+where a real team should stop and plan a private pilot.
 
-The pilot therefore measures a search process, not the attractiveness of an AI
-answer. Can a person move from a new signal to an action they can explain and
-check faster? Can they see which options were ruled out by missing, stale or
+The question is not whether an AI answer sounds useful. It is whether a person
+can move from a new signal to an action they can explain and check with less
+searching. Can they also see which options were ruled out by missing, stale or
 restricted context?
 
-I wrote this tutorial to take SalesWiki from a fresh clone to a working synthetic
-demo. It also marks the point where you should stop before adding real customer
-data.
+A broad product idea becomes useful only when it improves a repeated decision.
+That is what the pilot needs to test.
 
 The public preview has two practical modes today:
 

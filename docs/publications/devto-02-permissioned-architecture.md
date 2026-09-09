@@ -7,17 +7,16 @@ series: Building SalesWiki in the open
 cover_image: https://raw.githubusercontent.com/artemrudenko/SalesWiki-public/main/assets/publication/devto-02-trust-boundary.png
 ---
 
-Part 1 described the shared map. This part asks what makes that map safe to use.
-What happens when an account executive, a marketer and a curator use the same
-knowledge but should not retrieve or change the same facts?
+An assistant that can answer a question and rewrite the record people rely on
+creates a trust problem. A bad instruction or a simple bug can move from reading
+to changing shared knowledge. Parallel writers create another risk: two valid
+edits can damage the card or its audit sequence.
 
-A read tool that can also edit production knowledge creates a large trust
-surface. If the same process answers questions, interprets untrusted text and
-writes cards, a bad instruction or a simple bug can move from retrieval to
-mutation. Parallel writers add another problem: two valid edits can corrupt the
-card or the audit sequence.
+The problem is sharper when an account executive, a marketer and a curator use
+the same account map but should not retrieve or change the same facts.
 
-I separated those jobs in SalesWiki.
+I separated those jobs in SalesWiki. The shared map from Part 1 is useful only
+when it stays safe to use.
 
 The MCP gateway can read, propose and govern. It cannot update production cards.
 A separate worker is the only writer, and it applies only approved proposals.
