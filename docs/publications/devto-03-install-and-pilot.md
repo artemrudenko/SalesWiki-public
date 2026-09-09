@@ -268,6 +268,8 @@ the demo. Then choose one repeated sales or marketing decision and compare the
 cited workflow with the way the team handles it today. That comparison, including
 where SalesWiki gets in the way, is the evidence the next version needs.
 
-Part 4 follows the question that comes after a useful pilot: how should CRM,
-documents and chat systems connect without moving vendor complexity into the
-knowledge core?
+## Continue the series
+
+**Previous:** *How I keep shared sales knowledge safe for different roles.*
+
+**Next:** *When should a sales knowledge base connect to CRM, docs and chat?*

@@ -34,8 +34,13 @@ Markdown with Jekyll front matter and supports uploaded images. See the
 - Test every installation command from a fresh clone of the public repository.
 - Recheck the public-preview limitations. Do not imply that fixture identity,
   connectors or hosted production operations are already complete.
-- Add the published URL of part 1 to parts 2, 3 and 4, and link forward as each
-  new part goes live.
+- Each draft already contains a **Continue the series** section with readable
+  previous/next labels. Never link to an unpublished DEV draft. When a part goes
+  live, replace the matching labels in its adjacent published parts with the
+  real DEV URL. This keeps every visible link working while the series grows.
+- For a LinkedIn short post, use one primary destination that matches the post's
+  action: the Workbench for a product tour, or the published DEV article for a
+  writing-led post. The longer LinkedIn article can also link to the repository.
 
 ## Diagram files
 

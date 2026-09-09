@@ -225,6 +225,12 @@ This part answers one question: the same shared knowledge can support different
 decisions only when identity and policy filter retrieval before an answer is
 assembled, and when changes follow a separate governed path.
 
+## Continue the series
+
+**Previous:** *Why I built a sales and marketing knowledge base that refuses to
+guess.*
+
+**Next:** *From synthetic demo to safe pilot: test SalesWiki on one real
+decision.*
+
 The code and ADRs are available in the [SalesWiki repository](https://github.com/artemrudenko/SalesWiki-public).
-Part 3 tests the next question: how far can a synthetic demo take us before a
-private real-data pilot becomes necessary?

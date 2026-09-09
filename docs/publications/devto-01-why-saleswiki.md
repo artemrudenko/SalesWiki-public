@@ -261,9 +261,9 @@ external erasable personal-data store.
 That boundary matters. Fixture identities are useful for a demo and a
 single-operator pilot. They are not production authentication.
 
-This is the first part of the learning path: can a small owned knowledge layer
-turn scattered context into a decision someone can check? Part 2 asks what must
-change when the same context serves sales, marketing and curators with different
-permissions. Part 3 moves the idea from a synthetic demo to one private pilot.
+## Continue the series
+
+**Next:** *How I keep shared sales knowledge safe for different roles* asks what
+must change when the same account map serves sales, marketing and curators.
 
 Repository: [SalesWiki](https://github.com/artemrudenko/SalesWiki-public)

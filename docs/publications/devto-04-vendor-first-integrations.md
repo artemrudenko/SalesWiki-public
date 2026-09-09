@@ -242,3 +242,8 @@ is not enough reason to add another integration.
 That completes the first arc of the series: define the decision, make its
 evidence and access rules visible, test it on a narrow workflow, then connect
 only the systems that the validated workflow needs.
+
+## Continue the series
+
+**Previous:** *From synthetic demo to safe pilot: test SalesWiki on one real
+decision.*
