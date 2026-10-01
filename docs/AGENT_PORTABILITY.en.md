@@ -11,6 +11,7 @@ All critical rules live in the repository:
 - `.claude/skills/saleswiki-obsidian/SKILL.md` - project-local skill for Claude Code (vault conventions).
 - `.claude/skills/saleswiki-lead-scoring/SKILL.md` - executable lead/deal scoring skill.
 - `.claude/skills/saleswiki-scoring-configurator/SKILL.md` - user-approved scoring config changes.
+- `.claude/skills/saleswiki-method-library/SKILL.md` - local policy adapter for the separately versioned GTM Methods library.
 - `.claude/agents/` - project subagents (`research-orchestrator`, `lead-monitor`, `call-analyst`, `deal-risk`, `vault-linter`, `external-vault-import-assistant`, `connector-sync-planner`, `privacy-redaction-reviewer`, `event-research`) plus the orchestration contract in `.claude/agents/README.md`.
 - `agents/README.md` - runtime-agnostic conceptual agent roles.
 - `docs/SETUP.en.md` - setup from scratch.
@@ -54,7 +55,7 @@ Claude Code officially uses project memory from `CLAUDE.md` or `.claude/CLAUDE.m
 
 Claude Code can also use project skills from `.claude/skills/<skill>/SKILL.md` and subagents from `.claude/agents/<name>.md`. This repository includes:
 
-- `.claude/skills/saleswiki-obsidian/SKILL.md`, `.claude/skills/saleswiki-lead-scoring/SKILL.md` and `.claude/skills/saleswiki-scoring-configurator/SKILL.md`
+- `.claude/skills/saleswiki-obsidian/SKILL.md`, `.claude/skills/saleswiki-lead-scoring/SKILL.md`, `.claude/skills/saleswiki-scoring-configurator/SKILL.md` and `.claude/skills/saleswiki-method-library/SKILL.md`
 - subagents `research-orchestrator`, `lead-monitor`, `call-analyst`, `deal-risk`, `vault-linter`, `external-vault-import-assistant`, `connector-sync-planner`, `privacy-redaction-reviewer`, `event-research` (`.claude/agents/`)
 
 That means the core SalesWiki logic and agent roles are available to Claude Code immediately after checkout, without external skill installation.

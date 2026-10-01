@@ -20,7 +20,7 @@ function fixture() {
       score: 81,
     },
     nodes: [
-      { id: "company:fourth", type: "company", label: "Fourth Company", subtitle: "Target account", detail: "Root", metadata: { code: "COMP-4", owner: "Owner" }, evidence_ids: ["e1"] },
+      { id: "company:fourth", type: "company", label: "Fourth Company", subtitle: "Target account", detail: "Root", metadata: { code: "COMP-4", owner: "Owner", temperature: "unknown", temperature_reason: "Current priority cannot be assessed from stale account context.", review_status: "needs-review", verification_reason: "Check for changes before acting or deprioritizing." }, evidence_ids: ["e1"] },
       { id: "person:one", type: "person", label: "Champion", subtitle: "Operations", detail: "First person", metadata: {}, evidence_ids: ["e1"] },
       { id: "person:two", type: "person", label: "Buyer", subtitle: "Finance", detail: "Second person", metadata: {}, evidence_ids: ["e1"] },
       { id: "deal:one", type: "deal", label: "Pilot", subtitle: "Discovery", detail: "Deal", metadata: { owner: "Owner" }, evidence_ids: ["e1"] },
@@ -46,6 +46,9 @@ test("one reusable adapter lays out a differently shaped fourth company", () => 
   const view = fixture();
   const account = adaptGraphView(view);
   assert.equal(account.name, "Fourth Company");
+  assert.equal(account.temperature, "unknown");
+  assert.equal(account.reviewStatus, "needs-review");
+  assert.match(account.verificationReason, /before acting or deprioritizing/i);
   assert.equal(account.nodes.length, 7);
   const root = account.nodes.find((node) => node.id === view.root_id);
   assert.deepEqual(root.position, { x: 460, y: 240 });
@@ -72,6 +75,13 @@ test("BluePeak demo shows a buying committee and multiple activities without ove
   assert.equal(activity.length, 3, "demo includes original call plus follow-up activity and next step");
   assert.equal(new Set(people.map((node) => `${node.position.x}:${node.position.y}`)).size, people.length, "contact nodes occupy separate positions");
   assert.equal(new Set(activity.map((node) => `${node.position.x}:${node.position.y}`)).size, activity.length, "activity nodes occupy separate positions");
+});
+
+test("stale Atlas context stays separate from its priority signal", () => {
+  const atlas = accounts.find((account) => account.id === "demo-company-atlas-foods");
+  assert.equal(atlas.temperature, "unknown");
+  assert.equal(atlas.reviewStatus, "needs-review");
+  assert.match(atlas.freshness, /^Stale/);
 });
 
 test("adapter fails closed on a dangling edge", () => {

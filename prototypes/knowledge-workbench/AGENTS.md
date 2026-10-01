@@ -11,6 +11,7 @@ Before making substantial visual changes, use the Product Design plugin's `get-c
 - Render companies, people, deals, calls, competitors, and sources with reusable typed node components and a normalized relationship contract.
 - Default to a focused one-hop account graph. The graph supports decisions; it is not a decorative global hairball.
 - Keep evidence, freshness, confidence, citations, and access state visible near every conclusion.
+- Keep freshness separate from priority: stale evidence calls for verification and must not lower an account's priority on age alone.
 - Never edit the source vault directly from the UI. Writes become proposals, then pass through review, an authorized worker, validation, and audit.
 - Keep the main non-technical path short: choose an account, understand what matters, inspect evidence, ask in context, or propose an update.
 - Frame the product around finding a defensible next action. The Workbench narrows the search with permitted evidence and visible gaps; the person still decides.

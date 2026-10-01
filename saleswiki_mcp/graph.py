@@ -165,9 +165,19 @@ class GraphProjector:
 
         nodes = [self._node(item) for item in projected]
         temperature, temperature_reason = self._temperature(projected)
+        needs_review = any(item.card.freshness != "fresh" for item in projected)
+        has_stale_context = any(item.card.freshness == "stale" for item in projected)
         nodes[0]["metadata"].update({
             "temperature": temperature,
             "temperature_reason": temperature_reason,
+            "review_status": "needs-review" if needs_review else "current",
+            "verification_reason": (
+                "Visible account information is stale. Check for changes before acting or deprioritizing."
+                if has_stale_context
+                else "Current freshness is not established for all visible account information. Check it before acting or deprioritizing."
+                if needs_review
+                else "Visible account information is current."
+            ),
         })
         evidence = [self._evidence(item) for item in projected]
         edges = [
@@ -356,8 +366,13 @@ class GraphProjector:
             return "hot", "A visible lead has a hot score band and an active next action."
         if "warm" in bands:
             return "warm", "A visible lead is qualified, but needs the next action to stay active."
-        if any(item.card.freshness == "stale" for item in projected):
-            return "cold", "The visible account context is stale; refresh it before acting."
+        if any(item.card.freshness != "fresh" for item in projected):
+            reason = (
+                "Current priority cannot be assessed from stale account context."
+                if any(item.card.freshness == "stale" for item in projected)
+                else "Current priority cannot be assessed until visible account information is reviewed."
+            )
+            return "unknown", reason
         if leads:
             return "cold", "No fresh high-priority signal is visible for this account."
         return "warm", "The account has visible context, but no scored lead yet."

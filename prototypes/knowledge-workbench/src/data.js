@@ -16,7 +16,7 @@ export const entityTypeLabels = {
   claim: "Claim",
 };
 
-function buildGraphView({ id, entityId, name, code, owner, person, role, deal, stage, competitor, call, conclusion, confidence, score, sources, extraNodes = [] }) {
+function buildGraphView({ id, entityId, name, code, owner, person, role, deal, stage, competitor, call, conclusion, confidence, score, sources, freshness = "Updated today", asOf = "2026-08-29", prioritySignal, priorityReason, reviewStatus = "current", verificationReason = "Visible account information is current.", extraNodes = [] }) {
   const rootId = entityId;
   const evidence = sources.map((source, index) => ({
     id: `evidence:${id}:${index + 1}`,
@@ -38,7 +38,7 @@ function buildGraphView({ id, entityId, name, code, owner, person, role, deal, s
   });
 
   const nodes = [
-    node(rootId, "company", name, "Target account", conclusion, { code, owner, access_label: "Internal · Sales & Marketing" }, evidenceIds),
+    node(rootId, "company", name, "Target account", conclusion, { code, owner, access_label: "Internal · Sales & Marketing", ...(prioritySignal ? { temperature: prioritySignal, temperature_reason: priorityReason } : {}), review_status: reviewStatus, verification_reason: verificationReason }, evidenceIds),
     node(`person:${id}:primary`, "person", person, role, `${person} is the main relationship for the active opportunity.`, { meta: "Primary contact" }, [evidenceIds[1]]),
     node(`deal:${id}:active`, "deal", deal, stage, `${deal} is currently in ${stage}. The next step should be explicit and dated.`, { owner }, [evidenceIds[1]]),
     node(`competitor:${id}:primary`, "competitor", competitor, "Incumbent / alternative", `${competitor} appears in restricted competitive context. Access is checked before retrieval.`, { meta: `${sources.length} sources` }, [evidenceIds[2]]),
@@ -64,8 +64,8 @@ function buildGraphView({ id, entityId, name, code, owner, person, role, deal, s
       title: name,
       conclusion,
       confidence: confidence.toLowerCase(),
-      freshness: "Updated today",
-      as_of: "2026-08-29",
+      freshness,
+      as_of: asOf,
       next_action: conclusion.split(". ").slice(1).join(". ") || "Confirm the next step.",
       score,
     },
@@ -133,6 +133,12 @@ export const graphViews = [
     call: "Audit workflow call",
     confidence: "Medium",
     score: 79,
+    freshness: "Stale",
+    asOf: "2026-08-12",
+    prioritySignal: "unknown",
+    priorityReason: "Current priority cannot be assessed from stale account context.",
+    reviewStatus: "needs-review",
+    verificationReason: "Visible account information is stale. Check for changes before acting or deprioritizing.",
     conclusion: "Atlas is preparing for a quality-compliance audit. Lead with faster evidence gathering and a measurable implementation plan.",
     sources: [
       { short: "Compliance Audit", date: "Aug 21, 2026", code: "SRC-051102", status: "Verified", summary: "The team wants to reduce manual evidence gathering during each audit cycle." },

@@ -585,14 +585,30 @@ export function createFixtureDailyClient({ accounts }) {
       const byId = new Map(visible.map((account) => [account.id, account]));
       const actions = profile.actions.map(([match, title, reason, next], index) => {
         const account = [...byId.values()].find((item) => item.id.includes(match));
-        return account ? { kind: profile.label, accountId: account.id, name: account.name, title, reason, next, score: String(account.score), tone: index === 0 ? "hot" : "warm" } : null;
+        if (!account) return null;
+        const needsReview = account.reviewStatus === "needs-review";
+        return {
+          kind: profile.label,
+          accountId: account.id,
+          name: account.name,
+          title,
+          reason: needsReview ? `Recorded signal — needs verification: ${reason}` : reason,
+          next: needsReview ? `Verify current context, then ${next}` : next,
+          score: String(account.score),
+          needsReview,
+          verificationReason: account.verificationReason ?? "Check current context before acting or deprioritizing.",
+          tone: index === 0 ? "hot" : "warm",
+        };
       }).filter(Boolean);
+      const reviewCount = actions.filter((action) => action.needsReview).length;
+      const staleDates = visible.filter((account) => account.reviewStatus === "needs-review" && account.asOf).map((account) => account.asOf);
       return { status: "ready", data: {
-        title: `Today for ${fixturePerson.name}`, access: "allowed", conclusion: profile.conclusion,
+        title: `Today for ${fixturePerson.name}`, access: "allowed",
+        conclusion: reviewCount ? `${profile.conclusion} ${reviewCount} priority needs current-context review; verify before acting or deprioritizing.` : profile.conclusion,
         workbench: { profile: { label: profile.label, eyebrow: profile.eyebrow, focus: profile.focus, riskTitle: profile.riskTitle, coverageTitle: profile.coverageTitle, signalTitle: profile.signalTitle, showRisk: profile.showRisk }, actions },
         sections: [{ heading: "Leads To Act On", bullets: [], table: { columns: ["Lead", "Score", "Score band", "Stage", "Why now", "Next action", "Linked deal"], rows: [] } },
           { heading: "Deal Risk", bullets: ["Open the account to review current risk and next action."], table: { columns: [], rows: [] } }],
-        citations: [], restricted: [], confidence: "medium", freshness: "fresh", as_of: "2026-08-29", next_action: "Open the first account and confirm its next step.", missing: [], text: "",
+        citations: [], restricted: [], confidence: "medium", freshness: reviewCount ? "mixed" : "fresh", as_of: staleDates[0] ?? "2026-08-29", next_action: reviewCount ? "Verify stale account context before acting; keep the existing priority order." : "Open the first account and confirm its next step.", missing: [], text: "",
       }};
     },
   };

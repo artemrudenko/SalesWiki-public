@@ -9,6 +9,7 @@ from pathlib import Path
 import generate_demo_vault as gdv
 from _bridge_answers import WikiAnswerMixin
 from _bridge_common import ROLES, now_iso
+from _bridge_presentation import PresentationProfiles, UserPresentationStore
 from _bridge_workflows import WikiWorkflowMixin
 from saleswiki_mcp import config, vault_guard
 from saleswiki_mcp.identity import FixtureIdentityProvider
@@ -44,6 +45,8 @@ class Wiki(WikiAnswerMixin, WikiWorkflowMixin):
         # so run the bridge under .venv/bin/python when RC_USE_MCP=1.
         self.vault_root = vault
         self.runtime = runtime
+        self.presentation_profiles = PresentationProfiles()
+        self.presentation_preferences = UserPresentationStore(runtime, self.presentation_profiles)
         self.use_mcp = (
             runtime_settings.features.use_mcp
             if runtime_settings
@@ -60,3 +63,12 @@ class Wiki(WikiAnswerMixin, WikiWorkflowMixin):
         if self.runtime_settings is not None:
             return bool(getattr(self.runtime_settings.features, config_name))
         return os.environ.get(legacy_env, "").strip().lower() not in ("", "0", "false")
+
+    def preferences_for(self, user_id: str) -> dict:
+        return self.presentation_preferences.get(user_id)
+
+    def update_preferences(self, user_id: str, field: str, value: str) -> dict:
+        return self.presentation_preferences.update(user_id, field, value)
+
+    def reset_preferences(self, user_id: str) -> dict:
+        return self.presentation_preferences.reset(user_id)

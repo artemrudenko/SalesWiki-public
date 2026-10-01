@@ -11,7 +11,7 @@ export function TourChooser({ personas, currentRole, onClose, onStart }) {
       <h2 id="tour-title">How does scattered context become a trusted decision?</h2>
       <p>Follow linked cards and stable evidence through different role views, then see how that shared knowledge supports an action. The tour never creates a proposal, changes a card or connects to customer data.</p>
       <div className="tour-options">
-        <button type="button" className="tour-option--recommended" onClick={() => onStart({ mode: "quick", role })}><strong>Quick product tour <em>Recommended · about 90 sec</em></strong><span>See how sales and marketing use shared evidence to reach different, inspectable next steps.</span><ArrowRight size={16} /></button>
+        <button type="button" className="tour-option--recommended" onClick={() => onStart({ mode: "quick", role })}><strong>Quick product tour <em>Recommended · about 2 min</em></strong><span>See how sales and marketing use shared evidence, check a stale signal and reach different, inspectable next steps.</span><ArrowRight size={16} /></button>
         <button type="button" onClick={() => onStart({ mode: "full", role })}><strong>Full technical tour <em>12 steps · about 3 min</em></strong><span>Also inspect safe search, graph controls, monitoring and controlled import.</span><ArrowRight size={16} /></button>
         <div className="tour-role-option"><label htmlFor="tour-role">Tour for one role</label><select id="tour-role" value={role} onChange={(event) => setRole(event.target.value)}>{personas.map((person) => <option key={person.role} value={person.role}>{roleLabel(person.role)} · {person.name}</option>)}</select><button type="button" onClick={() => onStart({ mode: "role", role })}><strong>Explore this role</strong><ArrowRight size={16} /></button></div>
       </div>
@@ -64,7 +64,7 @@ export function GuidedTour({ tour, onNext, onPrevious, onClose }) {
     {rect && <div className="tour-spotlight" style={rect}><CursorClick size={18} weight="fill" /></div>}
     <section className={`tour-card ${step.id === "evidence" ? "tour-card--top" : ""}`}>
       <div className="tour-card__head"><span>Guided tour · {tourName}</span><button type="button" onClick={onClose} aria-label="Close guided tour"><X size={18} /></button></div>
-      <div className="tour-card__progress"><i style={{ width: `${((tour.index + 1) / steps.length) * 100}%` }} /></div>
+      <div className="tour-card__progress"><i style={{ transform: `scaleX(${(tour.index + 1) / steps.length})` }} /></div>
       <small>Step {tour.index + 1} of {steps.length}</small>
       <h2>{step.title}</h2>
       <p>{step.body}</p>

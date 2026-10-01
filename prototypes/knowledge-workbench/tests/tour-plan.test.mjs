@@ -2,13 +2,16 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { buildTourSteps, roleLabel } from "../src/tourPlan.js";
 
-test("quick tour proves the operating loop in six steps", () => {
+test("quick tour explains that a stale signal needs checking before the governed correction loop", () => {
   const steps = buildTourSteps({ mode: "quick", role: "sales-owner" });
-  assert.deepEqual(steps.map((step) => step.id), ["today", "role-contrast", "graph", "evidence", "assistant", "review"]);
+  assert.deepEqual(steps.map((step) => step.id), ["today", "stale-signal", "role-contrast", "graph", "evidence", "assistant", "review"]);
   assert.match(steps[0].title, /shared knowledge/i);
-  assert.equal(steps[1].role, "marketing");
-  assert.match(steps[1].title, /different decision/i);
-  assert.match(steps[4].title, /marketing should do next/i);
+  assert.equal(steps[1].target, "decision-signals");
+  assert.match(steps[1].body, /Atlas Foods.*needs review/i);
+  assert.match(steps[1].why, /due, noticed, assigned and resolved/i);
+  assert.equal(steps[2].role, "marketing");
+  assert.match(steps[2].title, /different decision/i);
+  assert.match(steps[5].title, /marketing should do next/i);
   assert.equal(steps.at(-1).role, "curator");
 });
 

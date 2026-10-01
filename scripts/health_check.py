@@ -59,6 +59,7 @@ REQUIRED_FILES = [
     "config/runtime.example.toml",
     "schemas/agent-routing.json",
     "schemas/event-research-profile.json",
+    "schemas/presentation-profiles.json",
     "scripts/audit_external_vault.py",
     "scripts/build_dashboard_snapshots.py",
     "scripts/build_indexes.py",
@@ -757,6 +758,37 @@ def check_permissioned_contracts(findings: list[Finding]) -> None:
                 findings.append(Finding("ERROR", rel, f"`{card_type}.{field_name}` must define a non-empty `section`"))
             if "label" in spec and not isinstance(spec["label"], str):
                 findings.append(Finding("ERROR", rel, f"`{card_type}.{field_name}` label must be a string"))
+
+    rel = "schemas/presentation-profiles.json"
+    try:
+        profiles = load_json(rel)
+    except (OSError, json.JSONDecodeError) as exc:
+        findings.append(Finding("ERROR", rel, f"cannot read presentation profiles: {exc}"))
+        profiles = {}
+    limits = profiles.get("preference_limits", {}) if isinstance(profiles, dict) else {}
+    default = profiles.get("default", {}) if isinstance(profiles, dict) else {}
+    role_profiles = profiles.get("roles", {}) if isinstance(profiles, dict) else {}
+    if not isinstance(default, dict) or not str(default.get("instruction", "")).strip():
+        findings.append(Finding("ERROR", rel, "default must define a non-empty instruction"))
+    if not isinstance(role_profiles, dict):
+        findings.append(Finding("ERROR", rel, "roles must be an object"))
+    for key in ("allowed_verbosity", "allowed_tone", "allowed_focus"):
+        value = limits.get(key) if isinstance(limits, dict) else None
+        if not isinstance(value, list) or not value or not all(isinstance(item, str) and item for item in value):
+            findings.append(Finding("ERROR", rel, f"preference_limits.{key} must be a non-empty string list"))
+    if not isinstance(limits.get("custom_instruction_max_chars") if isinstance(limits, dict) else None, int):
+        findings.append(Finding("ERROR", rel, "preference_limits.custom_instruction_max_chars must be an integer"))
+    if isinstance(role_profiles, dict):
+        for role, profile in role_profiles.items():
+            if not isinstance(profile, dict) or not str(profile.get("instruction", "")).strip():
+                findings.append(Finding("ERROR", rel, f"role `{role}` must define a non-empty instruction"))
+                continue
+            tasks = profile.get("tasks", {})
+            if not isinstance(tasks, dict):
+                findings.append(Finding("ERROR", rel, f"role `{role}` tasks must be an object"))
+            elif any(not isinstance(task, dict) or not str(task.get("instruction", "")).strip()
+                     for task in tasks.values()):
+                findings.append(Finding("ERROR", rel, f"role `{role}` tasks must define non-empty instructions"))
 
 
 # A section heading that marks a raw call/meeting body inside a card. Boundaries

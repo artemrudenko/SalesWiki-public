@@ -286,7 +286,7 @@ python3 scripts/generate_demo_vault.py --reset
 
 The repository ships an executable agent layer (Claude Code; portable concepts elsewhere):
 
-- Skills (`.claude/skills/`): `saleswiki-obsidian` (vault conventions), `saleswiki-lead-scoring` (executable V1 scoring procedure) and `saleswiki-scoring-configurator` (user-approved scoring-config changes).
+- Skills (`.claude/skills/`): `saleswiki-obsidian` (vault conventions), `saleswiki-lead-scoring` (executable V1 scoring procedure), `saleswiki-scoring-configurator` (user-approved scoring-config changes) and `saleswiki-method-library` (a local policy adapter for generic GTM methods; see `docs/engineering/gtm-methods-integration.md`).
 - Subagents (`.claude/agents/`): `research-orchestrator`, `lead-monitor`, `call-analyst`, `deal-risk`, `vault-linter`, `external-vault-import-assistant`, `connector-sync-planner`, `privacy-redaction-reviewer`, `event-research`.
 - Orchestration contract (shared output schema, hand-offs, dedupe, conflict resolution): `.claude/agents/README.md`.
 - Conceptual, runtime-agnostic roles: `agents/README.md`.

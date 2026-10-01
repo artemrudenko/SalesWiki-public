@@ -1,11 +1,9 @@
-graph TD
+flowchart TD
     A[User asks or proposes] --> B[Server-side identity]
-    B --> C[RBAC and ABAC policy]
+    B --> C[Role and account policy]
     C --> D[Access-filtered retrieval]
-    D --> E[Extract-only answer with citations]
-    C --> F[Proposal queue]
-    F --> G[Curator approval]
-    G --> H[Single-writer worker]
-    H --> I[Transactional card update]
-    H --> J[Append-only audit chain]
+    D --> E[Cited answer: facts, sources, freshness, missing context]
+    C --> F[Proposed correction]
+    F --> G[Curator review]
+    G --> H[Single writer]
     B -. client cannot choose role .-> A

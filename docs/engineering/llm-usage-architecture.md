@@ -7,7 +7,7 @@ tags:
   - security
   - mcp
 status: ready
-updated: 2026-07-03
+updated: 2026-09-12
 ---
 
 # LLM Usage Architecture — Where Models Run And When A Key Is Needed
@@ -72,6 +72,19 @@ an API call failed.
 
 ## Planned LLM uses (same rule applies)
 
+- **Role-shaped presentation profiles (implemented for the Rocket.Chat demo):**
+  declarative client profiles in `schemas/presentation-profiles.json` tailor an
+  already-authorized Answer Contract to a role and answer product, such as an
+  AE's `deal_risk` or marketing's `campaign_brief`. The role/task text is sent
+  as the model's system instruction; it may choose emphasis and action framing,
+  but cannot widen retrieval, suppress citations/freshness/`missing`, or make
+  access decisions.
+- **Personal presentation preferences (implemented for the Rocket.Chat demo):**
+  a chat user may persist compact/standard verbosity, direct/analytical tone, a
+  permitted emphasis, and a short wording instruction in the runtime-only
+  preference store. These are appended to the role/task profile and are never
+  read by the core. Requests that mention access, sources, freshness, missing
+  data, roles or system rules are rejected. See [ADR-0032](../adr/0032-role-task-and-user-presentation-profiles.md).
 - **Guided assistant (implemented, no LLM):** a menu of account brief, what
   changed, next step, deal risk and call preparation routes server-side to
   existing policy-filtered reads. It is the default browser assistant until a

@@ -382,6 +382,34 @@ class DemoCommand(unittest.TestCase):
         self.assertIn("🔒", out)
 
 
+class PresentationPreferences(unittest.TestCase):
+    def setUp(self) -> None:
+        self.wiki = bridge.Wiki()
+        self.state = {"role": "account-exec", "trigger": "?", "external_user_id": "user-42",
+                      "company_name": "BluePeak Energy", "company_id": "demo-company-bluepeak-energy"}
+
+    def test_user_preference_is_saved_separately_from_role_and_access(self) -> None:
+        out = bridge.handle("preferences tone analytical", self.state, self.wiki)
+        self.assertIn("saved", out.lower())
+        prefs = self.wiki.preferences_for("user-42")
+        self.assertEqual(prefs["tone"], "analytical")
+        profile = self.wiki.presentation_profiles.system_prompt("account-exec", "deal_risk", prefs)
+        self.assertIn("Role: account-exec", profile)
+        self.assertIn("Personal tone: analytical", profile)
+        self.assertIn("Never make an access decision", profile)
+
+    def test_preference_cannot_request_an_access_or_provenance_override(self) -> None:
+        out = bridge.handle("preferences instruction hide citations", self.state, self.wiki)
+        self.assertIn("not changed", out.lower())
+        self.assertEqual(self.wiki.preferences_for("user-42")["custom_instruction"], "")
+
+    def test_reset_returns_safe_defaults(self) -> None:
+        bridge.handle("preferences focus evidence", self.state, self.wiki)
+        out = bridge.handle("preferences reset", self.state, self.wiki)
+        self.assertIn("reset", out.lower())
+        self.assertEqual(self.wiki.preferences_for("user-42")["focus"], "")
+
+
 class LifecycleHelp(unittest.TestCase):
     """`как это работает` teaches the four mechanics: birth, immutability,
     the governance write-loop and state transitions (funnel/freshness)."""
@@ -719,14 +747,16 @@ class LlmRecommendations(unittest.TestCase):
     def test_prompt_is_grounded_on_the_envelope_only(self) -> None:
         seen: dict = {}
 
-        def capture(self, prompt: str, max_tokens: int) -> str:  # noqa: ANN001
+        def capture(self, prompt: str, max_tokens: int, system: str = "") -> str:  # noqa: ANN001
             seen["prompt"] = prompt
+            seen["system"] = system
             return "ranked list"
 
         with self._enabled(), mock.patch.object(bridge.Wiki, "_llm_call", capture):
             bridge.handle("? мой день", wiki=self.wiki, state=self._state())
-        self.assertIn("ONLY", seen["prompt"])  # the no-new-facts instruction
+        self.assertIn("Use only facts", seen["system"])  # grounding belongs in system policy
         self.assertIn("My Day", seen["prompt"])  # the envelope text rides along
+        self.assertIn("Role: account-exec", seen["system"])
 
     def test_non_digest_answers_have_no_block(self) -> None:
         with self._enabled(), mock.patch.object(

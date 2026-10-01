@@ -1,5 +1,5 @@
 ---
-title: Why I built a sales and marketing knowledge base that refuses to guess
+title: "Why I built a sales and marketing knowledge base that refuses to guess — SalesWiki, Part 1 of 5"
 published: false
 description: I am exploring how sales and marketing teams can turn scattered context into cited decisions without letting AI fill the gaps.
 tags: sales, marketing, knowledgebase, ai
@@ -139,7 +139,7 @@ People can read this file. Git can diff it. Obsidian can link it. A script can
 validate it. The permissioned gateway can extract its fields without asking a
 model to reconstruct the deal from loose prose.
 
-![A short tour of the SalesWiki Workbench, from a role-specific priority to linked account context and evidence](https://raw.githubusercontent.com/artemrudenko/SalesWiki-public/main/assets/publication/tours/saleswiki-tour-teaser.gif)
+![A short tour of the SalesWiki Workbench, from a role-specific priority to checking an outdated signal against linked evidence](https://raw.githubusercontent.com/artemrudenko/SalesWiki-public/main/assets/publication/tours/saleswiki-tour-teaser.gif)
 
 ## Why answers are extracted instead of generated
 
@@ -222,10 +222,10 @@ It starts with a role-specific priority, opens the account context and follows
 the evidence to a proposed next step. The data is synthetic and the tour never
 changes a card.
 
-If you want to inspect the files and run the checks locally, Part 3 contains the
-full fresh-clone and private-pilot path. That separation is deliberate: this
-article explains why the model exists; the next practical article explains how
-to test it safely.
+The next parts separate the questions deliberately: first how role-specific
+access works, then what one repeated decision is worth testing, then how to run
+a safe private pilot. Only after that does the series turn to CRM, document, and
+chat connections.
 
 ## Demo boundary
 
@@ -263,7 +263,21 @@ single-operator pilot. They are not production authentication.
 
 ## Continue the series
 
+This is a five-part series about turning scattered context into decisions people
+can inspect:
+
+1. **Why I built a sales and marketing knowledge base that refuses to guess**
+   — the shared model, preserved evidence, and honest gaps.
+2. **How I keep shared sales knowledge safe for different roles** — policy
+   filters retrieval before an answer is assembled and governs later changes.
+3. **What should a sales knowledge base help someone decide?** — choose one
+   repeated decision before measuring whether the workflow helps.
+4. **From synthetic demo to a safe private pilot** — keep public, demo, and
+   real-team data separate while testing the workflow.
+5. **When should a sales knowledge base connect to CRM, documents, or chat?**
+   — connect a source only when the validated decision needs its evidence.
+
 **Next:** *How I keep shared sales knowledge safe for different roles* asks what
-must change when the same account map serves sales, marketing and curators.
+must change when the same account map serves sales, marketing, and curators.
 
 Repository: [SalesWiki](https://github.com/artemrudenko/SalesWiki-public)

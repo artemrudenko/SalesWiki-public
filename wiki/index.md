@@ -1,6 +1,6 @@
 # SalesWiki Index
 
-Last updated: 2026-06-07
+Last updated: 2026-10-01
 
 ## Companies
 
@@ -62,6 +62,9 @@ Last updated: 2026-06-07
 - `sources/event-resources.md` - managed event watchlist and event source rules.
 - `sources/topic-monitors.md` - recurring topic monitoring definitions.
 - `wiki/entities/sources/_template.md` - template for evaluating source quality.
+- `wiki/entities/sources/Source - Introduction to Marketing - MKTG 34303.md` - CC BY methodological remote reference for the initial sales/marketing method-library pilot.
+- `wiki/entities/sources/Source - Foundations in Digital Marketing.md` - CC BY methodological remote reference for the initial digital-marketing method-library pilot.
+- `wiki/methods/Method Library - Sales and Marketing.md` - candidate decision lenses derived from licensed sources, separate from entity facts.
 
 ## Supporting Entities
 
@@ -100,6 +103,7 @@ Last updated: 2026-06-07
 - `wiki/processes/scheduled-monitoring.md` - recurring collection and analysis workflow.
 - `wiki/processes/tracking-dedupe-corroboration.md` - processed-source ledger, duplicate handling and evidence strength rules.
 - `wiki/processes/source-governance.md` - source classes, reliability, access/licensing and usage rules.
+- `wiki/processes/method-library-intake.md` - licensed method-source intake, fact boundary and prompt-change gate.
 - `wiki/processes/access-and-redaction-policy.md` - access labels, folder/vault policy and sanitized summary rules.
 - `wiki/processes/global-property-dictionary.md` - canonical YAML properties and allowed values.
 - `wiki/processes/property-vocabularies.md` - single source of truth for allowed property values per card type.
@@ -142,6 +146,7 @@ Engineering and implementation docs about the software itself (the permissioned 
 - `docs/engineering/permissioned-knowledge-demo-runbook.md` - step-by-step demo runbook (commands and presenter script).
 - `docs/engineering/permissioned-knowledge-pilot-runbook.md` - four-week lead_priority pilot on real data (seeding, weekly inflow, staleness measure, go/no-go).
 - `docs/engineering/permissioned-knowledge-sso-design.md` - SSO / identity-provider integration design.
+- `docs/engineering/method-library-pilot.md` - licensed source cohort, task framing and synthetic evaluation for the method-library pilot.
 - `docs/DEPLOYMENT.en.md` - local and Docker starter path.
 - `docs/RATIONALE.en.md` - public rationale and fit/non-fit boundaries.
 - `docs/ROADMAP.en.md` - public preview roadmap.

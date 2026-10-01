@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="1120" viewBox="0 0 720 1120" role="img" aria-labelledby="title description">
+  <title id="title">One decision, two honest outcomes</title>
+  <desc id="description">Choose one follow-up question. Check permitted, dated facts. If evidence is enough, suggest a next step with sources. If it has a gap or conflict, say what needs checking. A person chooses the action, while changes to shared facts go through review.</desc>
+  <defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#07162e"/><stop offset="1" stop-color="#0b2740"/></linearGradient></defs>
+  <rect width="720" height="1120" rx="28" fill="url(#bg)"/>
+  <text x="360" y="55" text-anchor="middle" fill="#eefaff" font-family="Arial, sans-serif" font-size="34" font-weight="700">One decision, two outcomes</text>
+  <rect x="40" y="92" width="640" height="150" rx="20" fill="#153954" stroke="#65dce3" stroke-width="2"/>
+  <text x="72" y="141" fill="#9cf2f0" font-family="Arial, sans-serif" font-size="29" font-weight="700">1  Choose one decision</text>
+  <text x="72" y="185" fill="#f5fbff" font-family="Arial, sans-serif" font-size="28">Which account needs follow-up</text>
+  <text x="72" y="221" fill="#f5fbff" font-family="Arial, sans-serif" font-size="28">today?</text>
+  <path d="M360 244 V281" stroke="#6de1e4" stroke-width="3"/><path d="M351 279 L360 292 L369 279 Z" fill="#6de1e4"/>
+  <rect x="40" y="296" width="640" height="150" rx="20" fill="#153954" stroke="#65dce3" stroke-width="2"/>
+  <text x="72" y="345" fill="#9cf2f0" font-family="Arial, sans-serif" font-size="29" font-weight="700">2  Check permitted, dated facts</text>
+  <text x="72" y="389" fill="#f5fbff" font-family="Arial, sans-serif" font-size="28">Sources, dates, and missing</text>
+  <text x="72" y="425" fill="#f5fbff" font-family="Arial, sans-serif" font-size="28">context</text>
+  <path d="M360 448 V485" stroke="#6de1e4" stroke-width="3"/><path d="M351 483 L360 496 L369 483 Z" fill="#6de1e4"/>
+  <rect x="40" y="500" width="640" height="359" rx="20" fill="#102a42" stroke="#65dce3" stroke-width="2"/>
+  <text x="72" y="548" fill="#e9f8ff" font-family="Arial, sans-serif" font-size="29" font-weight="700">What does the evidence support?</text>
+  <rect x="69" y="573" width="582" height="113" rx="15" fill="#11516a"/>
+  <text x="96" y="616" fill="#a3f5f1" font-family="Arial, sans-serif" font-size="27" font-weight="700">Enough evidence</text>
+  <text x="96" y="655" fill="#f5fbff" font-family="Arial, sans-serif" font-size="27">Suggest a next step with sources.</text>
+  <text x="360" y="716" text-anchor="middle" fill="#bfe3ee" font-family="Arial, sans-serif" font-size="23" font-weight="700">OR</text>
+  <rect x="69" y="737" width="582" height="113" rx="15" fill="#4d3540" stroke="#efba7c" stroke-width="2"/>
+  <text x="96" y="780" fill="#ffd398" font-family="Arial, sans-serif" font-size="27" font-weight="700">Gap or conflict</text>
+  <text x="96" y="819" fill="#f5fbff" font-family="Arial, sans-serif" font-size="27">Say what needs checking.</text>
+  <path d="M360 861 V901" stroke="#6de1e4" stroke-width="3"/><path d="M351 899 L360 912 L369 899 Z" fill="#6de1e4"/>
+  <rect x="40" y="916" width="640" height="160" rx="20" fill="#153954" stroke="#65dce3" stroke-width="2"/>
+  <text x="72" y="969" fill="#f5fbff" font-family="Arial, sans-serif" font-size="29" font-weight="700">3  Person chooses the action</text>
+  <text x="72" y="1012" fill="#bfe3ee" font-family="Arial, sans-serif" font-size="26">Changes to shared facts</text>
+  <text x="72" y="1047" fill="#bfe3ee" font-family="Arial, sans-serif" font-size="26">go through review.</text>
+</svg>

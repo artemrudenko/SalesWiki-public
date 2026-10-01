@@ -493,12 +493,54 @@ def _strip_command_prefix(text: str, prefixes: tuple[str, ...]) -> str:
     return text
 
 
+def _preference_user_id(state: dict) -> str:
+    """Use a provider user id when available; direct demo calls get a stable key."""
+    return str(state.get("external_user_id") or f"demo:{state.get('role', DEFAULT_ROLE)}")
+
+
+def _preferences_help(wiki: Wiki, state: dict) -> str:
+    prefs = wiki.preferences_for(_preference_user_id(state))
+    return "\n".join([
+        "⚙️ **Answer presentation preferences**",
+        f"- verbosity: `{prefs['verbosity']}` (`compact` / `standard`)",
+        f"- tone: `{prefs['tone']}` (`direct` / `analytical`)",
+        f"- focus: `{prefs['focus'] or 'none'}` (`next_action` / `evidence` / `risks` / `audience`)",
+        f"- extra wording instruction: `{prefs['custom_instruction'] or 'none'}`",
+        "",
+        "Change one: `preferences verbosity compact`, `preferences tone analytical`, "
+        "`preferences focus evidence`, or `preferences instruction use short decision-ready bullets`.",
+        "Reset: `preferences reset`.",
+        "These shape only the optional AI summary/recommendations after access filtering. "
+        "They cannot change access or hide sources, freshness, missing information, or the cited answer.",
+    ])
+
+
 def handle(text: str, state: dict, wiki: Wiki) -> "str | dict | None":
     """Map one chat message to a reply: a string to post, a {"upload": artifact}
     dict to upload as a file, or None if it isn't addressed to the bot."""
     stripped = text.strip()
     low = stripped.lower()
     trigger = state["trigger"]
+
+    preference_prefixes = ("preferences", "preference", "настройки", "настройка")
+    if low == preference_prefixes[0] or low == "настройки":
+        return _preferences_help(wiki, state)
+    if low.startswith(preference_prefixes):
+        rest = _strip_command_prefix(stripped, preference_prefixes)
+        user_id = _preference_user_id(state)
+        if rest.lower() in {"reset", "сброс"}:
+            wiki.reset_preferences(user_id)
+            return "✅ Presentation preferences reset.\n\n" + _preferences_help(wiki, state)
+        field, _, value = rest.partition(" ")
+        field = field.strip().lower()
+        aliases = {"instruction": "custom_instruction", "инструкция": "custom_instruction",
+                   "краткость": "verbosity", "тон": "tone", "акцент": "focus"}
+        field = aliases.get(field, field)
+        try:
+            wiki.update_preferences(user_id, field, value)
+        except Exception as exc:
+            return f"⚠️ Preference was not changed: {exc}.\n\n" + _preferences_help(wiki, state)
+        return "✅ Presentation preference saved.\n\n" + _preferences_help(wiki, state)
 
     if low.startswith(("роль:", "role:")):
         wanted = stripped.split(":", 1)[1].strip()
@@ -680,7 +722,7 @@ def handle(text: str, state: dict, wiki: Wiki) -> "str | dict | None":
         if name:
             state["company_name"] = name
             state["company_id"] = wiki.company_id(name)
-        return wiki.answer(state["role"], question)
+        return wiki.answer(state["role"], question, wiki.preferences_for(_preference_user_id(state)))
 
     return None  # not a command/question for the bot — ignore
 

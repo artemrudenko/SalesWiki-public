@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "prototypes/knowledge-workbench/src/styles.css"
+        ],
+        "createdAt": "2026-10-01T09:29:08.234Z",
+        "reason": "User confirmed on 2026-10-01 to leave the existing card accent stripes unchanged; they distinguish product signals and were not requested for redesign."
+      }
+    ]
+  }
+}

@@ -488,7 +488,7 @@ Obsidian Bases dashboards для сотрудников:
 
 Исполняемый слой для Claude Code (концепты переносимы на другие runtime). Все навыки следуют открытому формату [Agent Skills](https://agentskills.io/specification); соответствие проверяет health-check.
 
-- Навыки `.claude/skills/`: `saleswiki-obsidian` (конвенции vault), `saleswiki-lead-scoring` (исполняемый скоринг V1), `saleswiki-scoring-configurator` (изменение конфигурации скоринга только по approval).
+- Навыки `.claude/skills/`: `saleswiki-obsidian` (конвенции vault), `saleswiki-lead-scoring` (исполняемый скоринг V1), `saleswiki-scoring-configurator` (изменение конфигурации скоринга только по approval), `saleswiki-method-library` (адаптер к внешней библиотеке GTM-методик без доступа к фактам или policy).
 - Субагенты `.claude/agents/`: `research-orchestrator`, `lead-monitor`, `call-analyst`, `deal-risk`, `vault-linter`, `external-vault-import-assistant`, `connector-sync-planner`, `privacy-redaction-reviewer`, `event-research`.
 - Контракт оркестрации: [`.claude/agents/README.md`](.claude/agents/README.md).
 - Концептуальные роли (любой runtime): [`agents/README.md`](agents/README.md).

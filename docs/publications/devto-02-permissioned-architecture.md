@@ -1,66 +1,49 @@
 ---
-title: How I keep shared sales knowledge safe for different roles
+title: "How I keep shared sales knowledge safe for different roles — SalesWiki, Part 2 of 5"
 published: false
-description: How SalesWiki gives different sales and marketing roles cited answers while keeping retrieval, proposals, approval and production writes separate.
+description: How one shared account map can support sales and marketing without exposing every note, while keeping evidence, review and production changes separate.
 tags: architecture, security, mcp, python
 series: Building SalesWiki in the open
 cover_image: https://raw.githubusercontent.com/artemrudenko/SalesWiki-public/main/assets/publication/devto-02-trust-boundary.png
 ---
 
-An assistant that can answer a question and rewrite the record people rely on
-creates a trust problem. A bad instruction or a simple bug can move from reading
-to changing shared knowledge. Parallel writers create another risk: two valid
-edits can damage the card or its audit sequence.
+A salesperson and a marketer can open the same customer account and need different facts.
 
-The problem is sharper when an account executive, a marketer and a curator use
-the same account map but should not retrieve or change the same facts.
+Before a customer call, the salesperson needs what was agreed and the next step. Marketing needs an approved customer signal it can use in a campaign. Both need the same account map. Neither needs every private note.
 
-I separated those jobs in SalesWiki. The shared map from Part 1 is useful only
-when it stays safe to use.
+That is the tension I wanted to test in SalesWiki. A shared knowledge base should stop people rebuilding context in separate tools. It should not turn every record into one unrestricted summary.
 
-The MCP gateway can read, propose and govern. It cannot update production cards.
-A separate worker is the only writer, and it applies only approved proposals.
+The question is not only what a person may see. It is what they are trying to decide. One person may be preparing the next conversation; another may be deciding whether a customer signal can support a message. The useful answer is different, but both answers should lead back to dated evidence, show what is missing, and leave the decision with the person responsible.
 
-![A user request passes through server-side identity and policy. Reads produce cited answers. Changes enter a proposal queue, curator approval, a single-writer worker, a transactional update and an audit chain](https://raw.githubusercontent.com/artemrudenko/SalesWiki-public/main/diagrams/saleswiki-trust-boundary.png)
+I treated a request for information and a request to change information as different paths. An answer uses only permitted facts. A correction waits for review before anything changes.
+
+![A request passes through server-side identity and policy before producing a cited answer or an approved, auditable change](https://dev-to-uploads.s3.us-east-2.amazonaws.com/uploads/articles/y4f8119hxfkibxub2g4g.png)
 
 ## One question, two valid answers
 
-Consider this request:
+Consider the shared account BluePeak Energy. The account executive asks, "What was agreed, and what could block the next step?" Marketing asks, "Which approved signal can support a useful message?"
 
-> Brief me on BluePeak Energy.
+The account is the same. The decision is not. A sales answer might say, “The next step was a technical review on Tuesday; the security questionnaire is still missing.” A marketing answer might say, “The customer agreed to a public webinar, but product claims still need approval.”
 
-An account executive may need pricing, the discount floor and competitor notes.
-Marketing may need an approved company summary, public signals and a sanitized
-case-study angle. Both users asked the same question, but they should not receive
-the same fields.
+Each answer should show its sources, how current they are and what it cannot tell the reader. One answer helps move a commercial conversation forward. The other helps decide what can be said publicly. A shared knowledge base earns its place when it preserves that difference before an answer is assembled.
 
-They are also searching for different solutions. The account executive is
-deciding how to move a commercial conversation forward. Marketing is deciding
-which signal and proof can support a useful message. Shared storage helps only
-if retrieval preserves that difference before an answer is assembled.
+This is one logical knowledge model, not one unrestricted storage location. Stable links connect the broad and protected cards, while physical boundaries keep sensitive material out of a role's retrieval path. The user experiences a shared account map; the server decides which part of that map can be assembled.
 
-This is one logical knowledge model, not one unrestricted storage location.
-Stable links connect the broad and protected cards, while physical boundaries
-keep sensitive material out of a role's retrieval path. The user experiences a
-shared account map; the server decides which part of that map can be assembled.
-
-The gateway processes the request in this order:
+The service processes the request in this order:
 
 ```text
 request
   -> server-side identity
-  -> role and attribute policy
-  -> allowed storage boundaries
+  -> role and account policy
+  -> allowed storage areas
   -> filtered retrieval
   -> field extraction
-  -> cited Answer Contract
+  -> cited answer
 ```
 
-The client cannot pass `role=admin` and gain more access. In the demo, a
-server-side environment setting selects a fixture actor. A production deployment
-still needs per-request SSO or OIDC, which is one of the documented gaps.
+The browser does not decide a person's role. The server does. In the demo, a server setting selects a test person. A production deployment still needs a real identity provider on every request; that is one of the documented gaps.
 
-## A YAML label is not an access control
+## A label in a card is not access control
 
 This card property is useful metadata:
 
@@ -68,32 +51,21 @@ This card property is useful metadata:
 access: sales-confidential
 ```
 
-It does not stop a person or process from opening the file. SalesWiki's target
-model uses physical storage boundaries for broad knowledge, sales-confidential
-data, personal-data handles and legal-review material. The boundary registry maps
-paths to those classes. An unmatched path fails closed.
+It does not stop a person or process from opening the file. SalesWiki keeps broad knowledge, sensitive sales notes, contact references and legal material in separate storage areas. The directory that holds a card determines its class. A card outside a known area is denied by default.
 
-Role-based access control answers the broad question: which boundaries may this
-role read? Attribute-based rules narrow the result. An account executive may see
-sales-confidential cards for owned accounts while a head of sales sees the wider
-team view.
+Roles set the broad boundary: which storage areas may this person read? Ownership and other account attributes narrow the result. An account executive may see sensitive cards for accounts they own, while a head of sales sees the wider team view.
 
-Personal-data bodies do not belong in the Git-tracked vault. The broad knowledge
-layer keeps an opaque handle such as:
+Contact details do not belong in the shared vault. The broad knowledge layer keeps only an opaque reference such as:
 
 ```text
 restricted://personal-data/demo-bluepeak-energy-lead-contact
 ```
 
-An approved external store can resolve that handle later. This keeps access and
-erasure concerns outside immutable Git history.
+An approved external store can resolve that reference later. This keeps access and deletion concerns out of the shared knowledge layer.
 
-## The answer contract is deliberately strict
+## A fixed answer format keeps the limits visible
 
-After policy filtering, the gateway extracts named values from allowed card
-sections. The extraction profile lives in
-`schemas/field-extraction.json`, so card shape and answer shape are connected by
-configuration rather than a prompt.
+After filtering, the service extracts named values from permitted card sections. A configuration file connects the shape of a card to the shape of an answer, rather than leaving that decision to a prompt.
 
 Every answer has the same fields:
 
@@ -101,15 +73,13 @@ Every answer has the same fields:
 | --- | --- |
 | `conclusion` | The direct result |
 | `sections` | Extracted facts or record tables |
-| `citations` | Boundary plus path or restricted handle |
+| `citations` | Source and location |
 | `confidence` and `freshness` | How certain and current the source data is |
 | `next_action` | The recommended operational step already stored in the card |
 | `missing` | What the vault cannot answer |
 | `access` | Allowed, sanitized, blocked, ambiguous or not found |
 
-Optional language generation can happen in a client, but it sits on top of the
-cited envelope. It may not introduce uncited facts. The gateway itself has no LLM
-dependency for answers.
+An optional language model can later turn the result into prose in a client. It may not introduce new facts. The service itself does not need a language model to produce the answer.
 
 ## A change is a transaction, not an edit
 
@@ -125,112 +95,54 @@ flag stale or wrong
   -> rollback if needed
 ```
 
-The proposal includes the target entity, requested change, source evidence, risk
-and base version. Approval and apply are separate steps.
+The proposal includes the target entity, requested change, source evidence, risk and base version. Approval and apply are separate steps.
 
-The worker changes the compiled card, not the original source. Raw evidence
-stays as captured; a correction creates a new, reviewed conclusion with a clear
-reason and audit record.
+The worker changes the compiled card, not the original source. Raw evidence stays as captured; a correction creates a new, reviewed conclusion with a clear reason and audit record.
 
-The worker then checks the approved payload and the current card version. It
-holds an operating-system file lock so only one writer runs at a time. The card
-is written atomically through a temporary file and replacement. Failed work goes
-to a dead-letter queue. Rollback is an explicit worker action.
+The worker then checks the approved change and the current card version. It holds a file lock so only one writer runs at a time. The card is written safely through a temporary file and replacement. Failed work is set aside for review. Rollback is an explicit worker action.
 
-Approved changes land in the card's `Review Needed` section. They do not silently
-overwrite the protected `Controlled Profile` fields.
+Approved changes land in the card's `Review Needed` section. They do not silently overwrite protected profile fields.
 
-This is slower than direct page editing. That delay is useful when the knowledge
-affects deal economics, identity fields, CRM writeback or access decisions. It
-would be unnecessary overhead for an ordinary team notebook.
+This is slower than direct page editing. That delay is useful when the knowledge affects deal economics, identity fields, updates to customer records or access decisions. It would be unnecessary overhead for an ordinary team notebook.
 
 ## Why a single writer is enough
 
-SalesWiki targets a small sales and marketing operating group, not millions of
-writes per second. At that scale, one writer gives a clear invariant:
+SalesWiki targets a small sales and marketing operating group, not millions of writes per second. At that scale, one writer gives a clear invariant:
 
 > Every applied change passed through one ordered, reviewable path.
 
-The design avoids distributed locking and merge machinery before the pilot proves
-that they are needed. Gateway and worker can also receive different filesystem
-permissions. The gateway can mount the vault read-only while the worker has the
-controlled write mount.
+The design avoids distributed locking and merge machinery before the pilot proves that they are needed. The reading service can have read-only access to the vault, while the writing worker has controlled write access.
 
 ## The audit chain makes rewriting visible
 
-Audit events are append-only and linked with SHA-256 hashes. Each record carries
-the previous hash and its own hash. Rewriting or removing an earlier record breaks
-verification of the later chain.
+Audit events are append-only and linked with cryptographic hashes. Each record carries the previous hash and its own hash. Rewriting or removing an earlier record breaks verification of the later chain.
 
-This is tamper-evident, not magical. Storage permissions, backups and external
-monitoring still matter. For a private pilot, SalesWiki can sign a checkpoint
-containing the verified record count and head hash, then store that checkpoint
-and its key outside the audit runtime volume. That detects a clean tail deletion
-without pretending to be WORM storage. Git is also useful for card history, but
-it does not tell you who read sensitive data. Read audit belongs in the service
-layer.
+This makes tampering visible; it does not make the system magical. Storage permissions, backups and external monitoring still matter. For a private pilot, SalesWiki can sign a checkpoint containing the verified record count and latest hash, then store that checkpoint and its key separately. That can reveal a clean deletion at the end of the chain. Version history is useful for card changes, but it does not show who read sensitive data. Reading needs its own audit in the service.
 
-## Configuration is part of the architecture
+## Rules should be visible, not hidden in code
 
-The project keeps several policies in machine-readable files:
+The project keeps rules for access, storage boundaries, identity, answer fields and external connections in configuration files. The intent is simple: changing a role map, a storage boundary or an answer field should not require rewriting the service. The health check validates that these rules still agree with the cards and dashboards.
 
-```text
-schemas/access-policy.json
-schemas/boundary-registry.json
-schemas/identity-provider.json
-schemas/field-extraction.json
-schemas/connector-contracts.json
-schemas/scoring-models.json
-```
+The code follows the same boundary. A server interface carries requests into the service, while identity, policy, retrieval, answers, proposals, audit and the worker live in separate modules. Optional chat integrations depend on that core; the core never depends on them. This makes it possible to replace a chat client without moving the rules that protect access and changes.
 
-The intent is simple: changing a role map, a storage boundary or a field extraction
-profile should not require rewriting the gateway. The health check validates these
-contracts and their relationship with templates and dashboards.
-
-The code follows the same boundary. The MCP server is a transport adapter. A
-service facade coordinates use cases, while identity, policy, retrieval,
-extraction, answers, proposals, audit and the worker live in separate modules.
-Optional chat integrations depend on that core; the core never depends on them.
-This makes it possible to replace a client or transport without moving the
-authorization and write invariants with it.
-
-## What the demo proves
+## What the demo has tested
 
 The end-to-end dry run uses a throwaway vault and checks:
 
-- role contrast and no-leak behavior;
-- cited answers and honest `not-found` results;
+- one role cannot see data reserved for another;
+- sourced answers and an honest “not found” result;
 - proposal, approval and worker apply;
 - rejection, audit verification and rollback paths;
-- the same Answer Contract across read tools.
+- the same answer format across read tools.
 
-Run it locally:
+The architecture still has open production work. Test identity must be replaced by a real identity provider on every request. Approval records need production-grade identity and secret handling. Connector credentials, backups, rate limits and incident response need an operating environment outside the public repository.
 
-```bash
-python3 scripts/demo_dryrun.py
-```
-
-Or use Docker:
-
-```bash
-docker compose run --rm demo
-```
-
-The architecture still has open production work. Fixture identity must be
-replaced by per-request SSO. Approval records need production-grade identity and
-secret handling. Connector credentials, backups, rate limits and incident
-response need an operating environment outside the public repository.
-
-This part answers one question: the same shared knowledge can support different
-decisions only when identity and policy filter retrieval before an answer is
-assembled, and when changes follow a separate governed path.
+This part answers one question: the same shared knowledge can support different decisions only when identity and policy filter retrieval before an answer is assembled, and when changes follow a separate governed path.
 
 ## Continue the series
 
-**Previous:** *Why I built a sales and marketing knowledge base that refuses to
-guess.*
+**Previous:** [Why I built a sales and marketing knowledge base that refuses to guess](https://dev.to/artemr_rudenko_0bf2c2c505/why-i-built-a-sales-and-marketing-knowledge-base-that-refuses-to-guess-5fhm)
 
-**Next:** *From synthetic demo to safe pilot: test SalesWiki on one real
-decision.*
+**Next:** [What should a sales knowledge base help someone decide?](https://dev.to/artemr_rudenko_0bf2c2c505/what-should-a-sales-knowledge-base-help-someone-decide-saleswiki-part-3-of-5-pb0)
 
-The code and ADRs are available in the [SalesWiki repository](https://github.com/artemrudenko/SalesWiki-public).
+The code and architecture decisions are available in the [SalesWiki repository](https://github.com/artemrudenko/SalesWiki-public).

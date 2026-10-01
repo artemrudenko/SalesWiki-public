@@ -631,7 +631,7 @@ This design is the target; the MVP delivers it value-first. Current status:
 - **Separation of concerns (risk #10):** the former god-class is split - write-governance (capture/approve/reject/review) lives in `saleswiki_mcp/governance.py` (`GovernanceService`); `CompanyBriefService` is the read facade that composes it and delegates, so the public tool API is unchanged. Reads, digests and governance are now separable units. (Reads could be split further later; not required for correctness.)
 - **Retrieval vs indexes (risk #9 - deferred, by decision):** the MCP `Retriever` (serves the permissioned vault, request-time) and `scripts/build_indexes.py` (derives `indexes/` over the production `wiki/`) target *different vaults and lifecycles*, so they are intentionally separate for the MVP rather than force-merged. Unify only when the gateway serves the production vault at scale (then point `Retriever` at a shared SQLite/FTS index). Tracked here so the duplication is a conscious choice, not drift.
 - **Store hardening (risks #6/#8; #7 partial):** appends go through `saleswiki_mcp/jsonl.py` (fcntl.flock-serialized writes; reads tolerate a torn trailing line), the worker holds an `fcntl.flock` single-writer lock that the OS releases on crash (no stale-lock deadlock), and the audit log is a tamper-evident hash-chain (`audit.verify_chain`) - altering or deleting any *interior* record (or corrupting any line) breaks verification. A signed checkpoint records the count and head hash of a verified prefix; `scripts/audit_anchor.py verify` detects tail truncation or a rewritten checkpoint when its HMAC key and checkpoint path are outside the runtime volume. `advance` refuses to replace an invalid checkpoint. This is still not WORM storage: an actor with both the signing key and the two paths can rewrite history. Covered by `tests/test_store_hardening.py`, `tests/test_audit_anchor.py` and regression tests. **Residual #7:** the event log still grows unbounded and `states()` is O(events); the recommended long-term store is SQLite (stdlib `sqlite3`) for indexed state + retention - not yet implemented. See [ADR-0031](../adr/0031-signed-audit-checkpoints.md).
-- **Honest resolution + freshness (risks #3/#4):** `Retriever.find` is strict - exact entity_id/display wins; a substring resolves only when unique; an ambiguous query returns None and the tool surfaces candidates (`access: "ambiguous"`) instead of briefing the wrong entity (`Retriever.candidates`). Answer `freshness`/`as_of` are derived from the card's `freshness`/`updated` (`_freshness`), replacing the hardcoded "fresh" constant - a stale card is reported stale. Covered by `tests/test_resolver_and_freshness.py`.
+- **Honest resolution + freshness (risks #3/#4):** `Retriever.find` is strict - exact entity_id/display wins; a substring resolves only when unique; an ambiguous query returns None and the tool surfaces candidates (`access: "ambiguous"`) instead of briefing the wrong entity (`Retriever.candidates`). Answer `freshness`/`as_of` are derived from the card's `freshness`/`updated` (`_freshness`), replacing the hardcoded "fresh" constant - a stale card is reported stale. GraphView keeps that review need separate from priority: stale context alone produces an unknown priority signal, while visible at-risk deals and hot leads remain visible. `lead_priority` retains its score-band order and asks the rep to verify stale lead context before the usual next action. Covered by `tests/test_resolver_and_freshness.py`, `tests/test_entity_graph.py`, `tests/test_lead_priority.py` and Workbench adapter tests.
 - **Data integrity (risks #2/#5/#11):** `health_check.check_permissioned_data_integrity` enforces, over the permissioned vault, that each card's `boundary:` matches its folder (single source of truth), every `company:` reference resolves to a known company card, and sales-confidential `owner`/`team` are in the org roster (`identity-provider.json` `org`) - so an access-relevant typo cannot pass silently. Covered by `tests/test_permissioned_integrity.py` (positive + 4 negative).
 - **Field-extraction contract (risk #1 mitigation):** read tools extract via `schemas/field-extraction.json` (type -> field -> section/label), not hardcoded card strings, so the gateway can serve a differently-shaped vault by swapping the profile; `health_check` validates it and tests prove demo-coherence + production-shape decoupling. See `permissioned-knowledge-field-extraction.md`. The permissioned demo cards now mirror the production templates section-for-section (deal/call/lead/event/campaign/pain), so demo data is structurally and semantically faithful. (Optional before a real-vault pilot: a fixture vault built from the real `wiki/entities` templates.)
 - **Answer Contract:** every read tool returns one envelope (conclusion, sections, citations, confidence/freshness/as_of, next_action, missing, access) as structured fields + rendered Markdown; record lists render tables. Accuracy is enforced, not hoped for: values are extracted from cited cards (no generation), every non-missing section is cited, and absent data yields an honest `not-found` with a Missing note.
@@ -816,6 +816,36 @@ Minimum fields:
 - error or denial reason
 
 Git history does not replace audit events because Git does not show who read sensitive content.
+
+### Data-quality review history is a separate purpose
+
+The access/governance audit above answers **who accessed or changed what, and
+under which decision**. It does not explain why an evidence card became stale
+or whether a review task was missed. Do not overload that security log with a
+data-quality postmortem. A pilot should record the quality-review lifecycle in
+its private operational log; a future multi-user service may emit a separate,
+append-only `data_quality_review` event stream.
+
+Minimum useful lifecycle fields are an opaque record handle and field group,
+trigger, due/detected/assigned/resolved timestamps when known, source reference
+and source date, review outcome, cause status (`confirmed`, `suspected`, or
+`unknown`), cause category, decision impact, next action and responsible role.
+Do not copy customer text, contact details, transcript excerpts or full CRM
+records into these events. Missing history must remain unknown rather than
+being filled by an agent's guess. Aggregate overdue-to-detected,
+detected-to-assigned and assigned-to-resolved time, unowned reviews, repeated
+causes and decision-impact counts. Retention, access and deletion follow the
+pilot's data boundary and privacy contract.
+
+The proposed read model is least-privilege and read-only: the record owner sees
+the next check for their permitted record; RevOps and Curators see the process
+patterns relevant to their work; department leads see aggregates plus records
+within their existing team scope. A separately named internal-audit role is
+premature before a multi-user pilot proves the need. If independence later
+requires one, define a narrow `quality_audit` capability over minimized event
+metadata; it must not grant access to customer content or permission to write
+records. Any correction still uses the existing proposal, approval and
+single-writer path. See [ADR-0035](../adr/0035-quality-review-telemetry-and-access.md).
 
 ## Index Architecture
 

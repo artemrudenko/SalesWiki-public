@@ -78,6 +78,10 @@ class ChatRuntime:
 
     def dispatch(self, message: InboundMessage) -> ChatAction:
         state = self.sessions.get(message.session_key, self.session_factory)
+        # Identity for client-side, non-authorizing preferences.  Access still
+        # comes from the server-side identity/policy path; this value is never
+        # passed to the permissioned core as an actor or role.
+        state["external_user_id"] = message.external_user_id
         action = normalize_action(self.handler(message.text, state))
         if isinstance(action, TextResponse):
             self.adapter.send_text(

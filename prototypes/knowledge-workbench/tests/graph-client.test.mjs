@@ -204,3 +204,24 @@ test("fixture Today dashboard changes its queue, decision lens, and account boun
   assert.match(curator.workbench.actions[0].title, /Review competitor evidence/i);
   await session.switchPersona("demo-ethan-ae");
 });
+
+test("fixture Today preserves stale priority as last recorded and asks for verification first", async () => {
+  const session = createFixtureSessionClient();
+  const daily = createFixtureDailyClient({ accounts: [
+    { id: "bluepeak", name: "BluePeak", score: 74, reviewStatus: "current" },
+    { id: "atlas", name: "Atlas", score: 79, reviewStatus: "needs-review", asOf: "2026-08-12", verificationReason: "Account context may have changed since the last review." },
+    { id: "summit-grid", name: "Summit", score: 82, reviewStatus: "current" },
+  ] });
+
+  await session.switchPersona("demo-ethan-ae");
+  const result = (await daily.getMyDay()).data;
+  const atlas = result.workbench.actions.find((action) => action.name === "Atlas");
+  assert.equal(atlas.needsReview, true);
+  assert.match(atlas.reason, /recorded signal.*needs verification/i);
+  assert.match(atlas.next, /^Verify current context/);
+  assert.equal(result.freshness, "mixed");
+  assert.match(result.conclusion, /verify before acting or deprioritizing/i);
+  assert.equal(result.next_action, "Verify stale account context before acting; keep the existing priority order.");
+
+  await session.switchPersona("demo-ethan-ae");
+});

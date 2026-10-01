@@ -14,9 +14,27 @@ to represent traceability, permissioned paths and deliberate discovery.
 - `trace-mascot-concept.png` — character reference for future artwork.
 - `devto-01-evidence-flow.png` — why SalesWiki / evidence-to-decision story.
 - `devto-02-trust-boundary.png` — permissioned reads and governed changes.
-- `devto-03-safe-pilot.png` — local installation and private-pilot path.
+- `devto-03-decision-card.png` — choosing one repeated decision before testing
+  the workflow.
+- `devto-03-safe-pilot.png` — moving from a synthetic demo to a private-pilot
+  path.
 - `devto-04-connector-paths.png` — vendor-first MCP and channel adapters.
 - `linkedin-launch-hero.png` — launch post attachment.
+- `linkedin-02-permitted-views.png` — Part 2 post: policy creates different
+  permitted views from one connected model.
+- `linkedin-03-decision-card.png` — Part 3 post: a cited path and an honest
+  missing-context path begin at one decision card.
+- `linkedin-04-private-pilot.png` — Part 4 post: a careful path from synthetic
+  demo data to a separate private vault.
+- `linkedin-05-evidence-paths.png` — Part 5 post: several possible sources,
+  but only a decision-relevant path continues.
+
+The Part 3 article uses `../../diagrams/saleswiki-one-decision-loop.{mmd,svg,png}`.
+Its dark, vertical layout keeps labels legible on a phone. The PNG is hosted on
+[DEV](https://dev-to-uploads.s3.us-east-2.amazonaws.com/uploads/articles/rhuwp7z4g81w7xkez8i2.png).
+Alt text: Choose one follow-up question, check permitted and dated facts, then
+either give a sourced direction or say what needs checking; a person decides
+and corrections go through review.
 
 ## Guided-tour media
 
@@ -25,10 +43,11 @@ the in-product guided tour. The recordings do not contain customer data, browser
 profiles or a manual cursor overlay.
 
 - `tours/saleswiki-tour-teaser.gif` — short looping preview for DEV, README or
-  a social-post preview.
+  a social-post preview; includes the stale-signal check.
 - `tours/saleswiki-full-tour.mp4` — full product route: different role
-  decisions from shared evidence, guided next actions, monitoring, controlled
-  import and review.
+  decisions from shared evidence, a stale signal that prompts source review,
+  guided next actions, monitoring, controlled import and review. It explains
+  that a stale marker does not establish why a review fell behind.
 - `tours/saleswiki-ae-tour.mp4` — account-executive route.
 - `tours/saleswiki-marketing-tour.mp4` — marketing route.
 - `tours/saleswiki-curator-tour.mp4` — curator route, including review access.

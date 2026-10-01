@@ -126,6 +126,8 @@ export function adaptGraphView(view) {
     score: view.summary.score ?? 0,
     temperature: String(root.metadata.temperature ?? ((view.summary.score ?? 0) >= 85 ? "hot" : (view.summary.score ?? 0) >= 70 ? "warm" : "cold")),
     temperatureReason: String(root.metadata.temperature_reason ?? "Based on the visible score and account context."),
+    reviewStatus: String(root.metadata.review_status ?? "current"),
+    verificationReason: String(root.metadata.verification_reason ?? "Visible account information is current."),
     conclusion: view.summary.conclusion,
     nextAction: view.summary.next_action,
     restricted: view.restricted,

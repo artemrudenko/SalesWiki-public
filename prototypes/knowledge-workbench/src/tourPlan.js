@@ -14,7 +14,7 @@ export function roleLabel(role) { return roleLabels[role] ?? role; }
 
 const baseSteps = (role) => [
   { id: "today", target: "today-queue", role, view: "today", title: "Start with shared knowledge, shaped for one role", body: `Linked company, person, activity and source cards feed this queue. ${roleLabel(role)} sees only the permitted decisions and next actions.`, why: "The team maintains one knowledge model instead of rebuilding the same account context in separate notes." },
-  { id: "dashboard", target: "decision-signals", role, view: "today", title: "Check whether the decision has enough context", body: "The dashboard turns only permitted, dated demo facts into risk movement, account readiness and the newest signals. It is not a forecast.", why: "A recommendation is useful only when the team can see what changed and what is still missing." },
+  { id: "dashboard", target: "decision-signals", role, view: "today", title: "Check whether the decision has enough context", body: "The dashboard turns permitted, dated demo facts into account readiness and the newest signals. A stale marker asks for a review; it does not prove a record is wrong or mean the account should be deprioritized.", why: "Check the source before deciding. The cause of a missed review stays unknown unless a review history supports it." },
   { id: "search", target: "safe-search", mobileTarget: "today-queue", role, view: "today", title: "Search stays inside the access boundary", body: "Company search returns accessible accounts only. It never turns a partial name into a hint that a protected record exists.", why: "A safe product protects both the contents of data and its discoverability." },
   { id: "explore", target: "account-switcher", role, view: "explore", accountId: tourAccount(role), title: "Open the context behind the decision", body: "The explorer keeps relationships, evidence and decision context together. The graph is a navigation aid; every conclusion remains tied to a dated source.", why: "A person can understand why an account is on the list before choosing an action." },
   { id: "graph", target: "graph", role, view: "explore", accountId: tourAccount(role), title: "Navigate linked cards, not another document pile", body: "Reusable cards for people, activity, commercial context and source-backed claims form a one-hop map around the permitted account.", why: "The same relationship can support sales and marketing without each team keeping its own copy." },
@@ -62,8 +62,16 @@ export function buildTourSteps({ mode, role }) {
   if (mode === "quick") {
     const salesSteps = baseSteps("sales-owner");
     const marketingSteps = baseSteps("marketing");
+    const staleSignalStep = {
+      ...salesSteps.find((step) => step.id === "dashboard"),
+      id: "stale-signal",
+      title: "When a signal gets old, check before deciding",
+      body: "Atlas Foods' score has fallen by four points and its information needs review. Check the dated evidence before acting or moving it down the list. The warning does not say why the review is late.",
+      why: "To learn that, a pilot would need to record when the check was due, noticed, assigned and resolved.",
+    };
     return [
       salesSteps[0],
+      staleSignalStep,
       roleContrastStep,
       { ...marketingSteps.find((step) => step.id === "graph"), title: "Use the same account map for a marketing decision", body: "Olivia navigates the shared Atlas cards, connecting the audit signal, audience context and reusable proof without opening sales-confidential deal detail." },
       marketingSteps.find((step) => step.id === "evidence"),

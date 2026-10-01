@@ -16,7 +16,7 @@ export function buildFixtureDashboard(accounts, monitoringPlans = {}) {
   const visible = Array.isArray(accounts) ? accounts : [];
   const risk = visible.map((account) => {
     const history = scoreHistory[account.id] ?? [account.score - 4, account.score - 2, account.score - 1, account.score];
-    return { id: account.id, name: account.name, history, delta: history.at(-1) - history[0], score: account.score };
+    return { id: account.id, name: account.name, history, delta: history.at(-1) - history[0], score: account.score, needsReview: account.reviewStatus === "needs-review" };
   }).sort((a, b) => a.delta - b.delta || b.score - a.score).slice(0, 4);
   const coverage = visible.map((account) => {
     const people = account.nodes.filter((node) => node.data.kind === "person");

@@ -100,7 +100,7 @@ python3 scripts/demo_dryrun.py
 
 The repository ships an executable agent layer for Claude Code, with portable concepts for other runtimes:
 
-- Skills (`.claude/skills/`): `saleswiki-obsidian` (vault conventions) and `saleswiki-lead-scoring` (executable V1 scoring).
+- Skills (`.claude/skills/`): `saleswiki-obsidian` (vault conventions), `saleswiki-lead-scoring` (executable V1 scoring) and `saleswiki-method-library` (local adapter for source-backed reusable GTM methods).
 - Scoring config skill (`.claude/skills/saleswiki-scoring-configurator`) is used only for explicit, user-approved scoring model changes.
 - Subagents (`.claude/agents/`): `research-orchestrator`, `lead-monitor`, `call-analyst`, `deal-risk`, `vault-linter`, `external-vault-import-assistant`, `connector-sync-planner`, `privacy-redaction-reviewer`, `event-research`.
 - Permissioned MCP service (`saleswiki_mcp/`): a separable core (identity, boundaries, RBAC+ABAC policy, retrieval, formatter, audit, append-only proposals) and an `mcp`-SDK stdio gateway exposing role-aware read/propose/govern tools (`company_brief`, `entity_graph`, `flag_stale_or_wrong`, `deal_risk`, `call_prep`, `lead_priority`, `event_brief`, `my_day`, `pipeline_risk_digest`, `campaign_brief`, `content_opportunities`, `request_redaction_review`, `request_access`, `approve_proposal`, `revoke_proposal`, `review_queue`, `get_proposal`, `reject_proposal`); a separate single-writer `saleswiki_mcp/worker.py` applies approved proposals transactionally (type registry, atomic validate-then-write so a failed apply never touches disk — no revert window, dead-letter queue, separate `worker.rollback`) and the gateway never imports it. Answer-style reads use the Answer Contract in `saleswiki_mcp/answer.py`; graph exploration uses the sibling `saleswiki.graph-view` v1 contract. Both are structured, cited, honest about `not-found`, and non-generative.
@@ -187,6 +187,7 @@ Base SalesWiki instructions are stored in this repository for portability:
 
 - `CLAUDE.md` mirrors the project context for Claude Code and imports this file.
 - `.claude/skills/saleswiki-obsidian/SKILL.md` is a project-local Claude Code skill.
+- `.claude/skills/saleswiki-method-library/SKILL.md` is the project-local adapter for the separately versioned GTM Methods library; it may shape a task only after the SalesWiki authorization and Answer Contract boundary. See `docs/engineering/gtm-methods-integration.md` and ADR-0034.
 - `docs/AGENT_PORTABILITY.en.md` describes how to hand the project to another agent environment.
 
 When the local agent runtime has `kepano/obsidian-skills` installed, use the relevant skill for Obsidian-native artifacts:

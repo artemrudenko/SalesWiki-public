@@ -73,6 +73,20 @@ class LeadPriority(unittest.TestCase):
         text = out["text"]
         self.assertLess(text.index("BluePeak Energy"), text.index("Northstar Robotics"), "hot lead must rank first")
 
+    def test_stale_lead_keeps_its_band_but_requests_context_review(self) -> None:
+        lead_path = next((self.tmp / "permissioned").rglob("Lead - BluePeak Energy*.md"))
+        lead_text = lead_path.read_text(encoding="utf-8")
+        lead_path.write_text(lead_text.replace("freshness: fresh", "freshness: stale", 1), encoding="utf-8")
+
+        out = self.svc.lead_priority(actor("demo-ethan-ae"), "BluePeak Energy")
+        row = out["sections"][0]["table"]["rows"][0]
+
+        self.assertEqual(row[2], "hot", "staleness must not lower the existing score band")
+        self.assertIn("Stale context", row[4])
+        self.assertIn("Verify current context", row[5])
+        self.assertIn("does not reduce rank", out["conclusion"])
+        self.assertIn("verify stale lead context", out["next_action"])
+
     def test_contact_is_opaque_handle_for_non_admin(self) -> None:
         out = self.svc.lead_priority(actor("demo-ethan-ae"), None)
         self.assertIn("restricted://", json.dumps(out))

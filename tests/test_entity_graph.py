@@ -13,10 +13,10 @@ sys.path.insert(0, str(ROOT))
 
 import generate_demo_vault as gdv  # noqa: E402
 from saleswiki_mcp import config  # noqa: E402
-from saleswiki_mcp.graph import MAX_EDGES, MAX_EVIDENCE, MAX_NODES, GraphProjector  # noqa: E402
+from saleswiki_mcp.graph import MAX_EDGES, MAX_EVIDENCE, MAX_NODES, GraphProjector, _ProjectedCard  # noqa: E402
 from saleswiki_mcp.identity import Actor, FixtureIdentityProvider  # noqa: E402
 from saleswiki_mcp.policy import PolicyEvaluator  # noqa: E402
-from saleswiki_mcp.retrieval import Retriever  # noqa: E402
+from saleswiki_mcp.retrieval import Card, Retriever  # noqa: E402
 
 
 def actor(actor_id: str):
@@ -76,6 +76,44 @@ class EntityGraphProjection(unittest.TestCase):
         self.assertNotEqual(root["metadata"]["temperature"], "at-risk")
         self.assertIn("block", {decision for _, decision in self.decisions})
         self._assert_invariants(graph)
+
+    def test_stale_context_does_not_become_a_cold_priority_signal(self) -> None:
+        stale_company = Card(
+            rel_path="wiki/entities/companies/Company - Example.md",
+            boundary="internal",
+            entity_id="company-example",
+            type="company",
+            title="Company - Example",
+            owner="",
+            team="",
+            company="",
+            access="",
+            body="",
+            freshness="stale",
+            updated="2026-08-01",
+        )
+        projected = [_ProjectedCard(stale_company, "company", "evidence-1")]
+
+        self.assertEqual(
+            self.projector._temperature(projected),
+            ("unknown", "Current priority cannot be assessed from stale account context."),
+        )
+
+        company_path = next(self.vault.rglob("Company - Atlas Foods.md"))
+        company_text = company_path.read_text(encoding="utf-8")
+        company_path.write_text(company_text.replace("freshness: fresh", "freshness: stale", 1), encoding="utf-8")
+        graph = self.projector.entity_graph(actor("demo-ethan-ae"), entity="Atlas Foods")
+        root = next(node for node in graph["nodes"] if node["id"] == graph["root_id"])
+        self.assertEqual(root["metadata"]["review_status"], "needs-review")
+        self.assertIn("before acting or deprioritizing", root["metadata"]["verification_reason"])
+
+        bluepeak_path = next(self.vault.rglob("Company - BluePeak Energy.md"))
+        bluepeak_text = bluepeak_path.read_text(encoding="utf-8")
+        bluepeak_path.write_text(bluepeak_text.replace("freshness: fresh", "freshness: stale", 1), encoding="utf-8")
+        bluepeak = self.projector.entity_graph(actor("demo-ethan-ae"), entity="BluePeak Energy")
+        bluepeak_root = next(node for node in bluepeak["nodes"] if node["id"] == bluepeak["root_id"])
+        self.assertEqual(bluepeak_root["metadata"]["temperature"], "at-risk")
+        self.assertEqual(bluepeak_root["metadata"]["review_status"], "needs-review")
 
     def test_blocked_root_leaks_no_root_identity(self) -> None:
         graph = self.projector.entity_graph(

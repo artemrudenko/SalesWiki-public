@@ -42,6 +42,8 @@ the native MCP-client route described in the integration platform plan.
 | `демо` (aliases `demo` / `?demo`) | Full cheat-sheet: every message you can try, grouped with explanations. Posted automatically on startup. Note: literal `/demo` is usually swallowed by Rocket.Chat's slash-command system, so use `демо` without the slash. |
 | `роли` (or `help`) | List every role and what it unlocks |
 | `роль: account-exec` | Switch role: `employee` / `sales-rep` / `account-exec` / `head-of-sales` / `revenue-ops` / `marketing` / `legal` / `curator` / `admin` (short aliases `viewer`/`ae`/`hos`/`sdr`/`revops` still work) |
+| `preferences` | Show the current user’s optional AI presentation preferences. |
+| `preferences verbosity compact` | Make the optional AI summary/recommendations more concise. Other settings: `tone direct` / `tone analytical`, `focus evidence` / `risks` / `next_action` / `audience`, and `instruction <wording preference>`. |
 | `? дай бриф по BluePeak Energy` | Company brief |
 | `? риск по сделке BluePeak Energy` | Deal risk for one company |
 | `? риск по всем сделкам` | Cross-company deal risk (aggregated count for roles without access) |
@@ -206,6 +208,24 @@ silently drops the block — the deterministic answer always stands on its own.
 In-process mode only (like file upload and the access chart). This is the
 demo's honest "where is the AI?" answer: facts come extracted from cards, the
 LLM adds labeled prioritization on top.
+
+### Role/task profiles and user preferences
+
+The optional LLM has two presentation layers after the policy-filtered Answer
+Contract has already been built:
+
+1. `schemas/presentation-profiles.json` supplies the role and task profile —
+   for example, an AE's deal-risk focus or marketing's campaign-brief focus.
+2. `preferences` lets a chat user add a tone, length, emphasis or a short
+   wording preference. These are stored only in the bridge runtime, keyed by the
+   provider user id.
+
+Both layers are passed as a model system instruction and can influence only
+wording and prioritization. They cannot change visibility, call a different
+tool, add facts, or hide citations, freshness, missing information or the
+deterministic cited answer. A preference attempting to discuss access, sources
+or system rules is rejected. `preferences reset` removes the user’s stored
+preferences.
 
 ## Demo storyline
 

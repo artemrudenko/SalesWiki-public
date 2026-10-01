@@ -23,23 +23,32 @@ SalesWiki is ready as a public reference implementation / starter kit:
 2. **Validate one workflow.**
    Start with `lead_priority`: “which leads should I touch today and why?”
 
-3. **Validate the controlled CSV/note intake in a pilot.**
+3. **Separate stale evidence from low priority before pilot decisions.**
+   An old note can hide a material change. The current account-temperature
+   presentation can label stale context `cold`, which may read as “not worth
+   attention.” Show the need to verify separately from the account's action
+   priority, with the source date, missing fact and next check visible. Do not
+   lower an account solely because its evidence is old. Test a stale-note case
+   against the rep's current context and record whether the answer led to a
+   better investigation or hid an important issue.
+
+4. **Validate the controlled CSV/note intake in a pilot.**
    The demo previews small pasted CSVs or meeting notes and sends only a
    reviewed summary into the proposal queue. Validate this before a live API
    connector or bulk importer.
 
-4. **Choose production identity only after value is proven.**
+5. **Choose production identity only after value is proven.**
    The current fixture identity is demo-only. A shared runtime needs
    per-request SSO before real multi-user access.
 
-5. **Keep personal data out of git.**
+6. **Keep personal data out of git.**
    Use opaque handles until an external erasable store exists.
 
-6. **Build the integration foundation without adding connector breadth.**
+7. **Build the integration foundation without adding connector breadth.**
    Follow `docs/engineering/integration-platform-plan.md`: typed configuration,
    transport-neutral chat, Rocket.Chat migration and remote MCP readiness.
 
-7. **Use vendor-first integration gates.**
+8. **Use vendor-first integration gates.**
    Evaluate official HubSpot MCP for the first read-only CRM pilot after the
    `lead_priority` value gate. Prefer Slackbot and Microsoft 365 native MCP-client
    paths before custom Slack or Teams bots.
@@ -71,6 +80,9 @@ SalesWiki is ready as a public reference implementation / starter kit:
   categories and cadence can be configured locally; source-cited collection and
   an action inbox remain gated on connector and pilot validation.
 - production SSO / identity broker;
+- role-shaped optional LLM presentation profiles, applied only after
+  authorization and cited extraction; see
+  `docs/engineering/llm-usage-architecture.md`;
 - read-only HubSpot connector;
 - Drive/Meet ingest with explicit approvals;
 - backup/restore and incident drills;

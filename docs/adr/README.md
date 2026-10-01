@@ -67,3 +67,7 @@ under `docs/engineering/` or `wiki/processes/`.
 - [ADR-0029](0029-guided-assistant-before-freeform-llm.md) — guided, cited assistant before free-form LLM chat.
 - [ADR-0030](0030-history-free-public-release-snapshots.md) — export a checked, history-free public repository snapshot from the private source repository.
 - [ADR-0031](0031-signed-audit-checkpoints.md) — signed audit checkpoints outside the runtime volume — protect a verified log prefix from clean tail deletion without overstating the guarantee as immutable storage.
+- [ADR-0032](0032-role-task-and-user-presentation-profiles.md) — role, task and user preferences shape optional LLM presentation after authorization.
+- [ADR-0033](0033-licensed-method-library-is-not-a-fact-store.md) — licensed method sources remain separate from entity facts, policy and scoring.
+- [ADR-0034](0034-external-gtm-methods-with-local-policy-adapter.md) — reusable GTM methods live outside SalesWiki; a local adapter preserves its policy boundary.
+- [ADR-0035](0035-quality-review-telemetry-and-access.md) — proposed separation of data-quality review telemetry from access audit, with least-privilege future review access.

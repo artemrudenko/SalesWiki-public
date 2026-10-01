@@ -1,33 +1,19 @@
 ---
-title: "When should a sales knowledge base connect to CRM, docs and chat?"
+title: "When does an integration help a sales decision? — SalesWiki, Part 5 of 5"
 published: false
-description: "A vendor-first strategy for bringing CRM, document and chat context into SalesWiki without moving integration complexity into the knowledge core."
-tags: mcp, architecture, opensource, python
+description: "A CRM, document, or chat connection earns its place only when it fills a named evidence gap or brings a useful answer to the person who needs it."
+tags: opensource, mcp, api, architecture
 series: "Building SalesWiki in the open"
-cover_image: https://raw.githubusercontent.com/artemrudenko/SalesWiki-public/main/assets/publication/devto-04-connector-paths.png
+cover_image: https://dev-to-uploads.s3.us-east-2.amazonaws.com/uploads/articles/5jqfvkzs0s7qokov1oyk.png
 ---
 
-Once SalesWiki could assemble a cited answer for different sales and marketing
-roles, the next question was where the context should come from. CRM records,
-call notes, documents and conversations live in different systems. Connecting
-them all could easily become a larger project than the knowledge workflow itself.
+Imagine a salesperson deciding which account to follow up with today. The customer record has a next step, a document has the latest approved detail, and a chat thread has an unconfirmed claim. Should SalesWiki connect to all three?
 
-The first chat integration made that risk concrete. SalesWiki could answer
-role-aware questions inside Rocket.Chat. Once that demo was running, it was easy
-to imagine the next tickets: add Telegram, add Slack, add Teams, add HubSpot, add
-Google Drive.
+In Part 4, I separated a synthetic demo from the private pilot that would test a real decision. That pilot needs evidence, but each new connection also needs access rules, maintenance and a clear purpose.
 
-That list looks like progress. It can also turn a small project into five OAuth
-implementations, five retry systems and five slightly different copies of the
-same conversation state.
+My working rule is to connect a source only when it closes a named evidence gap for that decision. Connect a client surface when it lets the right person use the answer where they work. A system full of interesting data does not meet either test by itself.
 
-I paused and asked a simpler question: which parts does SalesWiki need to own,
-and which parts should a vendor maintain?
-
-The answer depends on the decision being improved. A connector earns its place
-when it closes a specific evidence gap or shortens the path to an action someone
-can explain and check. Connecting a system because it contains interesting data
-only widens the search again.
+The first chat demo made the trade-off concrete. SalesWiki could answer role-aware questions inside Rocket.Chat. It was easy to imagine the next requests: Telegram, Slack, Teams, HubSpot and Google Drive. That could become five authentication flows, five retry systems and several drifting copies of conversation state. I paused to ask which parts SalesWiki needs to own and which parts a vendor can maintain.
 
 HubSpot can remain the CRM system of record, Drive can retain the source
 document and a call provider can retain the original recording. SalesWiki owns
@@ -51,8 +37,6 @@ a person, but it must never become a SalesWiki role by itself.
 
 Trying to hide all four jobs behind a universal `ConnectorAdapter` would produce
 a vague interface with many optional methods. I chose narrow contracts instead.
-
-![MCP clients call SalesWiki, custom chats use a shared runtime, and controlled ingest uses official vendor MCP servers](https://raw.githubusercontent.com/artemrudenko/SalesWiki-public/main/diagrams/saleswiki-integration-platform.png)
 
 ## There are two MCP directions
 
@@ -172,6 +156,40 @@ A real sync needs stable IDs, pagination, checkpoints, delta reads, rate-limit
 handling, replay safety and reconciliation. If the vendor MCP does not expose
 those controls, I will use its API, webhook support or a managed connector.
 
+## A sync should leave enough history to explain a stale card
+
+A freshness date can tell us that something needs checking. It cannot tell us
+why. A source may not have changed, a sync may have failed, or the next review
+may never have had an owner. Those cases need different fixes.
+
+For a pilot, I would keep a small history for each review: when it was due,
+when it was noticed and assigned, when it was resolved, what source was checked,
+what the reviewer found, and whether the decision changed. For an automated
+sync, add the run time, source update time, run result and a safe failure reason.
+These timestamps help separate an old source from a missed sync or a missed
+review. If the history cannot show which happened, the cause stays unknown.
+
+That is why an integration needs more than a successful read. The
+[Government Data Quality Framework](https://www.gov.uk/government/publications/the-government-data-quality-framework/the-government-data-quality-framework-guidance)
+recommends tracking findings over time and fixing causes near where they start.
+HubSpot's [data-quality tools](https://knowledge.hubspot.com/data-management/use-data-quality-tools)
+also frame quality work as ongoing monitoring and review. These practices help
+shape the pilot; they do not mean SalesWiki already monitors a live CRM or
+automatically finds root causes.
+
+The practitioner discussion [Dirty CRM Data to Trusted Account Intelligence](https://www.revopscoop.com/webinar-series/dirty-crm-data-ai-readiness)
+also treats CRM quality as ongoing work: a one-time cleanup can decay, and
+coverage is useful only when the information helps someone act. I would use
+that as a question for the pilot, not as proof that every team needs another
+monitoring layer.
+
+The first useful view may be for the record owner: what needs checking and why.
+RevOps can look across review delays and repeated sync failures, while a team
+lead sees only their scoped records and small, privacy-safe summaries. I would
+consider a separate read-only audit capability only if the pilot demonstrates
+the need for an independent view. It should not grant wider access to sales or
+customer content.
+
 The decision order is:
 
 1. Check the official vendor MCP.
@@ -245,5 +263,4 @@ only the systems that the validated workflow needs.
 
 ## Continue the series
 
-**Previous:** *From synthetic demo to safe pilot: test SalesWiki on one real
-decision.*
+**Previous:** *What must change before a sales demo uses real data?*

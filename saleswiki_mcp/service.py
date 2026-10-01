@@ -312,22 +312,38 @@ class CompanyBriefService:
 
         rows: list[list[str]] = []
         citations: list[Citation] = []
+        needs_review_count = 0
         for deal in allowed:
             risk = self._field(deal, "risk") or "no explicit risk noted"
             action = self._field(deal, "recommended_action") or "confirm the next step with the owner"
             score = self._field(deal, "score") or "—"
             win = self._field(deal, "win_probability") or "—"
             value = self._field(deal, "acv") or "—"
+            if deal.freshness != "fresh":
+                needs_review_count += 1
+                freshness_note = "Stale context" if deal.freshness == "stale" else "Freshness not established"
+                risk = f"{freshness_note} — verify current details; recorded risk: {risk}"
+                action = f"Verify current context, then {action}"
+                score = f"last recorded {score}"
+                win = f"last recorded {win}"
             rows.append([deal.display, score, win, value, risk, action])
             citations.append(Citation(deal.boundary, deal.rel_path))
         restricted = [f"{blocked} additional deal(s) restricted for your role."] if blocked else []
         fresh, as_of = self._freshness(allowed)
         ans = Answer(
             title=f"Deal Risk: {scope}", access="allowed",
-            conclusion=f"{len(allowed)} accessible deal(s) at risk.",
+            conclusion=(
+                f"{len(allowed)} accessible deal(s) at risk; {needs_review_count} need current-context review. Stale evidence does not remove the deal from view."
+                if needs_review_count
+                else f"{len(allowed)} accessible deal(s) at risk."
+            ),
             sections=[Section("Deals At Risk", table=Table(["Deal", "Score", "Win %", "Value", "Risk", "Recommended action"], rows))],
             citations=citations, restricted=restricted, freshness=fresh, as_of=as_of,
-            next_action="confirm the next step with each deal owner.",
+            next_action=(
+                "verify stale deal context before acting; keep the deal visible for review."
+                if needs_review_count
+                else "confirm the next step with each deal owner."
+            ),
         )
         return {**ans.as_dict(), "scope": scope}
 
@@ -404,6 +420,7 @@ class CompanyBriefService:
         citations: list[Citation] = []
         restricted: list[str] = []
         rows: list[list[str]] = []
+        needs_review_count = 0
         for lead in leads:
             if not self._readable(actor, lead, "lead_priority"):
                 continue  # fail-safe: never emit a lead the actor may not read
@@ -412,6 +429,15 @@ class CompanyBriefService:
             stage = self._field(lead, "stage") or "—"
             why = self._field(lead, "why_now") or "no signal recorded"
             action = self._field(lead, "recommended_action") or "confirm the next step"
+            if lead.freshness != "fresh":
+                needs_review_count += 1
+                review_note = (
+                    "Stale context — verify current details; recorded signal: "
+                    if lead.freshness == "stale"
+                    else "Freshness not established — verify current details; recorded signal: "
+                )
+                why = review_note + why
+                action = f"Verify current context, then {action}"
             citations.append(Citation(lead.boundary, lead.rel_path))
             handle = find_handle(lead.body)
             if handle != "restricted://(unknown)":
@@ -429,12 +455,21 @@ class CompanyBriefService:
                 deal_cell = "no linked deal"
             rows.append([lead.display, score, band, stage, why, action, deal_cell])
         fresh, as_of = self._freshness(leads)
+        conclusion = (
+            f"{len(rows)} lead(s) shown in score-band order; {needs_review_count} need current-context review. Staleness does not reduce rank."
+            if needs_review_count
+            else f"{len(rows)} lead(s) to act on, highest score first."
+        )
         ans = Answer(
             title=f"Lead Priority: {scope}", access="allowed",
-            conclusion=f"{len(rows)} lead(s) to act on, highest score first.",
+            conclusion=conclusion,
             sections=[Section("Leads", table=Table(["Lead", "Score", "Score band", "Stage", "Why now", "Next action", "Linked deal"], rows))],
             citations=citations, restricted=restricted, freshness=fresh, as_of=as_of,
-            next_action="book the highest-band leads this week.",
+            next_action=(
+                "verify stale lead context before acting; keep the existing score-band order."
+                if needs_review_count
+                else "book the highest-band leads this week."
+            ),
         )
         return {**ans.as_dict(), "scope": scope}
 

@@ -1,9 +1,13 @@
 # Data Quality
 
-Generated: 2026-07-06
+Generated: 2026-09-17
 
 ## Entity Counts
-No rows.
+| Type | Count |
+| --- | --- |
+| source | 2 |
 
 ## Freshness Counts
-No rows.
+| Freshness | Count |
+| --- | --- |
+| fresh | 2 |

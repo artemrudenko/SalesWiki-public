@@ -7,6 +7,8 @@ test fixtures.
 | ingest_run_id | date | runner | source_scope | input_count | accepted_count | rejected_count | duplicate_count | error_count | output_pages | index_rebuild | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
+| ingest-20260917-oer-method-library-01 | 2026-09-17 | Codex / SalesWiki maintainer | Two CC BY 4.0 sales-and-marketing OER remote references | 2 | 2 | 0 | 0 | 0 | [[Source - Introduction to Marketing - MKTG 34303]]; [[Source - Foundations in Digital Marketing]]; [[method-library-intake]]; [[method-library-pilot]] | pending | No full-text mirror: publisher pages identify exceptions for third-party media. Source manifests, license limits and initial method notes were added. |
+
 ## ID Format
 
 Use `ingest-YYYYMMDD-<short-scope>-<sequence>` for real runs and

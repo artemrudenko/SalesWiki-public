@@ -54,6 +54,28 @@ class DealRisk(unittest.TestCase):
         self.assertIn("economic buyer", out["text"].lower())
         self.assertIn("BluePeak Energy", out["text"])
 
+    def test_stale_deal_stays_visible_but_is_marked_as_last_recorded_and_needs_review(self) -> None:
+        deal_path = next((self.tmp / "permissioned").rglob("Deal - Atlas Foods - Pilot.md"))
+        deal_text = deal_path.read_text(encoding="utf-8")
+        self.assertIn("freshness: fresh", deal_text)
+        deal_path.write_text(deal_text.replace("freshness: fresh", "freshness: stale", 1), encoding="utf-8")
+        service = build_default_service(
+            vault_root=self.tmp / "permissioned",
+            audit_path=self.tmp / "audit-stale.jsonl",
+            proposal_path=self.tmp / "proposals-stale.jsonl",
+            now=lambda: "2026-06-03T00:00:00Z",
+        )
+
+        out = service.deal_risk(actor("demo-ethan-ae"), "Atlas Foods")
+
+        self.assertEqual(out["access"], "allowed")
+        self.assertEqual(out["freshness"], "stale")
+        self.assertIn("1 need current-context review", out["conclusion"])
+        self.assertIn("Stale context — verify current details", out["text"])
+        self.assertIn("last recorded", out["text"])
+        self.assertIn("Verify current context, then", out["text"])
+        self.assertIn("keep the deal visible for review", out["next_action"])
+
     def test_owner_all_accessible_lists_only_owned_or_team(self) -> None:
         out = self.svc.deal_risk(actor("demo-ethan-ae"), None)
         self.assertEqual(out["access"], "allowed")

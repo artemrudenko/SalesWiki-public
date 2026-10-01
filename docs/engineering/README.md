@@ -47,6 +47,9 @@ Anything about building, testing, securing or deploying the permissioned MCP ser
 - `permissioned-knowledge-sso-design.md` — future per-request SSO/OIDC identity design for a shared runtime.
 - `buy-vs-build.md` — honest buy-vs-build comparison (Notion/Guru/Glean/Claude+connectors/HubSpot AI vs building): when the permissioned build is justified and when to buy instead.
 - `llm-usage-architecture.md` — where LLMs run and when an API key is needed: generative steps live in the labeled client layer; the core/gateway/worker never generate (ADR-0017).
+- `prompt-development-contract.md` — safe editing, inspection and synthetic evaluation loop for role/task presentation prompts and user preferences.
+- `method-library-pilot.md` — licensed OER source cohort, fact/method boundary and synthetic evaluation for source-informed task framing.
+- `gtm-methods-integration.md` — version-pinned external GTM Methods foundation and the thin SalesWiki policy adapter.
 - `permissioned-knowledge-field-extraction.md` — declarative card-shape decoupling profile (`schemas/field-extraction.json`).
 - `permissioned-knowledge-access-requests.md` — design + scope of the governed `request_access` → approve → scoped-grant → revoke loop (surfaced in the Rocket.Chat bridge).
 - `permissioned-knowledge-demo.md` — end-to-end demo walkthrough.

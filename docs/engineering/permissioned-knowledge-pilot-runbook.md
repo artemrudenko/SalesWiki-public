@@ -140,6 +140,59 @@ For every answer, one log line: date, question, tool, rating
 (`useful`/`neutral`/`wrong`), and — when `wrong` — a `flag_stale_or_wrong`
 proposal so the correction rides the governed loop instead of an untracked edit.
 
+At least once a week, include a lead or account whose last note is old. Compare
+the answer with the rep's current context: did it ask for the missing check, or
+did it treat age alone as lower priority? Record the source date, what the rep
+checked, whether the old note hid a material issue, and whether the suggested
+action changed. Count an answer that quietly deprioritizes the account because
+of the old note as `wrong` even if it was fast. Freshness is a reason to verify,
+not a substitute for relevance or urgency.
+
+### Record the review, not just the stale count
+
+The weekly stale percentage says how many records need attention; it cannot
+explain why they became stale or whether the review process worked. For each
+stale case selected for review, add one privacy-minimal row to the private pilot
+log. Use a stable pilot record handle, not a copied account name, contact detail,
+transcript excerpt or CRM export.
+
+| Field | Record |
+| --- | --- |
+| Record handle and field group | Pilot-local ID; for example `lead-017`, `next_step` |
+| Review timing | Due date, detected date, assigned date and resolved date; leave unknown dates blank |
+| Trigger | Scheduled review, user-reported problem, failed/missed sync, or other observed trigger |
+| Review result | Confirmed current, updated from source, no longer relevant, unable to verify, or false alarm |
+| Likely cause | Source changed without sync; sync/monitor failed; no owner or task; assigned task missed; source itself was old; review cadence was wrong; conflicting sources; unknown |
+| Decision impact and next action | Did the stale fact change the suggested action? Who will do what by when? |
+| Evidence reference | Restricted source handle or safe link plus source date; do not copy the source content into this log |
+
+Use `unknown` when the timeline or source does not establish a cause. A stale
+timestamp alone cannot tell us whether a sync failed, nobody owned the review,
+or the source itself was old. Keep suspected causes separate from confirmed
+causes. The
+[Government Data Quality Framework](https://www.gov.uk/government/publications/the-government-data-quality-framework/the-government-data-quality-framework-guidance)
+recommends tracking quality findings over time and investigating root causes;
+its
+[issues framework](https://www.gov.uk/government/publications/implement-a-data-quality-action-plan/data-quality-issues-framework)
+also puts impact and priority ahead of age alone. These are methods to test in
+the pilot, not proof that SalesWiki can identify a cause automatically.
+
+At the weekly checkpoint, summarize only counts and elapsed-time measures:
+overdue-to-detected, detected-to-assigned, and assigned-to-resolved; cases with
+no owner; outcomes; repeated likely causes; and cases where stale context could
+have changed the decision. Suppress small groups that could identify a person.
+Use the pattern to improve the source update, sync, ownership or review cadence
+near where the failure began. Do not create a new department-wide access path
+just to make these summaries.
+
+In the Workbench, stale context must appear as a separate review signal. The
+priority signal should say that current priority cannot be assessed when the
+visible evidence is stale and no stronger signal is available; it must not call
+the account `cold` because of age alone. A visible at-risk deal or hot lead
+remains visible while the review signal asks the rep to verify current context.
+`lead_priority` keeps the existing score-band order and marks each stale lead
+for a current-context check before its usual next action.
+
 ## Step 5 — Staleness measure (weekly)
 
 A pilot lead card is **stale** when `updated:` is older than its cadence window:
@@ -173,8 +226,8 @@ EOF
 
 Keep one table in the pilot vault (`~/SalesWiki-pilot/state/pilot-log.md`):
 
-| Week | Lead cards | % stale | Questions | Useful | Wrong | Flags→applied | Notes |
-| --- | --- | --- | --- | --- | --- | --- | --- |
+| Week | Lead cards | % stale | Questions | Useful | Wrong | Flags→applied | Reviews / unknown causes / repeat causes | Notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 ## Exit (end of week 4)
 

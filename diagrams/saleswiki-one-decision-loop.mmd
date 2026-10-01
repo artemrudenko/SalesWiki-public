@@ -1,0 +1,8 @@
+flowchart TD
+    A[Choose one decision<br/>Which account needs follow-up today?] --> B[Check permitted, dated facts<br/>Sources, dates, and missing context]
+    B --> C{What does the evidence support?}
+    C -->|Enough| D[Suggest a next step with sources]
+    C -->|Gap or conflict| E[Say what needs checking]
+    D --> F[Person chooses the action]
+    E --> F
+    F --> G[Changes to shared facts go through review]

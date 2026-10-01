@@ -76,7 +76,7 @@ class WikiAnswerMixin:
         "`? deal risk`, `? my day`, `? pipeline`. List of roles — command `roles`."
     )
 
-    def answer(self, role: str, question: str) -> str:
+    def answer(self, role: str, question: str, preferences: dict | None = None) -> str:
         if self.use_mcp:
             return self._answer_via_mcp(role, question)
         intent = self._match_intent(question)
@@ -85,8 +85,8 @@ class WikiAnswerMixin:
         env = self._route(role, question)
         if env is None:
             return self._NOT_UNDERSTOOD
-        rendered = self._render(role, env)
-        rendered += self._llm_recommendations(env, intent[0])
+        rendered = self._render(role, env, intent[0], preferences)
+        rendered += self._llm_recommendations(env, role, intent[0], preferences)
         # If the answer contains record cards, tell the user the command that
         # generates + uploads the same data as a file (no pre-made link exists).
         if "```" in rendered:
@@ -518,7 +518,7 @@ class WikiAnswerMixin:
         bits = [b for b in (conclusion, headline) if b]
         return "; ".join(bits)
 
-    def _llm_summary(self, env: dict) -> str | None:
+    def _llm_summary(self, env: dict, role: str, task: str, preferences: dict | None) -> str | None:
         """B (opt-in): a real LLM rephrases the cited envelope. Off unless
         RC_LLM_SUMMARY is set and an API key is present; any failure falls back
         to the deterministic composer so the demo never breaks. Grounding rule:
@@ -529,24 +529,25 @@ class WikiAnswerMixin:
         if not key:
             return None
         try:
-            prompt = (
-                "You are summarizing a sales answer for a chat user. Use ONLY facts "
-                "present in the text below — invent nothing, add no numbers not shown. "
-                "Reply with one or two short sentences in English.\n\n" + env.get("text", "")
-            )
-            return self._llm_call(prompt, 160) or None
+            prompt = ("Write one or two short sentences in English. The Answer Contract follows.\n\n"
+                      + env.get("text", ""))
+            system = self.presentation_profiles.system_prompt(role, task, preferences)
+            return self._llm_call(prompt, 160, system) or None
         except Exception:
             return None  # never break the answer on a summary failure
 
-    def _llm_call(self, prompt: str, max_tokens: int) -> str:
+    def _llm_call(self, prompt: str, max_tokens: int, system: str = "") -> str:
         """One grounded Anthropic API call, shared by the summary headline and
         the recommendations block. Raises on any transport/API failure —
         callers decide their own fallback."""
         key = os.environ["ANTHROPIC_API_KEY"].strip()
-        payload = json.dumps({
+        payload_data = {
             "model": "claude-haiku-4-5-20251001", "max_tokens": max_tokens,
             "messages": [{"role": "user", "content": prompt}],
-        }).encode("utf-8")
+        }
+        if system:
+            payload_data["system"] = system
+        payload = json.dumps(payload_data).encode("utf-8")
         req = urllib.request.Request(
             "https://api.anthropic.com/v1/messages", data=payload,
             headers={"x-api-key": key, "anthropic-version": "2023-06-01",
@@ -558,7 +559,8 @@ class WikiAnswerMixin:
     # Digests where an LLM ranking adds value on top of the deterministic answer.
     _DIGEST_METHODS = frozenset({"my_day", "pipeline_risk_digest", "deal_risk"})
 
-    def _llm_recommendations(self, env: dict, method: str) -> str:
+    def _llm_recommendations(self, env: dict, role: str, method: str,
+                             preferences: dict | None) -> str:
         """Opt-in (RC_LLM_RECS=1 + ANTHROPIC_API_KEY): an LLM turns a digest
         envelope into a prioritized what-first action list. Grounding rule: the
         prompt gets only the envelope text and forbids new facts; the block is
@@ -574,24 +576,24 @@ class WikiAnswerMixin:
             return ""
         try:
             prompt = (
-                "You are a sales assistant. Using ONLY the facts in the digest below "
-                "— invent nothing, add no numbers, names or dates not shown — rank "
-                "the items by urgency and reply with a short numbered action list "
-                "for today (max 5 items, one line each, most urgent first, each "
-                "with a one-clause reason). Plain numbered lines only — no "
-                "headings, no bold, no preamble.\n\n" + env.get("text", "")
+                "Using only the Answer Contract below, write a short numbered action list "
+                "for today (max 5 items, one line each, most urgent first, each with a "
+                "one-clause reason). Plain numbered lines only — no headings, no bold, no "
+                "preamble.\n\n" + env.get("text", "")
             )
-            body = self._llm_call(prompt, 400)
+            system = self.presentation_profiles.system_prompt(role, method, preferences)
+            body = self._llm_call(prompt, 400, system)
         except Exception:
             return ""  # never break the answer on a recommendations failure
         return f"\n\n{RECS_MARKER}\n{body}" if body else ""
 
-    def _summary_line(self, env: dict) -> str:
+    def _summary_line(self, env: dict, role: str, task: str,
+                      preferences: dict | None) -> str:
         """The '🤖 Summary' headline (real LLM if enabled, else deterministic).
         Only for substantive read answers."""
         if env.get("access") in ("blocked", "not-found", "ambiguous"):
             return ""
-        body = self._llm_summary(env) or self._compose_summary(env)
+        body = self._llm_summary(env, role, task, preferences) or self._compose_summary(env)
         return f"{SUMMARY_MARKER} (from card data): {body}\n\n" if body else ""
 
     @staticmethod
@@ -639,7 +641,8 @@ class WikiAnswerMixin:
                 out.append(line)
         return "\n".join(out)
 
-    def _render(self, role: str, env: dict) -> str:
+    def _render(self, role: str, env: dict, task: str = "company_brief",
+                preferences: dict | None = None) -> str:
         access = env.get("access")
         header = f"🤖 **SalesWiki** · role `{role}`"
         if access == "blocked":
@@ -653,7 +656,7 @@ class WikiAnswerMixin:
         # One rule: explain missing permissions ONCE at the top; mark the rest with 🔒.
         restricted = locked or stripped or access in {"sanitized", "aggregated"}
         notice = self._access_notice(role, abac_masked=locked) if restricted else ""
-        summary = self._summary_line(env)
+        summary = self._summary_line(env, role, task, preferences)
         return f"{header}{notice}\n\n{summary}{self._readable_spacing(body)}"
 
     @staticmethod

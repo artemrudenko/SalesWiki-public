@@ -144,7 +144,16 @@ class ChatRuntimeTests(unittest.TestCase):
 
         runtime.dispatch(message("alice", "1", "demo"))
 
-        self.assertEqual(starts, [(0.5, {"role": "curator"})])
+        self.assertEqual(starts, [(0.5, {"external_user_id": "alice", "role": "curator"})])
+
+    def test_session_exposes_provider_user_only_as_client_preference_identity(self) -> None:
+        adapter = FakeAdapter()
+        seen: list[dict] = []
+        runtime = ChatRuntime(adapter, lambda _text, state: (seen.append(dict(state)), "ok")[1], dict)
+
+        runtime.dispatch(message("alice", "1", "hello"))
+
+        self.assertEqual(seen, [{"external_user_id": "alice"}])
 
 
 if __name__ == "__main__":

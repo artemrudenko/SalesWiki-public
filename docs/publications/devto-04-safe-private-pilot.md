@@ -1,38 +1,34 @@
 ---
-title: From synthetic demo to safe pilot: test SalesWiki on one real decision
+title: "What must change before a sales demo uses real data? — SalesWiki, Part 4 of 5"
 published: false
-description: Run the SalesWiki preview, inspect its trust boundaries, and design a private pilot around one repeated sales or marketing decision.
-tags: tutorial, opensource, docker, mcp
+description: Run the synthetic demo, see where customer data belongs, and decide what a small private pilot would need to prove.
+tags: opensource, mcp, ai, privacy
 series: Building SalesWiki in the open
-cover_image: https://raw.githubusercontent.com/artemrudenko/SalesWiki-public/main/assets/publication/devto-03-safe-pilot.png
+cover_image: https://dev-to-uploads.s3.us-east-2.amazonaws.com/uploads/articles/mmxfn3ru1kkbg47owtp3.png
 ---
 
-If you want to test SalesWiki, start before customer data touches it. This
-tutorial takes a fresh clone to a working synthetic demo, then marks the point
-where a real team should stop and plan a private pilot.
+The public demo uses invented accounts. You can follow an answer to its sources and see how a correction enters review. But what changes when a team wants to try the same workflow with a real customer record?
 
-The question is not whether an AI answer sounds useful. It is whether a person
-can move from a new signal to an action they can explain and check with less
-searching. Can they also see which options were ruled out by missing, stale or
-restricted context?
+That question matters more than whether the demo looks convincing. In [Part 3](https://dev.to/artemr_rudenko_0bf2c2c505/what-should-a-sales-knowledge-base-help-someone-decide-saleswiki-part-3-of-5-pb0), I chose one repeated decision to test: which account needs attention today, and why? Here I show how to run the synthetic demo, where real data must go, and what a private pilot would need to prove. None of this establishes that the workflow already helps a real team.
 
-A broad product idea becomes useful only when it improves a repeated decision.
-That is what the pilot needs to test.
+The boundary is simple: the public repository holds the platform, its demo holds synthetic cards, and real customer data belongs in a separate private vault.
 
-The public preview has two practical modes today:
+| Contour | Location | Data rule |
+| --- | --- | --- |
+| Platform | Public SalesWiki repository | Code, schemas, templates and docs |
+| Demo | `demo/` inside the repository | Synthetic cards only |
+| Pilot | A separate private vault outside the repository | Real accounts, deals, contacts and transcripts |
 
-1. A local demo or single-operator pilot.
-2. A Docker-based demo and check environment.
-
-It is not a hosted multi-user service yet.
+The public preview supports a local demo or single-operator pilot and Docker-based checks. It is not a hosted multi-user service yet.
 
 ## Pick the shortest path first
 
 If you want to understand the interaction before installing anything, take the
 guided Workbench tour. If you want to inspect the cards and controls, run the
-local demo. If you want to test whether the workflow helps a real team, use the
-private-pilot section and start with one repeated decision. These are different
-questions, so they should not become one large setup exercise.
+local demo. If you want to test whether the workflow helps a real team, first
+define the repeated decision in Part 3, then use the private-pilot section.
+These are different questions, so they should not become one large setup
+exercise.
 
 ## What you need
 
@@ -184,18 +180,7 @@ python3 scripts/refresh.py --demo
 
 Do not edit generated files under `indexes/` by hand.
 
-## Understand the three data contours
-
-The public repository, the synthetic demo and a real pilot are separate on
-purpose.
-
-![The platform repository stores code and synthetic demo data. Real pilot data stays in a separate private vault, and the health check fails if pilot data leaks into the repository](https://raw.githubusercontent.com/artemrudenko/SalesWiki-public/main/diagrams/saleswiki-data-contours.png)
-
-| Contour | Location | Data rule |
-| --- | --- | --- |
-| Platform | Public SalesWiki repository | Code, schemas, templates and docs |
-| Demo | `demo/` inside the repository | Synthetic cards only |
-| Pilot | A separate private vault outside the repository | Real accounts, deals, contacts and transcripts |
+## Keep the data boundary in place
 
 The health check fails if a `pilot/` directory or a file marked `dataset: pilot`
 appears inside the public repository. Platform scripts accept explicit source and
@@ -217,7 +202,7 @@ docs/engineering/permissioned-knowledge-pilot-runbook.md
 The smallest useful pilot tests one repeated decision. The current runbook starts
 with `lead_priority`: can a user get a better, faster, cited answer about what to
 do today than from the current CRM and manual notes? This is the first measurable
-sales workflow, not the limit of the product. A later marketing pilot can apply
+sales workflow, not the limit of the product. It differs from Part 3's account-follow-up example; a real pilot would choose one decision and keep it fixed. A later marketing pilot can apply
 the same method to a recurring campaign or content decision once its evidence
 and success criteria are explicit.
 
@@ -231,6 +216,36 @@ work validates all four points:
 
 If the pilot mainly proves that people want document search or summarization, an
 existing product may be the cheaper answer.
+
+Before the first real account enters the pilot, write down the research
+contract: the repeated decision, the permitted evidence, the current workflow,
+and the outcomes that would make the pilot stop or change direction. A claim
+without a source, a role receiving restricted information, or a person unable
+to explain the proposed action should count as a failed case. Do not change the
+source scope, role rules, and answer wording all at once; otherwise the team
+will not know what caused an improvement or a failure.
+
+I would also record what happens when a fact needs review. A stale flag tells
+us that a review window passed; by itself, it does not tell us whether a source
+changed, a sync failed, or no one owned the task. In the private pilot log, I
+would note when the check was due, noticed, assigned and resolved; the review
+result; the likely cause (or `unknown`); and whether it could have changed the
+decision. I would keep customer text and contact details out of that log, using
+only a private record handle and a restricted source link.
+
+That distinction follows public data-quality guidance: assess quality against
+the intended use, track recurring issues, and investigate causes before choosing
+a fix. The [Government Data Quality Framework](https://www.gov.uk/government/publications/the-government-data-quality-framework/the-government-data-quality-framework-guidance)
+describes that loop, and its [issues framework](https://www.gov.uk/government/publications/implement-a-data-quality-action-plan/data-quality-issues-framework)
+puts impact and priority into the response. This is a method for the pilot to
+test; it is not a claim that SalesWiki currently diagnoses stale records.
+
+For an early pilot, I would use the roles and team boundaries already in place.
+The person responsible for an account sees the next check; RevOps or a curator
+can review process patterns within their existing access; department leads see
+team-level summaries. I would not create a broad audit role until a multi-user
+pilot shows a real need for independent review. If that need appears, it should
+be read-only and limited to quality-event metadata, not customer content.
 
 ## What production deployment still needs
 
@@ -261,6 +276,7 @@ After one hour with the demo, you should be able to answer these questions:
 - Does the worker apply only an approved proposal?
 - Can I regenerate indexes and dashboard snapshots from the Markdown source?
 - Is real pilot data physically outside the public repository?
+- Can the team distinguish an old source from a missed sync or an unowned review, and say when it cannot?
 
 If those properties match your requirements, clone the
 [SalesWiki repository](https://github.com/artemrudenko/SalesWiki-public) and run
@@ -270,6 +286,6 @@ where SalesWiki gets in the way, is the evidence the next version needs.
 
 ## Continue the series
 
-**Previous:** *How I keep shared sales knowledge safe for different roles.*
+**Previous:** [What should a sales knowledge base help someone decide?](https://dev.to/artemr_rudenko_0bf2c2c505/what-should-a-sales-knowledge-base-help-someone-decide-saleswiki-part-3-of-5-pb0)
 
-**Next:** *When should a sales knowledge base connect to CRM, docs and chat?*
+**Next:** *When does an integration help a sales decision?*

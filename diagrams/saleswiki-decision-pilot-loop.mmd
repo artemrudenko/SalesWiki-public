@@ -1,0 +1,9 @@
+flowchart LR
+    A[New account signal] --> B[Permitted, dated evidence]
+    B --> C{Enough evidence?}
+    C -->|Yes| D[Cited direction]
+    D --> E[Human decides next action]
+    E --> F[Correction or review]
+    F --> B
+    C -->|No| G[Name what is missing or stale]
+    G --> E
