@@ -12,8 +12,8 @@ installation instructions they reference.
    different roles and governed changes.
 3. `devto-03-one-decision-pilot.md`: how to choose one repeated decision and
    test whether cited context improves it.
-4. `devto-04-safe-private-pilot.md`: how to move from a synthetic demo to a
-   private pilot without confusing their data boundaries.
+4. `devto-04-safe-private-pilot.md`: what must change before a sales demo uses
+   real data, and how to test a private pilot without confusing data boundaries.
 5. `devto-05-vendor-first-integrations.md`: how CRM, document and chat context
    connects without moving vendor complexity into the core.
 

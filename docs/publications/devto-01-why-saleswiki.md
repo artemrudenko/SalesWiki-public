@@ -276,8 +276,8 @@ can inspect:
    filters retrieval before an answer is assembled and governs later changes.
 3. **What should a sales knowledge base help someone decide?** — choose one
    repeated decision before measuring whether the workflow helps.
-4. **From synthetic demo to a safe private pilot** — keep public, demo, and
-   real-team data separate while testing the workflow.
+4. **What must change before a sales demo uses real data?** — keep public,
+   demo, and real-team data separate while testing the workflow.
 5. **When should a sales knowledge base connect to CRM, documents, or chat?**
    — connect a source only when the validated decision needs its evidence.
 

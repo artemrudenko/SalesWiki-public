@@ -94,4 +94,4 @@ The next part looks at how to run that private test without confusing synthetic 
 
 **Previous:** [How I keep shared sales knowledge safe for different roles](https://dev.to/artemr_rudenko_0bf2c2c505/how-i-keep-shared-sales-knowledge-safe-for-different-roles-saleswiki-part-2-of-5-1ngl)
 
-**Next:** *From synthetic demo to a safe private pilot.*
+**Next:** *What must change before a sales demo uses real data?*

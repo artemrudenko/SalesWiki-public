@@ -18,6 +18,15 @@ commit it was cut from.
   active UI and explain role-scoped priorities, cited assistant answers and
   governed review without writing any data.
 
+### Changed
+- **Stale-data review**: stale evidence is shown as a request to verify context,
+  separate from deal priority. The Workbench and pilot guidance distinguish the
+  source date from the last review, show the evidence behind the signal and a
+  practical next step, and leave the cause unknown when the available history
+  does not establish it.
+- **DEV series navigation**: the Part 1 roadmap, Part 3 next-step reference and
+  publication-kit index now use the current Part 4 title.
+
 ### Security & hardening (post-review)
 - **Fail-closed default boundary**: a card outside every `path_map` prefix now
   resolves to a `quarantine` boundary no role can read (was world-readable
