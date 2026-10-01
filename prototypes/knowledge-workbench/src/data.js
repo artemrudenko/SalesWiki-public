@@ -16,7 +16,7 @@ export const entityTypeLabels = {
   claim: "Claim",
 };
 
-function buildGraphView({ id, entityId, name, code, owner, person, role, deal, stage, competitor, call, conclusion, confidence, score, sources, freshness = "Updated today", asOf = "2026-08-29", prioritySignal, priorityReason, reviewStatus = "current", verificationReason = "Visible account information is current.", extraNodes = [] }) {
+function buildGraphView({ id, entityId, name, code, owner, person, role, deal, stage, competitor, call, conclusion, confidence, score, sources, freshness = "Current", asOf = "2026-08-29", prioritySignal, priorityReason, reviewStatus = "current", verificationReason = "Visible account information is current.", reviewLifecycle, missing = [], extraNodes = [] }) {
   const rootId = entityId;
   const evidence = sources.map((source, index) => ({
     id: `evidence:${id}:${index + 1}`,
@@ -38,7 +38,7 @@ function buildGraphView({ id, entityId, name, code, owner, person, role, deal, s
   });
 
   const nodes = [
-    node(rootId, "company", name, "Target account", conclusion, { code, owner, access_label: "Internal · Sales & Marketing", ...(prioritySignal ? { temperature: prioritySignal, temperature_reason: priorityReason } : {}), review_status: reviewStatus, verification_reason: verificationReason }, evidenceIds),
+    node(rootId, "company", name, "Target account", conclusion, { code, owner, access_label: "Internal · Sales & Marketing", ...(prioritySignal ? { temperature: prioritySignal, temperature_reason: priorityReason } : {}), review_status: reviewStatus, verification_reason: verificationReason, ...(reviewLifecycle ? { review_lifecycle: reviewLifecycle } : {}) }, evidenceIds),
     node(`person:${id}:primary`, "person", person, role, `${person} is the main relationship for the active opportunity.`, { meta: "Primary contact" }, [evidenceIds[1]]),
     node(`deal:${id}:active`, "deal", deal, stage, `${deal} is currently in ${stage}. The next step should be explicit and dated.`, { owner }, [evidenceIds[1]]),
     node(`competitor:${id}:primary`, "competitor", competitor, "Incumbent / alternative", `${competitor} appears in restricted competitive context. Access is checked before retrieval.`, { meta: `${sources.length} sources` }, [evidenceIds[2]]),
@@ -66,7 +66,7 @@ function buildGraphView({ id, entityId, name, code, owner, person, role, deal, s
       confidence: confidence.toLowerCase(),
       freshness,
       as_of: asOf,
-      next_action: conclusion.split(". ").slice(1).join(". ") || "Confirm the next step.",
+      next_action: reviewLifecycle?.nextCheck || conclusion.split(". ").slice(1).join(". ") || "Confirm the next step.",
       score,
     },
     nodes,
@@ -87,7 +87,7 @@ function buildGraphView({ id, entityId, name, code, owner, person, role, deal, s
     ],
     evidence,
     restricted: ["Personal-data transcript body is available only through an approved handle."],
-    missing: [],
+    missing,
   };
 }
 
@@ -138,7 +138,21 @@ export const graphViews = [
     prioritySignal: "unknown",
     priorityReason: "Current priority cannot be assessed from stale account context.",
     reviewStatus: "needs-review",
-    verificationReason: "Visible account information is stale. Check for changes before acting or deprioritizing.",
+    verificationReason: "The account summary was last reviewed on Aug 12; two newer sources are visible. Reconcile them before acting or deprioritizing.",
+    reviewLifecycle: {
+      lastReviewedOn: "2026-08-12",
+      cadence: "7-day active-deal review",
+      dueOn: "2026-08-19",
+      detectedOn: "2026-08-29",
+      latestEvidenceOn: "2026-08-21",
+      causeStatus: "unknown",
+      cause: "Unknown — this synthetic demo has no review-event history.",
+      nextCheck: "Confirm the current evaluation date with the account owner, then reconcile the Aug 18 and Aug 21 sources with the account summary before acting.",
+    },
+    missing: [
+      "A current evaluation date is not recorded.",
+      "The account summary has not been reconciled with sources dated Aug 18 and Aug 21.",
+    ],
     conclusion: "Atlas is preparing for a quality-compliance audit. Lead with faster evidence gathering and a measurable implementation plan.",
     sources: [
       { short: "Compliance Audit", date: "Aug 21, 2026", code: "SRC-051102", status: "Verified", summary: "The team wants to reduce manual evidence gathering during each audit cycle." },

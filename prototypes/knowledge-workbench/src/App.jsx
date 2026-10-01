@@ -35,10 +35,11 @@ import {
   X,
 } from "@phosphor-icons/react";
 import { accounts, entityTypeLabels } from "./data";
+import { answerPresentation, citationLabel } from "./answerPresentation.js";
 import { adaptGraphView } from "./graphAdapter";
 import { getFixtureRoleProfile, graphDemoScenarios, isFixtureAccountVisible } from "./graphClient";
 import { createImportDrafts, summarizeImportDrafts } from "./importDrafts";
-import { buildFixtureDashboard } from "./dashboardInsights";
+import { buildFixtureDashboard, formatObservationRange } from "./dashboardInsights";
 import { Sidebar } from "./components/Sidebar";
 import { createWorkbenchClients } from "./clientFactory";
 import { GuidedTour, TourChooser } from "./components/GuidedTour";
@@ -105,7 +106,7 @@ function DashboardInsights({ dashboard, commercial, onOpenAccount }) {
   return <section className="dashboard-insights" aria-label="Decision signals" data-tour-target="decision-signals">
     <div className="dashboard-insights__heading"><div><span className="eyebrow">{profile.focus ?? "Decision signals"}</span><h2>What changed, what is covered, what is new</h2></div><span>Synthetic demo data</span></div>
     <div className={`dashboard-insights__grid ${showRisk ? "" : "dashboard-insights__grid--signals"}`}>
-      {showRisk && <article className="insight-card insight-card--risk"><header><div><span>Risk momentum</span><h3 className="insight-card__title" title={profile.riskTitle || "7-day score movement"}>{profile.riskTitle || "7-day score movement"}</h3></div><div className="insight-card__meta"><small>Evidence-backed demo baseline</small><InfoTip>Shows change between dated, permitted synthetic observations. It is not a forecast.</InfoTip></div></header><div className="risk-list">{dashboard.risk.map((item) => <button key={item.id} onClick={() => onOpenAccount(item.id)}><span className="risk-list__name"><strong>{item.name}</strong><small className={item.needsReview ? "is-review" : ""}>{item.delta >= 0 ? `+${item.delta}` : item.delta} points · {item.needsReview ? `last ${item.score} · needs review` : `now ${item.score}`}</small></span><span className="score-spark" aria-label={`${item.name}: ${item.history.join(", ")}`}>{item.history.map((score, index) => <i key={`${item.id}-${index}`} style={{ height: `${Math.max(18, score - 45)}%` }} />)}</span></button>)}</div></article>}
+      {showRisk && <article className="insight-card insight-card--risk"><header><div><span>Risk momentum</span><h3 className="insight-card__title" title={profile.riskTitle || "7-day score movement"}>{profile.riskTitle || "7-day score movement"}</h3></div><div className="insight-card__meta"><small>Dated observations</small><InfoTip>{dashboard.historyNote ?? "Dated demo score observations; not a forecast."}</InfoTip></div></header><div className="risk-list">{dashboard.risk.map((item) => <button key={item.id} onClick={() => onOpenAccount(item.id)}><span className="risk-list__name"><strong>{item.name}</strong><small className={item.needsReview ? "is-review" : ""}>{item.delta >= 0 ? `+${item.delta}` : item.delta} points · {item.needsReview ? `last ${item.score} · needs review` : `latest ${item.score}`}{item.historyDates?.length ? ` · ${formatObservationRange(item.historyDates)}` : ""}</small></span><span className="score-spark" aria-label={`${item.name}: ${item.history.map((score, index) => `${item.historyDates?.[index] ?? `snapshot ${index + 1}`} score ${score}`).join(", ")}`}>{item.history.map((score, index) => <i key={`${item.id}-${index}`} title={`${item.historyDates?.[index] ?? `Snapshot ${index + 1}`}: ${score}`} style={{ height: `${Math.max(18, score - 45)}%` }} />)}</span></button>)}</div></article>}
       <article className="insight-card insight-card--coverage"><header><div><span>Account coverage</span><h3 className="insight-card__title" title={profile.coverageTitle || "Decision readiness"}>{profile.coverageTitle || "Decision readiness"}</h3></div><div className="insight-card__meta"><small>Visible accounts only</small><InfoTip>Each marker shows whether the permitted account record has a buyer, next step, evidence and monitoring context.</InfoTip></div></header><div className="coverage-labels">{coverageLabels.map(([, label]) => <span key={label}>{label}</span>)}</div><div className="coverage-list">{dashboard.coverage.map((item) => <button key={item.id} onClick={() => onOpenAccount(item.id)}><strong>{item.name}</strong><span>{coverageLabels.map(([key, label]) => <i key={key} title={`${label}: ${item[key] ? "covered" : "missing"}`} className={item[key] ? "is-covered" : "is-missing"} />)}</span></button>)}</div></article>
       <article className="insight-card insight-card--timeline"><header><div><span>Signal timeline</span><h3 className="insight-card__title" title={profile.signalTitle || "Latest dated evidence"}>{profile.signalTitle || "Latest dated evidence"}</h3></div><div className="insight-card__meta"><small>Open a related account</small><InfoTip>Only source titles and dates already available to your role appear here.</InfoTip></div></header><div className="signal-list">{dashboard.signals.map((signal) => <button key={signal.id} onClick={() => onOpenAccount(signal.accountId)}><i className={signal.status === "Verified" ? "is-verified" : "is-review"} /><span><strong>{signal.title}</strong><small>{signal.account} · {signal.date}</small></span><ArrowRight size={14} /></button>)}</div></article>
     </div>
@@ -126,7 +127,7 @@ function MyDay({ result, dashboard, commercial, onOpenAccount, onRetry }) {
   return <section className="daily-view">
     <div className="daily-view__heading" data-tour-target="today-queue"><div><span className="eyebrow">{profile?.eyebrow ?? "Your daily queue"}</span><h1>{result.data.title ?? "Today for me"}{profile && <em className="daily-role">{profile.label}</em>}</h1><p>{result.data.conclusion}</p></div><span className="daily-view__freshness">Freshness: {result.data.freshness}</span></div>
     <section className="workspace-pulse" aria-label="Workspace pulse"><div><span>READY TO ACT</span><strong>{actions.length}</strong><small>role-visible priorities</small></div><div><span>FRESHNESS</span><strong>{result.data.freshness === "fresh" ? "Current" : result.data.freshness}</strong><small>last reviewed {result.data.as_of}</small></div><div><span>ACCESS</span><strong>{result.data.restricted.length ? "Scoped" : "Open"}</strong><small>{result.data.restricted.length ? "some detail stays protected" : "no hidden alerts"}</small></div></section>
-    {reviewActions.length > 0 && <section className="verification-card" aria-label="Priorities needing current context"><WarningOctagon size={17} /><div><strong>Check before acting or deprioritizing</strong><p>{reviewActions.map((action) => action.name).join(", ")} {reviewActions.length === 1 ? "has" : "have"} context that needs verification. The recorded score is not a current assessment.</p></div></section>}
+    {reviewActions.length > 0 && <section className="verification-card" aria-label="Priorities needing current context"><WarningOctagon size={17} /><div><strong>Check before acting or deprioritizing</strong><p>Review the current context for {reviewActions.map((action) => action.name).join(", ")}. Recorded scores are not current assessments.</p></div></section>}
     <div className="daily-actions">{actions.map((action) => <article className={`daily-card daily-card--${action.tone}`} key={`${action.kind}-${action.name}`}><div><span>{action.kind} · {action.needsReview ? `needs review · last score ${action.score}` : action.score === "—" ? "needs review" : `score ${action.score}`}</span><h2>{action.title ?? action.name}</h2><p><strong>{action.title ? "Account:" : "Why now:"}</strong> {action.title ? action.name : action.reason}</p><p><strong>{action.title ? "Why now:" : "Next:"}</strong> {action.title ? action.reason : action.next}</p>{action.title && <p><strong>Next:</strong> {action.next}</p>}{action.needsReview && <section className="verification-card" aria-label={`Context needs verification for ${action.name}`}><WarningOctagon size={17} /><div><strong>Recorded signal needs checking</strong><p>{action.verificationReason ?? "Verify current context before acting or deprioritizing."}</p></div></section>}</div><button onClick={() => onOpenAccount(action.accountId ?? action.name)}>Open account <ArrowRight size={16} /></button></article>)}</div>
     <DashboardInsights dashboard={dashboard} commercial={commercial} onOpenAccount={onOpenAccount} />
     {result.data.restricted.length > 0 && <p className="daily-view__note"><ShieldCheck size={16} />Some commercial detail is hidden for this role.</p>}
@@ -193,6 +194,9 @@ function DetailPanel({ account, selectedNode, onPropose, onMonitor, onBrief, mon
   const relatedSources = selectedNode.data.kind === "source"
     ? account.sources.filter((source) => source.short === selectedNode.data.label)
     : account.sources;
+  const reviewSources = account.reviewLifecycle
+    ? account.sources.filter((source) => Date.parse(source.date) > Date.parse(account.reviewLifecycle.lastReviewedOn))
+    : [];
 
   return (
     <aside className="detail-panel">
@@ -211,6 +215,18 @@ function DetailPanel({ account, selectedNode, onPropose, onMonitor, onBrief, mon
       {selectedNode.id === account.id && <>
         <section className={`temperature-card temperature-card--${account.temperature}`} aria-label="Priority signal"><span>Priority signal</span><strong>{account.temperature === "unknown" ? "Needs current evidence" : account.temperature.replace("-", " ")}</strong><p>{account.temperatureReason}</p></section>
         {account.reviewStatus === "needs-review" && <section className="verification-card" aria-label="Context needs verification"><WarningOctagon size={17} /><div><strong>Check before deprioritizing</strong><p>{account.verificationReason}</p></div></section>}
+        {account.reviewLifecycle && <section className="review-context" aria-label="Review context">
+          <span className="eyebrow">Review context · synthetic example</span>
+          <p>{reviewSources.length} {reviewSources.length === 1 ? "source is" : "sources are"} dated after the last full account review; newest evidence is {account.reviewLifecycle.latestEvidenceOn}.</p>
+          <dl>
+            <div><dt>Last full review</dt><dd>{account.reviewLifecycle.lastReviewedOn}</dd></div>
+            <div><dt>Review window</dt><dd>{account.reviewLifecycle.cadence}</dd></div>
+            <div><dt>Review due</dt><dd>{account.reviewLifecycle.dueOn}</dd></div>
+            <div><dt>Flag recorded</dt><dd>{account.reviewLifecycle.detectedOn}</dd></div>
+            <div><dt>Cause</dt><dd>{account.reviewLifecycle.cause}</dd></div>
+          </dl>
+          <p><strong>Possible next check:</strong> {account.reviewLifecycle.nextCheck}</p>
+        </section>}
       </>}
 
       <div className="detail-section">
@@ -450,7 +466,7 @@ function HelpPanel({ onClose }) {
       <details className="help-topic"><summary>Explore safely</summary><p>Search returns accessible companies only. Some graph detail can be hidden when it belongs to another team or a protected boundary.</p></details>
       <details className="help-topic"><summary>Ask assistant</summary><p>Choose a focused question for the current account. It is not free-form AI chat: each answer comes from permitted, cited SalesWiki data.</p></details>
       <details className="help-topic"><summary>Understand evidence</summary><p><strong>Verified</strong> is ready to use. <strong>Needs review</strong> is a signal that should be checked before acting. Every conclusion should lead back to a dated source.</p></details>
-      <details className="help-topic"><summary>Understand stale information</summary><p>A stale signal means the information is past its review window or has not been confirmed recently. It does not prove the information is wrong, explain why it went stale, or lower an account's priority by itself. Check the dated sources before acting or deprioritizing the account. This synthetic demo has no real review history, so the cause remains unknown.</p><p>To investigate why reviews fall behind in a private pilot, record when the check was due, noticed, assigned and resolved, along with the observed trigger and result. Treat a cause as unknown unless the source and review history support it.</p><p>These design choices are informed by public guidance on <a href="https://www.gov.uk/government/publications/the-government-data-quality-framework/the-government-data-quality-framework-guidance" target="_blank" rel="noreferrer">measuring data quality over time</a>, the <a href="https://www.gov.uk/government/publications/implement-a-data-quality-action-plan/data-quality-issues-framework" target="_blank" rel="noreferrer">impact of data-quality issues</a>, and <a href="https://knowledge.hubspot.com/data-management/use-data-quality-tools" target="_blank" rel="noreferrer">reviewing data quality in a CRM</a>. These are method references, not evidence about a specific account or an endorsement of SalesWiki.</p></details>
+      <details className="help-topic"><summary>Understand stale information</summary><p>A stale signal means the information is past its review window or has not been confirmed recently. It does not prove the information is wrong, explain why it went stale, or lower an account's priority by itself. Check the dated sources before acting or deprioritizing the account. In this synthetic example, due and detected dates are illustrative; the cause remains unknown because no review-event history supports it.</p><p>To investigate why reviews fall behind in a private pilot, record when the check was due, noticed, assigned and resolved, along with the observed trigger and result. Treat a cause as unknown unless the source and review history support it.</p><p>These design choices are informed by public guidance on <a href="https://www.gov.uk/government/publications/the-government-data-quality-framework/the-government-data-quality-framework-guidance" target="_blank" rel="noreferrer">measuring data quality over time</a>, the <a href="https://www.gov.uk/government/publications/implement-a-data-quality-action-plan/data-quality-issues-framework" target="_blank" rel="noreferrer">impact of data-quality issues</a>, and <a href="https://knowledge.hubspot.com/data-management/use-data-quality-tools" target="_blank" rel="noreferrer">reviewing data quality in a CRM</a>. These are method references, not evidence about a specific account or an endorsement of SalesWiki.</p></details>
       <details className="help-topic"><summary>Review and monitoring</summary><p>Monitoring is a local demo plan only. Review is visible to roles that can inspect proposals; approval records a decision, and a separate governed worker applies approved changes later.</p></details>
       <p className="governed-note"><ShieldCheck size={15} />This demo uses synthetic data and server-owned demo roles. It does not connect to a customer system.</p>
     </div>
@@ -464,6 +480,7 @@ function AskPanel({ account, role, onClose, onAsk }) {
   const [loading, setLoading] = useState(false);
   const [selectedIntent, setSelectedIntent] = useState(guidedQuestions[0][0]);
   const [answeredIntent, setAnsweredIntent] = useState(null);
+  const answer = result ? answerPresentation(result) : null;
   function select(intent) {
     setSelectedIntent(intent);
     setAnsweredIntent(null);
@@ -483,7 +500,20 @@ function AskPanel({ account, role, onClose, onAsk }) {
       <div className="ask-panel__head"><div><span className="eyebrow">Guided assistant <InfoTip>Answers use only allowed, cited data. The assistant does not accept a free-form prompt in this demo.</InfoTip></span><h2>Ask about {account.name}</h2></div><button onClick={onClose} aria-label="Close"><X size={18} /></button></div>
       <p>Choose a focused question. Answers are assembled from permitted, cited data; free-form AI chat is not enabled.</p>
       <div className="guided-questions" aria-label="Choose a focused question">{guidedQuestions.map(([intent, label]) => <button type="button" key={intent} className={selectedIntent === intent ? "is-active" : ""} aria-pressed={selectedIntent === intent} onClick={() => select(intent)} disabled={loading}>{label}</button>)}</div>
-      {result && <div className="answer-card"><strong>{result.title}</strong><p>{result.conclusion}</p><span>{result.citations.length} cited sources · Confidence {result.confidence ?? "not recorded"}</span>{result.citations.length ? <ul>{result.citations.map((citation, index) => <li key={citation.id ?? citation.title ?? index}>{citation.title ?? citation.short ?? citation.code ?? "Cited source"}{citation.date ? ` · ${citation.date}` : ""}</li>)}</ul> : <small>No citations are available to this role.</small>}</div>}
+      {answer && <div className="answer-card">
+        <strong>{answer.title}</strong>
+        <p><span className="answer-card__label">Summary from permitted records</span>{answer.summary}</p>
+        <div className="answer-card__meta"><span>Freshness: {answer.freshness}{answer.asOf ? ` · as of ${answer.asOf}` : ""}</span><span>Confidence: {answer.confidence}</span></div>
+        {answer.sections.map((section, index) => <section className="answer-card__section" key={`${section.heading}-${index}`}>
+          <h3>{section.heading}</h3>
+          {section.bullets?.length > 0 && <ul>{section.bullets.map((bullet, bulletIndex) => <li key={`${bulletIndex}-${bullet}`}>{bullet}</li>)}</ul>}
+          {section.table?.rows?.length > 0 && <div className="answer-card__table-wrap"><table><thead><tr>{section.table.columns.map((column) => <th key={column}>{column}</th>)}</tr></thead><tbody>{section.table.rows.map((row, rowIndex) => <tr key={rowIndex}>{row.map((cell, cellIndex) => <td key={cellIndex}>{cell}</td>)}</tr>)}</tbody></table></div>}
+        </section>)}
+        <section className="answer-card__annotation"><h3>What is missing</h3>{answer.missing === null ? <p>This answer did not report missing information.</p> : answer.missing.length ? <ul>{answer.missing.map((item, index) => <li key={`${index}-${item}`}>{item}</li>)}</ul> : <p>No gaps were recorded in this answer.</p>}</section>
+        <section className="answer-card__annotation"><h3>Possible next check · your decision</h3><p>{answer.nextAction || "This answer did not suggest a next check."}</p></section>
+        <section className="answer-card__annotation"><h3>Sources · {answer.citations.length}</h3>{answer.citations.length ? <ul>{answer.citations.map((citation, index) => <li key={citation.id ?? citation.title ?? citation.path ?? index}>{citationLabel(citation)}{citation.date || citation.as_of ? ` · ${citation.date ?? citation.as_of}` : ""}{citation.boundary && citationLabel(citation) !== citation.boundary ? ` · ${citation.boundary}` : ""}</li>)}</ul> : <p>No citations are available to this role.</p>}</section>
+        <small className="answer-card__boundary">Guided answer assembled from permitted data; this demo does not use free-form AI.</small>
+      </div>}
       {error && <p className="ask-panel__error" role="status">{error}</p>}
       {answeredIntent !== selectedIntent && <button className="ask-panel__load" onClick={() => load()} disabled={loading}>{loading ? "Loading…" : "Ask selected question"}<ArrowRight size={16} /></button>}
     </aside>

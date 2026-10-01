@@ -158,16 +158,14 @@ those controls, I will use its API, webhook support or a managed connector.
 
 ## A sync should leave enough history to explain a stale card
 
-A freshness date can tell us that something needs checking. It cannot tell us
-why. A source may not have changed, a sync may have failed, or the next review
-may never have had an owner. Those cases need different fixes.
-
-For a pilot, I would keep a small history for each review: when it was due,
-when it was noticed and assigned, when it was resolved, what source was checked,
-what the reviewer found, and whether the decision changed. For an automated
-sync, add the run time, source update time, run result and a safe failure reason.
-These timestamps help separate an old source from a missed sync or a missed
-review. If the history cannot show which happened, the cause stays unknown.
+A freshness date tells us that something needs checking. It cannot show whether
+the source changed, a sync failed or a review never had an owner. Those cases
+need different fixes. Part 4 covers the human review history. An integration
+needs its own operational trail: the source's last-updated time, sync start and
+finish, run result, checkpoint, retry or reconciliation outcome, and a safe
+failure category. Together, these records can help separate an old source from
+a missed sync or an unowned review. If the history cannot show which happened,
+the cause stays unknown.
 
 That is why an integration needs more than a successful read. The
 [Government Data Quality Framework](https://www.gov.uk/government/publications/the-government-data-quality-framework/the-government-data-quality-framework-guidance)

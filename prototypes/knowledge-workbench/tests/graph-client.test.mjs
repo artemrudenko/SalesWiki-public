@@ -14,25 +14,30 @@ test("dashboard client uses a dedicated policy-filtered endpoint", async () => {
     requestedUrl = url;
     return { ok: true, json: async () => ({
       contract: "saleswiki.dashboard-view", version: 1, access: "allowed", synthetic: true,
-      history_status: "available", risk: [{ entity_id: "one", label: "One", history: [60, 67], delta: 7, score: 67 }],
+      history_status: "available", history_note: "Dated synthetic observations, not a forecast.", risk: [{ entity_id: "one", label: "One", history: [60, 67], history_dates: ["2026-08-22", "2026-08-29"], delta: 7, score: 67, as_of: "2026-08-29" }],
       coverage: [{ entity_id: "one", label: "One", economic_buyer: true, next_step: true, verified_evidence: true, monitoring: false }],
       signals: [{ id: "source-1", entity_id: "one", account: "One", title: "Signal", as_of: "2026-08-30", freshness: "fresh" }],
     }) };
   } });
   const result = await client.getDashboard();
   assert.equal(requestedUrl, "/api/v1/dashboard");
-  assert.deepEqual(result.data.risk[0], { id: "one", name: "One", history: [60, 67], delta: 7, score: 67 });
+  assert.deepEqual(result.data.risk[0], { id: "one", name: "One", history: [60, 67], historyDates: ["2026-08-22", "2026-08-29"], asOf: "2026-08-29", delta: 7, score: 67 });
+  assert.equal(result.data.historyNote, "Dated synthetic observations, not a forecast.");
 });
 
 test("guided assistant sends only an allowlisted intent and current entity", async () => {
   let requestedUrl = "";
   const client = createBffGuidedAnswerClient({ endpoint: "/api/v1/entity-graph", fetchImpl: async (url) => {
     requestedUrl = url;
-    return { ok: true, json: async () => ({ intent: "next_step", access: "allowed", conclusion: "Confirm the next workshop.", citations: [] }) };
+    return { ok: true, json: async () => ({ intent: "next_step", access: "allowed", conclusion: "Confirm the next workshop.", citations: [{ title: "Discovery call", as_of: "2026-08-29" }], freshness: "fresh", as_of: "2026-08-29", missing: ["Owner confirmation"], next_action: "Ask the account owner." }) };
   } });
   const result = await client.ask({ intent: "next_step", accountId: "company bluepeak" });
   assert.equal(requestedUrl, "/api/v1/guided-answer?intent=next_step&entity=company%20bluepeak");
   assert.equal(result.data.conclusion, "Confirm the next workshop.");
+  assert.equal(result.data.freshness, "fresh");
+  assert.equal(result.data.as_of, "2026-08-29");
+  assert.deepEqual(result.data.missing, ["Owner confirmation"]);
+  assert.equal(result.data.next_action, "Ask the account owner.");
 });
 
 test("fixture client exposes every deterministic UI state", async () => {

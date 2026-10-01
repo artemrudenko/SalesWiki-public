@@ -37,6 +37,13 @@ Open `http://localhost:4173/`.
   around the current role. Marketing sees questions about usable context and
   the next marketing action instead of sales-only deal and call prompts. It is
   guided, not free-form AI chat.
+- Inspect an answer's summary, freshness/as-of date, confidence, sections,
+  reported gaps, possible next check and citations. The next check is a prompt
+  for the human owner, not an instruction. If `missing` is absent, the UI says
+  it was not reported; an empty list means no gaps were recorded in that answer.
+- In Atlas Foods, compare the last full account review with later verified
+  sources. The synthetic timeline shows due and detected dates, while leaving
+  the cause unknown because it has no review-event history.
 - Use **Help** in the top bar for a short explanation of access, evidence,
   monitoring, review and the demo boundary. Small `i` icons explain the most
   easily misunderstood dashboard and assistant concepts.
@@ -75,6 +82,12 @@ and update proposals share the same local Review queue so the full demo loop is
 visible. The BFF mode exercises the real policy path with the same UI shape.
 Neither mode is SSO: a production account picker and discovery data must come
 from the server, never from a browser bundle.
+
+The local fixture's 23–29 Aug 2026 score history is hand-authored illustrative
+data. The permissioned demo instead supplies dated observations from its
+synthetic vault. Both paths expose dates and state their limits; neither is a
+customer metric or forecast, and neither claims to recalculate scores from
+source cards in the Workbench.
 
 ## Production path
 

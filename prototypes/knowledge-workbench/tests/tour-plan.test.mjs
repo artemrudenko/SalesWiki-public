@@ -7,8 +7,10 @@ test("quick tour explains that a stale signal needs checking before the governed
   assert.deepEqual(steps.map((step) => step.id), ["today", "stale-signal", "role-contrast", "graph", "evidence", "assistant", "review"]);
   assert.match(steps[0].title, /shared knowledge/i);
   assert.equal(steps[1].target, "decision-signals");
-  assert.match(steps[1].body, /Atlas Foods.*needs review/i);
-  assert.match(steps[1].why, /due, noticed, assigned and resolved/i);
+  assert.match(steps[1].body, /synthetic example.*last reviewed on Aug 12/i);
+  assert.match(steps[1].body, /cause remains unknown/i);
+  assert.match(steps[1].body, /not a live or evidence-recalculated score/i);
+  assert.match(steps[1].why, /due, detected, assigned and resolved/i);
   assert.equal(steps[2].role, "marketing");
   assert.match(steps[2].title, /different decision/i);
   assert.match(steps[5].title, /marketing should do next/i);

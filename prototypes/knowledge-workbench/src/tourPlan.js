@@ -66,8 +66,8 @@ export function buildTourSteps({ mode, role }) {
       ...salesSteps.find((step) => step.id === "dashboard"),
       id: "stale-signal",
       title: "When a signal gets old, check before deciding",
-      body: "Atlas Foods' score has fallen by four points and its information needs review. Check the dated evidence before acting or moving it down the list. The warning does not say why the review is late.",
-      why: "To learn that, a pilot would need to record when the check was due, noticed, assigned and resolved.",
+      body: "In this synthetic example, the account summary was last reviewed on Aug 12 and newer sources arrived by Aug 21. The review was due Aug 19 and flagged Aug 29; the cause remains unknown. The score snapshots are illustrative, not a live or evidence-recalculated score.",
+      why: "Reconcile newer evidence with the account summary before acting. A pilot would record due, detected, assigned and resolved times to investigate why reviews fall behind.",
     };
     return [
       salesSteps[0],

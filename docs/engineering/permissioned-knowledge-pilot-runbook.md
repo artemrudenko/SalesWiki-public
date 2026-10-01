@@ -166,6 +166,15 @@ transcript excerpt or CRM export.
 | Decision impact and next action | Did the stale fact change the suggested action? Who will do what by when? |
 | Evidence reference | Restricted source handle or safe link plus source date; do not copy the source content into this log |
 
+Keep the source's own verification date separate from the last review of the
+compiled card or recommendation. A verified source added after that review does
+not automatically mean the combined account context was reviewed. In a user
+answer, show the evidence date, freshness/as-of date, any reported missing
+context, and a possible next check as separate annotations. Label a suggested
+check as optional and leave the action with the human owner. An empty `missing`
+list means no gaps were recorded in that answer; it is not a claim that the
+underlying record is complete.
+
 Use `unknown` when the timeline or source does not establish a cause. A stale
 timestamp alone cannot tell us whether a sync failed, nobody owned the review,
 or the source itself was old. Keep suspected causes separate from confirmed

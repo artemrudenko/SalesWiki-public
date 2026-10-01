@@ -20,7 +20,7 @@ function fixture() {
       score: 81,
     },
     nodes: [
-      { id: "company:fourth", type: "company", label: "Fourth Company", subtitle: "Target account", detail: "Root", metadata: { code: "COMP-4", owner: "Owner", temperature: "unknown", temperature_reason: "Current priority cannot be assessed from stale account context.", review_status: "needs-review", verification_reason: "Check for changes before acting or deprioritizing." }, evidence_ids: ["e1"] },
+      { id: "company:fourth", type: "company", label: "Fourth Company", subtitle: "Target account", detail: "Root", metadata: { code: "COMP-4", owner: "Owner", temperature: "unknown", temperature_reason: "Current priority cannot be assessed from stale account context.", review_status: "needs-review", verification_reason: "Check for changes before acting or deprioritizing.", review_lifecycle: { lastReviewedOn: "2026-08-12", cadence: "7-day active-deal review", dueOn: "2026-08-19", detectedOn: "2026-08-29", latestEvidenceOn: "2026-08-21", causeStatus: "unknown", cause: "Unknown", nextCheck: "Reconcile sources." } }, evidence_ids: ["e1"] },
       { id: "person:one", type: "person", label: "Champion", subtitle: "Operations", detail: "First person", metadata: {}, evidence_ids: ["e1"] },
       { id: "person:two", type: "person", label: "Buyer", subtitle: "Finance", detail: "Second person", metadata: {}, evidence_ids: ["e1"] },
       { id: "deal:one", type: "deal", label: "Pilot", subtitle: "Discovery", detail: "Deal", metadata: { owner: "Owner" }, evidence_ids: ["e1"] },
@@ -49,6 +49,9 @@ test("one reusable adapter lays out a differently shaped fourth company", () => 
   assert.equal(account.temperature, "unknown");
   assert.equal(account.reviewStatus, "needs-review");
   assert.match(account.verificationReason, /before acting or deprioritizing/i);
+  assert.equal(account.reviewLifecycle.lastReviewedOn, "2026-08-12");
+  assert.equal(account.reviewLifecycle.cadence, "7-day active-deal review");
+  assert.equal(account.reviewLifecycle.causeStatus, "unknown");
   assert.equal(account.nodes.length, 7);
   const root = account.nodes.find((node) => node.id === view.root_id);
   assert.deepEqual(root.position, { x: 460, y: 240 });
@@ -82,6 +85,17 @@ test("stale Atlas context stays separate from its priority signal", () => {
   assert.equal(atlas.temperature, "unknown");
   assert.equal(atlas.reviewStatus, "needs-review");
   assert.match(atlas.freshness, /^Stale/);
+  assert.equal(atlas.reviewLifecycle.lastReviewedOn, "2026-08-12");
+  assert.equal(atlas.reviewLifecycle.cadence, "7-day active-deal review");
+  assert.equal(atlas.reviewLifecycle.dueOn, "2026-08-19");
+  assert.equal(atlas.reviewLifecycle.detectedOn, "2026-08-29");
+  assert.equal(atlas.reviewLifecycle.causeStatus, "unknown");
+  assert.equal(atlas.sources.filter((source) => Date.parse(source.date) > Date.parse(atlas.reviewLifecycle.lastReviewedOn)).length, 2);
+  assert.deepEqual(atlas.missing, [
+    "A current evaluation date is not recorded.",
+    "The account summary has not been reconciled with sources dated Aug 18 and Aug 21.",
+  ]);
+  assert.match(atlas.nextAction, /confirm the current evaluation date/i);
 });
 
 test("adapter fails closed on a dangling edge", () => {

@@ -108,12 +108,12 @@ The generator can rebuild that contour. No real customer data is needed.
 
 The public [Knowledge Workbench](https://knowledge-workbench-seven.vercel.app/)
 is the quickest way to inspect the synthetic interaction model before running
-anything locally. Select **Tour** in the top bar. The recommended six-step
-route takes about 90 seconds and follows one operating loop: role-shaped Today,
-role contrast, account context, evidence, a cited assistant and governed Review.
-The 12-step technical route also covers safe search, graph controls, local-only
-monitoring and controlled import. Focused role tours contain only the workflows
-that person can use.
+anything locally. Select **Tour** in the top bar. The recommended seven-step
+quick tour takes about two minutes. It includes a check of dated evidence when
+a signal is stale, then shows role contrast, account context, evidence, a cited
+assistant and governed Review. The 12-step technical route also covers safe
+search, graph controls, local-only monitoring and controlled import. Focused
+role tours contain only the workflows that person can use.
 
 Watch for the wiki model underneath the interface. The role views are derived
 from the same linked cards, evidence remains attached and Review records the

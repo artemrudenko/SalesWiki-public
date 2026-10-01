@@ -9,6 +9,7 @@ the small decision surface the Workbench needs.
 from __future__ import annotations
 
 import json
+from datetime import date
 from pathlib import Path
 
 from .policy import PolicyEvaluator, Resource
@@ -41,10 +42,14 @@ def _read_observations(root: Path) -> list[dict]:
         if not isinstance(value, dict):
             continue
         company_id, observed_on, score = value.get("company_id"), value.get("observed_on"), value.get("score")
+        try:
+            valid_date = isinstance(observed_on, str) and date.fromisoformat(observed_on).isoformat() == observed_on
+        except ValueError:
+            valid_date = False
         if (
-            isinstance(company_id, str) and isinstance(observed_on, str)
-            and isinstance(score, int) and 0 <= score <= 100
-            and len(company_id) <= 200 and len(observed_on) == 10
+            isinstance(company_id, str) and valid_date
+            and isinstance(score, int) and not isinstance(score, bool) and 0 <= score <= 100
+            and len(company_id) <= 200
         ):
             rows.append({"company_id": company_id, "observed_on": observed_on, "score": score})
     return rows
@@ -91,6 +96,7 @@ class DashboardProjector:
                     "entity_id": company.entity_id,
                     "label": company.display,
                     "history": scores,
+                    "history_dates": [row["observed_on"] for row in company_history[-7:]],
                     "delta": scores[-1] - scores[0],
                     "score": scores[-1],
                     "as_of": company_history[-1]["observed_on"],
@@ -129,5 +135,6 @@ class DashboardProjector:
             "coverage": coverage[:12],
             "signals": signals[:8],
             "history_status": "available" if risk else "insufficient-history",
+            "history_note": "Dated score observations supplied to this demo view; they are not recalculated here or a forecast.",
             "text": "Dashboard view contains only policy-filtered, cited decision signals.",
         }

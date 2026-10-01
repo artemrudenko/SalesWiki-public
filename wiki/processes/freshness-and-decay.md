@@ -44,6 +44,14 @@ intended use. It does not establish that the fact is wrong, that a sync failed,
 or that the account's priority should fall. Keep the review result separate
 from the cause of the delay.
 
+Keep source freshness and compiled-card review separate. A source can be verified
+after the account summary's last full review; this means the source itself was
+checked, not that the summary or recommendation was reconciled with it. Show the
+source date and the last full review date separately, then name the next
+reconciliation check. The synthetic Atlas Foods example in the Workbench uses
+this case: later verified sources are visible, the summary review is overdue,
+and the reason it was missed remains unknown.
+
 For a pilot or operational review, record the due, detected, assigned and
 resolved times when known; the safe source reference and source date; the
 review outcome; whether the decision changed; and the next owner/action. Classify

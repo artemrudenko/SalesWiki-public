@@ -106,6 +106,7 @@ export function adaptGraphView(view) {
   const positions = positionsFor(view.nodes, view.root_id);
   const nodesById = new Map(view.nodes.map((node) => [node.id, node]));
   const root = nodesById.get(view.root_id);
+  const review = root.metadata.review_lifecycle;
   const sources = view.evidence.map((item) => ({
     id: item.id,
     short: item.title,
@@ -128,6 +129,16 @@ export function adaptGraphView(view) {
     temperatureReason: String(root.metadata.temperature_reason ?? "Based on the visible score and account context."),
     reviewStatus: String(root.metadata.review_status ?? "current"),
     verificationReason: String(root.metadata.verification_reason ?? "Visible account information is current."),
+    reviewLifecycle: review && typeof review === "object" ? {
+      lastReviewedOn: String(review.lastReviewedOn ?? ""),
+      cadence: String(review.cadence ?? "Not recorded"),
+      dueOn: String(review.dueOn ?? ""),
+      detectedOn: String(review.detectedOn ?? ""),
+      latestEvidenceOn: String(review.latestEvidenceOn ?? ""),
+      causeStatus: String(review.causeStatus ?? "unknown"),
+      cause: String(review.cause ?? "Cause not recorded."),
+      nextCheck: String(review.nextCheck ?? ""),
+    } : null,
     conclusion: view.summary.conclusion,
     nextAction: view.summary.next_action,
     restricted: view.restricted,

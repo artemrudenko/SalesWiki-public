@@ -378,10 +378,11 @@ export function createBffDashboardClient({ endpoint, fetchImpl = globalThis.fetc
         return {
           status: "ready",
           data: {
-            risk: value.risk.map((item) => ({ id: item.entity_id, name: item.label, history: item.history, delta: item.delta, score: item.score })),
+            risk: value.risk.map((item) => ({ id: item.entity_id, name: item.label, history: item.history, historyDates: item.history_dates ?? [], asOf: item.as_of ?? "", delta: item.delta, score: item.score })),
             coverage: value.coverage.map((item) => ({ id: item.entity_id, name: item.label, buyer: item.economic_buyer, next: item.next_step, evidence: item.verified_evidence, monitor: item.monitoring })),
             signals: value.signals.map((item) => ({ id: item.id, accountId: item.entity_id, account: item.account, title: item.title, date: item.as_of, status: item.freshness === "fresh" ? "Verified" : "Needs review" })),
             historyStatus: value.history_status,
+            historyNote: value.history_note ?? "Dated demo score observations; not a forecast.",
             synthetic: value.synthetic,
           },
         };
@@ -512,7 +513,7 @@ export function createBffUpdateClient({ endpoint, fetchImpl = globalThis.fetch }
 }
 
 export function createFixtureAccountBriefClient({ accounts }) {
-  return { async getBrief({ accountId }) { const account = accounts.find((item) => item.id === accountId); return account ? { status: "ready", data: { title: `Account brief: ${account.name}`, conclusion: account.conclusion, citations: account.sources, confidence: account.confidence, freshness: account.freshness, next_action: account.nextAction } } : { status: "error" }; } };
+  return { async getBrief({ accountId }) { const account = accounts.find((item) => item.id === accountId); return account ? { status: "ready", data: { title: `Account brief: ${account.name}`, conclusion: account.conclusion, sections: [], citations: account.sources, confidence: account.confidence, freshness: account.freshness, as_of: account.asOf, next_action: account.nextAction, missing: account.missing } } : { status: "error" }; } };
 }
 
 export function createFixtureGuidedAnswerClient({ accounts }) {
@@ -527,7 +528,7 @@ export function createFixtureGuidedAnswerClient({ accounts }) {
         deal_risk: ["Deal risk", account.conclusion],
         call_prep: ["Call preparation", account.sources[1]?.summary ?? account.conclusion],
       }[intent];
-      return copy ? { status: "ready", data: { intent, title: `${copy[0]}: ${account.name}`, conclusion: copy[1], citations: account.sources, confidence: account.confidence, freshness: account.freshness, next_action: account.nextAction } } : { status: "error" };
+      return copy ? { status: "ready", data: { intent, title: `${copy[0]}: ${account.name}`, conclusion: copy[1], sections: [], citations: account.sources, confidence: account.confidence, freshness: account.freshness, as_of: account.asOf, next_action: account.nextAction, missing: account.missing } } : { status: "error" };
     },
   };
 }
@@ -593,7 +594,7 @@ export function createFixtureDailyClient({ accounts }) {
           name: account.name,
           title,
           reason: needsReview ? `Recorded signal — needs verification: ${reason}` : reason,
-          next: needsReview ? `Verify current context, then ${next}` : next,
+          next: needsReview ? `Verify current context before acting. Then: ${next}` : next,
           score: String(account.score),
           needsReview,
           verificationReason: account.verificationReason ?? "Check current context before acting or deprioritizing.",

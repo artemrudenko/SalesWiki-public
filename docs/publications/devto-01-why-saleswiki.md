@@ -139,7 +139,7 @@ People can read this file. Git can diff it. Obsidian can link it. A script can
 validate it. The permissioned gateway can extract its fields without asking a
 model to reconstruct the deal from loose prose.
 
-![A short tour of the SalesWiki Workbench, from a role-specific priority to checking an outdated signal against linked evidence](https://raw.githubusercontent.com/artemrudenko/SalesWiki-public/main/assets/publication/tours/saleswiki-tour-teaser.gif)
+![A short tour of the SalesWiki Workbench, from a role-specific priority through a stale-signal check to the review path](https://raw.githubusercontent.com/artemrudenko/SalesWiki-public/main/assets/publication/tours/saleswiki-tour-teaser.gif)
 
 ## Why answers are extracted instead of generated
 
@@ -216,11 +216,15 @@ better choice.
 
 ## Try the synthetic demo
 
-The fastest way to see the idea is the six-step guided tour in the
-[synthetic Knowledge Workbench](https://knowledge-workbench-seven.vercel.app/).
+The fastest way to see the idea is the seven-step quick tour (about two minutes)
+in the [synthetic Knowledge Workbench](https://knowledge-workbench-seven.vercel.app/).
 It starts with a role-specific priority, opens the account context and follows
 the evidence to a proposed next step. The data is synthetic and the tour never
 changes a card.
+
+The stale-signal step asks people to check dated evidence before acting or
+lowering priority. It leaves the cause unknown unless review history supports
+it; the demo does not diagnose why a review was late.
 
 The next parts separate the questions deliberately: first how role-specific
 access works, then what one repeated decision is worth testing, then how to run
