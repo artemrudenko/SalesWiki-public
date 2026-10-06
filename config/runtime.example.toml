@@ -1,0 +1,36 @@
+version = 1
+profile = "demo"
+
+[vault]
+root = "../demo/permissioned"
+runtime = "../demo/runtime"
+
+[features]
+use_mcp = false
+llm_summary = false
+llm_recommendations = false
+
+[workbench]
+enabled = false
+host = "127.0.0.1"
+port = 8787
+identity_provider = "fixture"
+mcp_transport = "stdio"
+allowed_origins = ["http://localhost:4173", "http://127.0.0.1:4173"]
+timeout_seconds = 15
+max_concurrent_requests = 4
+
+[chat]
+session_store = "memory"
+default_trigger = "?"
+
+[chat.adapters.rocket-demo]
+provider = "rocketchat"
+enabled = true
+mode = "poll"
+identity_provider = "fixture"
+conversation = "saleswiki-demo"
+url_env = "ROCKETCHAT_URL"
+user_env = "ROCKETCHAT_USER"
+password_env = "ROCKETCHAT_PASSWORD"
+poll_seconds = 2

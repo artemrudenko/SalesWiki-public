@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "purpose": "Synthetic-only adapter fixtures for local SalesWiki demonstrations.",
+  "network_access": "forbidden",
+  "secret_storage": "forbidden",
+  "write_mode": "proposal-only",
+  "adapters": {
+    "hubspot": {"status": "mock", "emits": ["company", "contact", "deal", "activity"], "maps_to": "staged-review-summary"},
+    "slack": {"status": "mock", "emits": ["message-summary", "notification"], "maps_to": "staged-review-summary"},
+    "telegram": {"status": "mock", "emits": ["message-summary", "notification"], "maps_to": "staged-review-summary"},
+    "teams": {"status": "mock", "emits": ["message-summary", "meeting-summary"], "maps_to": "staged-review-summary"},
+    "rocket-chat": {"status": "mock", "emits": ["message-summary", "command"], "maps_to": "permissioned-read-or-proposal"}
+  },
+  "required_event_fields": ["adapter", "external_type", "external_id", "observed_at", "company_hint", "summary", "synthetic"],
+  "forbidden_event_fields": ["access_token", "refresh_token", "password", "raw_transcript", "full_contact_export"],
+  "production_promotion_gate": ["connector contract review", "least-privilege scopes", "server-owned identity", "audit path", "staged read pilot", "explicit approval"]
+}

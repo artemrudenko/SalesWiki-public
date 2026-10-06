@@ -1,0 +1,28 @@
+version = 1
+profile = "demo"
+
+[vault]
+root = "../demo/permissioned"
+runtime = "../.runtime/workbench"
+
+[features]
+use_mcp = true
+llm_summary = false
+llm_recommendations = false
+
+[workbench]
+enabled = true
+host = "127.0.0.1"
+port = 8787
+identity_provider = "fixture"
+mcp_transport = "stdio"
+allowed_origins = []
+timeout_seconds = 15
+max_concurrent_requests = 4
+# Shows synthetic people in the local demo only.  The server maps each selected
+# fixture id to its role; the browser never submits a role or permissions.
+allow_fixture_persona_switching = true
+
+[chat]
+session_store = "memory"
+default_trigger = "?"

@@ -1,0 +1,201 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://saleswiki.local/schemas/graph-view.schema.json",
+  "title": "SalesWiki GraphView",
+  "description": "Role-filtered, cited, layout-neutral read model returned by the saleswiki.entity_graph MCP tool.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract",
+    "version",
+    "root_id",
+    "access",
+    "summary",
+    "nodes",
+    "edges",
+    "evidence",
+    "restricted",
+    "missing"
+  ],
+  "properties": {
+    "contract": {"const": "saleswiki.graph-view"},
+    "version": {"const": 1},
+    "root_id": {
+      "oneOf": [
+        {"type": "string", "minLength": 1},
+        {"type": "null"}
+      ]
+    },
+    "access": {
+      "enum": ["allowed", "sanitized", "aggregated", "blocked", "not-found", "ambiguous"]
+    },
+    "summary": {"$ref": "#/$defs/summary"},
+    "nodes": {
+      "type": "array",
+      "maxItems": 40,
+      "items": {"$ref": "#/$defs/node"}
+    },
+    "edges": {
+      "type": "array",
+      "maxItems": 80,
+      "items": {"$ref": "#/$defs/edge"}
+    },
+    "evidence": {
+      "type": "array",
+      "maxItems": 12,
+      "items": {"$ref": "#/$defs/evidence"}
+    },
+    "restricted": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "missing": {
+      "type": "array",
+      "items": {"type": "string"}
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"access": {"enum": ["allowed", "sanitized"]}},
+        "required": ["access"]
+      },
+      "then": {
+        "properties": {
+          "root_id": {"type": "string", "minLength": 1},
+          "nodes": {"minItems": 1}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"access": {"enum": ["aggregated", "blocked", "not-found", "ambiguous"]}},
+        "required": ["access"]
+      },
+      "then": {
+        "properties": {
+          "root_id": {"type": "null"},
+          "nodes": {"maxItems": 0},
+          "edges": {"maxItems": 0},
+          "evidence": {"maxItems": 0}
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "conclusion", "confidence", "freshness", "as_of", "next_action"],
+      "properties": {
+        "title": {"type": "string"},
+        "conclusion": {"type": "string"},
+        "confidence": {"enum": ["low", "medium", "high", "unknown"]},
+        "freshness": {"type": "string"},
+        "as_of": {"type": "string"},
+        "next_action": {"type": "string"},
+        "score": {"type": ["number", "null"], "minimum": 0, "maximum": 100}
+      }
+    },
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "label", "subtitle", "detail", "metadata", "evidence_ids"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "type": {
+          "enum": [
+            "company",
+            "person",
+            "lead",
+            "deal",
+            "call",
+            "competitor",
+            "source",
+            "event",
+            "campaign",
+            "pain-point",
+            "case-study",
+            "task",
+            "claim"
+          ]
+        },
+        "label": {"type": "string", "minLength": 1},
+        "subtitle": {"type": "string"},
+        "detail": {"type": "string"},
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {"type": ["string", "number", "boolean", "null"]}
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {"type": "string"},
+          "uniqueItems": true
+        }
+      }
+    },
+    "edge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "from", "to", "label", "evidence_ids"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "type": {
+          "enum": [
+            "PERSON_WORKS_AT_COMPANY",
+            "LEAD_BELONGS_TO_COMPANY",
+            "DEAL_WITH_COMPANY",
+            "CALL_RELATED_TO_DEAL",
+            "COMPANY_COMPETES_WITH_COMPANY",
+            "SOURCE_SUPPORTS_CLAIM",
+            "CLAIM_SUPPORTED_BY_SOURCE",
+            "CLAIM_USED_IN_CONCLUSION",
+            "TASK_RELATED_TO_ENTITY",
+            "EVENT_HAS_EXHIBITOR",
+            "COMPANY_PARTICIPATES_IN_EVENT",
+            "CAMPAIGN_TARGETS_COMPANY",
+            "PAIN_POINT_RELEVANT_TO_COMPANY",
+            "CASE_STUDY_SUPPORTS_USE_CASE",
+            "RELATED_TO"
+          ]
+        },
+        "from": {"type": "string", "minLength": 1},
+        "to": {"type": "string", "minLength": 1},
+        "label": {"type": "string"},
+        "evidence_ids": {
+          "type": "array",
+          "items": {"type": "string"},
+          "uniqueItems": true
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "status", "as_of", "summary", "citation"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "title": {"type": "string", "minLength": 1},
+        "status": {"enum": ["verified", "needs-review", "restricted"]},
+        "as_of": {"type": "string"},
+        "summary": {"type": "string"},
+        "citation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["boundary"],
+          "properties": {
+            "boundary": {
+              "enum": ["public", "internal", "broad", "sales-confidential", "personal-data", "legal-review"]
+            },
+            "path": {"type": "string"},
+            "handle": {"type": "string"}
+          },
+          "oneOf": [
+            {"required": ["path"], "not": {"required": ["handle"]}},
+            {"required": ["handle"], "not": {"required": ["path"]}}
+          ]
+        }
+      }
+    }
+  }
+}

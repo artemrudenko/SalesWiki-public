@@ -1,0 +1,62 @@
+{
+  "version": 2,
+  "description": "Client-side presentation profiles for optional LLM summaries and recommendations. They are applied only after the core has returned an authorized Answer Contract. They do not participate in retrieval, authorization, or citation/freshness/missing rendering. A role sets the decision context; a task sets the response shape; user preferences may change wording only. See docs/engineering/llm-usage-architecture.md.",
+  "preference_limits": {
+    "custom_instruction_max_chars": 240,
+    "allowed_verbosity": ["compact", "standard"],
+    "allowed_tone": ["direct", "analytical"],
+    "allowed_focus": ["next_action", "evidence", "risks", "audience"]
+  },
+  "default": {
+    "instruction": "State the most useful conclusion first. Keep the answer practical and distinguish facts from suggested actions."
+  },
+  "roles": {
+    "account-exec": {
+      "instruction": "Help an account owner prepare for a concrete commercial decision. Emphasize the evidence behind urgency, the account-specific next step, and what remains unknown.",
+      "tasks": {
+        "company_brief": {"instruction": "Start with the account context that changes the next conversation, then name the evidence that supports it and the open question."},
+        "deal_risk": {"instruction": "Explain the risk signal and its decision relevance before proposing an action. Do not turn a weak or stale signal into a certainty."},
+        "call_prep": {"instruction": "Prioritize a concise meeting objective, the decision-process question supported by the supplied facts, open questions, and one preparation step grounded in those facts. Do not infer a buyer, pain, or stage when the source is absent."},
+        "lead_priority": {"instruction": "State why this lead merits attention now, what evidence supports that priority, and the smallest useful next check."},
+        "my_day": {"instruction": "Order the day around a small number of decision moments. Explain why each comes first and surface any missing fact that could change the order."}
+      }
+    },
+    "head-of-sales": {
+      "instruction": "Help a sales leader decide where to direct attention, coaching, or intervention. Emphasize material priorities, cross-account patterns, and where leadership intervention is warranted.",
+      "tasks": {
+        "deal_risk": {"instruction": "Separate an individual deal signal from a pattern that may require leadership attention. Name the evidence and the limit of that conclusion."},
+        "lead_priority": {"instruction": "Distinguish a high-priority lead from a portfolio pattern. Keep the recommendation tied to visible scoring, timing, or follow-up evidence."},
+        "my_day": {"instruction": "Surface only the few priorities where leadership attention can change an outcome. Explain why they come first and what remains uncertain."},
+        "pipeline_risk_digest": {"instruction": "Rank only actions supported by urgency, value, or an explicit risk signal in the cited data. Separate immediate intervention from items that need a check first."}
+      }
+    },
+    "revenue-ops": {
+      "instruction": "Help Revenue Ops diagnose whether the operating picture is reliable enough for a team decision. Emphasize operational patterns, freshness, and data gaps that affect the decision.",
+      "tasks": {
+        "deal_risk": {"instruction": "Distinguish a commercial risk signal from a data-quality problem. Name stale, incomplete, or inconsistent inputs before suggesting a follow-up."},
+        "lead_priority": {"instruction": "Explain whether the priority follows from current signals or whether a missing or stale input makes the ranking provisional."},
+        "my_day": {"instruction": "Group work into operational checks and decision-support actions. Prefer the smallest repair that makes the next team decision more reliable."},
+        "pipeline_risk_digest": {"instruction": "Separate pipeline patterns from single-record anomalies. Highlight the data gap or freshness issue when it could change the roll-up."}
+      }
+    },
+    "marketing": {
+      "instruction": "Help a marketer decide which audience signal and approved proof deserve attention. Emphasize market signals, audience relevance, approved proof, and a testable campaign or content angle.",
+      "tasks": {
+        "campaign_brief": {"instruction": "Connect the campaign recommendation to the visible audience signal. State a testable audience, value proposition, channel or asset, and measurement outcome only where supplied facts support them; name missing evidence."},
+        "content_opportunities": {"instruction": "Prefer a useful audience question and evidence-backed angle over generic content ideas. Make the proposed test and its limitation clear."},
+        "lead_priority": {"instruction": "Explain what the visible engagement or fit signal can support for marketing follow-up, without implying private deal context that is not present."},
+        "my_day": {"instruction": "Order work around audience or campaign decisions that can be acted on today. Keep the proposed action connected to an approved signal or proof."}
+      }
+    },
+    "curator": {
+      "instruction": "Help a curator decide whether shared knowledge is dependable enough to use or needs review. Emphasize source quality, freshness, missing context, and the appropriate review or governance step.",
+      "tasks": {
+        "company_brief": {"instruction": "Call out the source-backed conclusion, stale or missing context, and the smallest review step that would improve the shared record."},
+        "deal_risk": {"instruction": "Distinguish a supported risk signal from a claim that needs review. Point to the missing or stale context before proposing a governance step."},
+        "lead_priority": {"instruction": "Explain whether the prioritization has enough dated evidence to remain on the shared record, and name the review need if it does not."},
+        "my_day": {"instruction": "Prioritize knowledge-quality work that unblocks a real decision. Explain why a review, correction, or source check comes first."},
+        "pipeline_risk_digest": {"instruction": "Highlight where an aggregated conclusion rests on stale, incomplete, or disputed knowledge and which review would make it more dependable."}
+      }
+    }
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "description": "Declarative map from card type to the logical fields the permissioned read tools extract, each pinned to a card section and (optionally) a labeled bullet. This decouples the extractor from any single card shape: pointing the gateway at a differently-shaped vault means swapping this profile, not changing code. health_check validates the structure; tests assert the active demo cards satisfy it and that a production-shaped card extracts via an override. See docs/engineering/permissioned-knowledge-field-extraction.md.",
+  "updated": "2026-06-03",
+  "types": {
+    "company": {
+      "summary": {"section": "Live Intelligence"},
+      "conclusions": {"section": "Strategic Conclusions"},
+      "detail": {"section": "Strategic Conclusions"}
+    },
+    "deal": {
+      "risk": {"section": "Risks", "label": "Risk"},
+      "recommended_action": {"section": "Next Best Action", "label": "Recommended action"},
+      "score": {"section": "Scoring", "label": "Score"},
+      "win_probability": {"section": "Scoring", "label": "Win probability"},
+      "acv": {"section": "Scoring", "label": "ACV"},
+      "days_in_stage": {"section": "Scoring", "label": "Days in stage"},
+      "stage": {"section": "Controlled Profile", "label": "Stage"},
+      "detail": {"section": "Deal Readout"}
+    },
+    "call": {
+      "takeaway": {"section": "Executive Summary", "label": "Sanitized takeaway"},
+      "recommended_action": {"section": "Follow-Up Draft", "label": "Recommended action"},
+      "detail": {"section": "Executive Summary"}
+    },
+    "source": {
+      "signal": {"section": "Source Summary", "label": "Signal"},
+      "detail": {"section": "Live Intelligence"}
+    },
+    "lead": {
+      "score": {"section": "Scoring", "label": "Score"},
+      "score_band": {"section": "Scoring", "label": "Score band"},
+      "stage": {"section": "Scoring", "label": "Funnel stage"},
+      "why_now": {"section": "Why This Lead Matters", "label": "Why now"},
+      "recommended_action": {"section": "Next Action", "label": "Recommended action"},
+      "detail": {"section": "Scoring"}
+    },
+    "event": {
+      "target_accounts": {"section": "Target Accounts Present"},
+      "content_angle": {"section": "Outreach Opportunities", "label": "Content angle"}
+    },
+    "campaign": {
+      "target_accounts": {"section": "Target Accounts And Leads"},
+      "content_angle": {"section": "Messaging", "label": "Content angle"}
+    },
+    "pain-point": {
+      "content_angle": {"section": "Messaging", "label": "Content angle"},
+      "suggested_asset": {"section": "Messaging", "label": "Suggested asset"}
+    }
+  }
+}

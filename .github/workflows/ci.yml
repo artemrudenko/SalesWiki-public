@@ -1,22 +1,28 @@
-name: Workbench demo
+name: SalesWiki demo
 
 on:
   push:
   pull_request:
 
 jobs:
-  build:
+  verify:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: prototypes/knowledge-workbench
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -r requirements.txt
+      - run: python -m unittest discover -s tests -p 'test_*.py'
+      - run: python scripts/demo_dryrun.py --quiet
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: prototypes/knowledge-workbench/package-lock.json
       - run: npm ci
+        working-directory: prototypes/knowledge-workbench
       - run: npm run build
-      - run: npm test -- --run
+        working-directory: prototypes/knowledge-workbench
+      - run: npm test
+        working-directory: prototypes/knowledge-workbench
