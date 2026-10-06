@@ -19,10 +19,10 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: prototypes/knowledge-workbench/package-lock.json
+          cache-dependency-path: apps/workbench/package-lock.json
       - run: npm ci
-        working-directory: prototypes/knowledge-workbench
+        working-directory: apps/workbench
       - run: npm run build
-        working-directory: prototypes/knowledge-workbench
+        working-directory: apps/workbench
       - run: npm test
-        working-directory: prototypes/knowledge-workbench
+        working-directory: apps/workbench

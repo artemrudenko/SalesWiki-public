@@ -6,7 +6,7 @@ that calls the permissioned Python service.
 ## Browser preview
 
 ```bash
-cd prototypes/knowledge-workbench
+cd apps/workbench
 npm ci
 npm run dev
 ```
@@ -29,7 +29,7 @@ SALESWIKI_DEMO_ACTOR=demo-sophie-curator \
 Then start the interface with the service endpoint enabled:
 
 ```bash
-cd prototypes/knowledge-workbench
+cd apps/workbench
 VITE_SALESWIKI_GRAPH_ENDPOINT=/api/v1/entity-graph npm run dev -- --host localhost --port 4173
 ```
 
