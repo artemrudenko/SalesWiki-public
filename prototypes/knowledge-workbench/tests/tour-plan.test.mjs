@@ -1,0 +1,36 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+import { buildTourSteps, roleLabel } from "../src/tourPlan.js";
+
+test("quick tour explains that a stale signal needs checking before the governed correction loop", () => {
+  const steps = buildTourSteps({ mode: "quick", role: "sales-owner" });
+  assert.deepEqual(steps.map((step) => step.id), ["today", "stale-signal", "role-contrast", "graph", "evidence", "assistant", "review"]);
+  assert.match(steps[0].title, /shared knowledge/i);
+  assert.equal(steps[1].target, "decision-signals");
+  assert.match(steps[1].body, /synthetic example.*last reviewed on Aug 12/i);
+  assert.match(steps[1].body, /cause remains unknown/i);
+  assert.match(steps[1].body, /not a live or evidence-recalculated score/i);
+  assert.match(steps[1].why, /due, detected, assigned and resolved/i);
+  assert.equal(steps[2].role, "marketing");
+  assert.match(steps[2].title, /different decision/i);
+  assert.match(steps[5].title, /marketing should do next/i);
+  assert.equal(steps.at(-1).role, "curator");
+});
+
+test("full tour covers the product journey and ends in governed review", () => {
+  const steps = buildTourSteps({ mode: "full", role: "sales-owner" });
+  assert.deepEqual(steps.map((step) => step.id), ["today", "dashboard", "role-contrast", "search", "explore", "graph", "evidence", "graph-controls", "assistant", "monitoring", "import", "review"]);
+  assert.equal(steps[2].role, "marketing");
+  assert.equal(steps.find((step) => step.id === "explore").accountId, "demo-company-atlas-foods");
+  assert.equal(steps.at(-1).role, "curator");
+});
+
+test("role tour includes review only for roles permitted to inspect it", () => {
+  assert.equal(buildTourSteps({ mode: "role", role: "sales-owner" }).some((step) => step.id === "review"), false);
+  assert.equal(buildTourSteps({ mode: "role", role: "curator" }).at(-1).id, "review");
+  assert.deepEqual(buildTourSteps({ mode: "role", role: "sales-owner" }).map((step) => step.id), ["today", "dashboard", "explore", "evidence", "assistant", "monitoring"]);
+  assert.deepEqual(buildTourSteps({ mode: "role", role: "marketing" }).map((step) => step.id), ["today", "dashboard", "explore", "evidence", "assistant", "import"]);
+  assert.deepEqual(buildTourSteps({ mode: "role", role: "curator" }).map((step) => step.id), ["today", "search", "explore", "evidence", "import", "review"]);
+  assert.equal(buildTourSteps({ mode: "role", role: "marketing" }).find((step) => step.id === "explore").accountId, "demo-company-atlas-foods");
+  assert.equal(roleLabel("curator"), "Knowledge curator");
+});
