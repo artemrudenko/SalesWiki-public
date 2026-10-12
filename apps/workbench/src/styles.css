@@ -2,6 +2,11 @@
 
 :root { font-family: "DM Sans", system-ui, sans-serif; color: #f2f4f7; background: #0c1118; font-synthesis: none; --bg:#0c1118; --panel:#151b24; --panel-2:#1a222d; --panel-3:#222c38; --border:#2d3947; --muted:#94a0ad; --blue:#75b4ff; --green:#65d7a1; --amber:#f3bf72; --purple:#b29aff; --mono:"Fragment Mono", ui-monospace, monospace; }
 * { box-sizing: border-box; }
+:root { color-scheme:dark; --scrollbar-thumb:#596b7c; --scrollbar-thumb-hover:#718399; scrollbar-color:var(--scrollbar-thumb) var(--panel); }
+::-webkit-scrollbar { width:10px; height:10px; }
+::-webkit-scrollbar-track,::-webkit-scrollbar-corner { background:var(--panel); }
+::-webkit-scrollbar-thumb { background:var(--scrollbar-thumb); border:2px solid var(--panel); border-radius:6px; }
+::-webkit-scrollbar-thumb:hover { background:var(--scrollbar-thumb-hover); }
 button,input,textarea,select { font: inherit; }
 button { color: inherit; }
 body { margin: 0; min-width: 0; min-height: 100vh; background:radial-gradient(900px 520px at 75% -10%,rgb(52 99 129 / 28%),transparent 65%),radial-gradient(700px 430px at 16% 96%,rgb(35 105 81 / 15%),transparent 68%),var(--bg); -webkit-font-smoothing: antialiased; }
