@@ -6,6 +6,12 @@ decisions while keeping access, freshness, and review visible.
 
 **[Open the Workbench demo](https://knowledge-workbench-seven.vercel.app/)**
 
+Use **Tour** in the demo to explore the workflow. Recorded walkthroughs are
+also available: [full tour](assets/publication/tours/saleswiki-full-tour.mp4),
+[sales](assets/publication/tours/saleswiki-ae-tour.mp4),
+[marketing](assets/publication/tours/saleswiki-marketing-tour.mp4), and
+[curator](assets/publication/tours/saleswiki-curator-tour.mp4).
+
 This repository includes both the Workbench interface and the permissioned
 knowledge service behind the concept. The implementation demonstrates:
 
