@@ -51,6 +51,10 @@ test("one reusable adapter lays out a differently shaped fourth company", () => 
   assert.match(account.verificationReason, /before acting or deprioritizing/i);
   assert.equal(account.reviewLifecycle.lastReviewedOn, "2026-08-12");
   assert.equal(account.reviewLifecycle.cadence, "7-day active-deal review");
+  assert.equal(account.reviewLifecycle.dueToDetectedDays, 10);
+  assert.equal(account.reviewLifecycle.assignedReviewer, "Not recorded");
+  assert.equal(account.reviewLifecycle.decisionImpact, "Not recorded");
+  assert.equal(account.reviewLifecycle.outcome, "Not recorded");
   assert.equal(account.reviewLifecycle.causeStatus, "unknown");
   assert.equal(account.nodes.length, 7);
   const root = account.nodes.find((node) => node.id === view.root_id);
@@ -89,6 +93,10 @@ test("stale Atlas context stays separate from its priority signal", () => {
   assert.equal(atlas.reviewLifecycle.cadence, "7-day active-deal review");
   assert.equal(atlas.reviewLifecycle.dueOn, "2026-08-19");
   assert.equal(atlas.reviewLifecycle.detectedOn, "2026-08-29");
+  assert.equal(atlas.reviewLifecycle.dueToDetectedDays, 10);
+  assert.equal(atlas.reviewLifecycle.assignedReviewer, "Not recorded");
+  assert.equal(atlas.reviewLifecycle.decisionImpact, "Not recorded");
+  assert.equal(atlas.reviewLifecycle.outcome, "Not recorded");
   assert.equal(atlas.reviewLifecycle.causeStatus, "unknown");
   assert.equal(atlas.sources.filter((source) => Date.parse(source.date) > Date.parse(atlas.reviewLifecycle.lastReviewedOn)).length, 2);
   assert.deepEqual(atlas.missing, [

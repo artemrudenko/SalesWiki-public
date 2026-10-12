@@ -9,7 +9,8 @@
     "export_requires_approval": ["sales-confidential", "personal-data", "legal-review"],
     "writeback_requires_approval": true,
     "approver_roles": ["curator", "hos", "admin"],
-    "reviewer_roles": ["curator", "hos", "revops", "admin"]
+    "reviewer_roles": ["curator", "hos", "revops", "admin"],
+    "quality_review_roles": ["sales-owner", "sales", "marketing", "hos", "revops", "curator", "admin"]
   },
   "roles": [
     {"id": "employee-viewer", "label": "Broad employee viewer", "boundaries": ["broad"]},

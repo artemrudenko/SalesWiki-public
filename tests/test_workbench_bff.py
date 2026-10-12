@@ -126,6 +126,43 @@ class RunningApp:
 
 
 class WorkbenchHttpTests(unittest.TestCase):
+    def test_signal_review_round_trip_is_strict_no_store_and_personal(self):
+        from saleswiki_mcp import config
+        from saleswiki_mcp.identity import FixtureIdentityProvider
+        from saleswiki_mcp.service import build_default_service
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            vault = root / "vault"
+            gdv.generate_permissioned_demo(vault)
+            service = build_default_service(vault, root / "audit.jsonl", root / "runtime" / "proposals.jsonl", now=lambda: "2026-10-12T09:00:00Z")
+            actor = FixtureIdentityProvider("demo-ethan-ae", config.identity_config()).resolve()
+
+            class ReviewInvoker(FakeInvoker):
+                def invoke_signal_review(self, *, target):
+                    return service.signal_review(actor, target)
+
+                def invoke_record_signal_review(self, **request):
+                    return service.record_signal_review(actor, request)
+
+            request = {"target": "demo-company-atlas-foods", "action": "start", "expected_revision": 0,
+                       "outcome": "", "cause": "unknown", "cause_status": "unknown", "decision_impact": "not_assessed",
+                       "next_action": "verify_source", "follow_up_on": "2026-10-20", "evidence_ids": []}
+            with RunningApp(WorkbenchApp(ReviewInvoker())) as running:
+                headers = {"Content-Type": "application/json"}
+                status, response_headers, body = running.request("/api/v1/signal-review", method="POST", headers=headers, body=json.dumps(request).encode())
+                self.assertEqual(status, 200)
+                self.assertIn("no-store", response_headers["Cache-Control"])
+                self.assertEqual(json.loads(body)["status"], "recorded")
+                status, _, body = running.request("/api/v1/signal-review?target=demo-company-atlas-foods")
+                self.assertEqual(status, 200)
+                self.assertEqual(json.loads(body)["state"], "in_progress")
+                for change in ({"actor_id": "demo-ada-admin"}, {"cause_status": "confirmed", "cause": "sync_failed"}, {"note": "private raw text"}):
+                    status, _, body = running.request("/api/v1/signal-review", method="POST", headers=headers, body=json.dumps({**request, **change}).encode())
+                    self.assertEqual(status, 400)
+                    self.assertNotIn("private raw text", body.decode())
+                status, _, _ = running.request("/api/v1/signal-review?target=demo-company-atlas-foods&role=admin")
+                self.assertEqual(status, 400)
+
     def test_demo_persona_switch_uses_opaque_session_and_never_accepts_a_role(self) -> None:
         personas = {
             "demo-viewer": DemoPersona("demo-viewer", "Viewer", "employee-viewer", "company"),

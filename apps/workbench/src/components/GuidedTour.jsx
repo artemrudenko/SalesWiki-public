@@ -12,7 +12,7 @@ export function TourChooser({ personas, currentRole, onClose, onStart }) {
       <p>Follow linked cards and stable evidence through different role views, then see how that shared knowledge supports an action. The tour never creates a proposal, changes a card or connects to customer data.</p>
       <div className="tour-options">
         <button type="button" className="tour-option--recommended" onClick={() => onStart({ mode: "quick", role })}><strong>Quick product tour <em>Recommended · about 2 min</em></strong><span>See how sales and marketing use shared evidence, check a stale signal and reach different, inspectable next steps.</span><ArrowRight size={16} /></button>
-        <button type="button" onClick={() => onStart({ mode: "full", role })}><strong>Full technical tour <em>12 steps · about 3 min</em></strong><span>Also inspect safe search, graph controls, monitoring and controlled import.</span><ArrowRight size={16} /></button>
+        <button type="button" onClick={() => onStart({ mode: "full", role })}><strong>Full technical tour <em>{buildTourSteps({ mode: "full", role }).length} steps · about 3 min</em></strong><span>Also inspect safe search, context checks, graph controls, monitoring and controlled import.</span><ArrowRight size={16} /></button>
         <div className="tour-role-option"><label htmlFor="tour-role">Tour for one role</label><select id="tour-role" value={role} onChange={(event) => setRole(event.target.value)}>{personas.map((person) => <option key={person.role} value={person.role}>{roleLabel(person.role)} · {person.name}</option>)}</select><button type="button" onClick={() => onStart({ mode: "role", role })}><strong>Explore this role</strong><ArrowRight size={16} /></button></div>
       </div>
     </section>
@@ -26,9 +26,19 @@ export function GuidedTour({ tour, onNext, onPrevious, onClose }) {
   useEffect(() => {
     if (!step) { setRect(null); return undefined; }
     const targetName = window.matchMedia("(max-width: 760px)").matches && step.mobileTarget ? step.mobileTarget : step.target;
-    const target = document.querySelector(`[data-tour-target="${targetName}"]`);
+    let target = null;
+    const resizeObserver = new ResizeObserver(() => measureSpotlight());
+    function resolveTarget() {
+      const next = document.querySelector(`[data-tour-target="${targetName}"]`);
+      if (next !== target) {
+        if (target) resizeObserver.unobserve(target);
+        target = next;
+        if (target) resizeObserver.observe(target);
+      }
+      return target;
+    }
     function measureSpotlight() {
-      if (!target) { setRect(null); return; }
+      if (!resolveTarget()) { setRect(null); return; }
       const next = target.getBoundingClientRect();
       const width = Math.min(next.width + 14, window.innerWidth - 16);
       const height = Math.min(next.height + 14, window.innerHeight - 16);
@@ -40,15 +50,17 @@ export function GuidedTour({ tour, onNext, onPrevious, onClose }) {
       });
     }
     function updateSpotlight() {
-      if (!target) { setRect(null); return; }
+      if (!resolveTarget()) { setRect(null); return; }
       target.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
       measureSpotlight();
     }
     const timer = window.setTimeout(updateSpotlight, 80);
+    const mutationObserver = new MutationObserver(() => { if (!target?.isConnected) updateSpotlight(); });
+    mutationObserver.observe(document.body, { childList: true, subtree: true });
     window.addEventListener("resize", measureSpotlight);
     document.addEventListener("scroll", measureSpotlight, true);
-    return () => { window.clearTimeout(timer); window.removeEventListener("resize", measureSpotlight); document.removeEventListener("scroll", measureSpotlight, true); };
-  }, [step]);
+    return () => { window.clearTimeout(timer); resizeObserver.disconnect(); mutationObserver.disconnect(); window.removeEventListener("resize", measureSpotlight); document.removeEventListener("scroll", measureSpotlight, true); };
+  }, [tour.mode, tour.role, tour.index]);
   if (!step) return <div className="tour-layer" role="dialog" aria-modal="true" aria-label="Guided tour complete">
     <section className="tour-card tour-card--complete">
       <div className="tour-card__head"><span>Guided tour · Complete</span><button type="button" onClick={onClose} aria-label="Close guided tour"><X size={18} /></button></div>

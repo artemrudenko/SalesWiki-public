@@ -8,6 +8,7 @@ import {
   createFixtureGuidedAnswerClient, createFixtureImportClient, createFixtureReviewClient,
   createFixtureSessionClient, createFixtureUpdateClient,
 } from "./graphClient";
+import { createBffSignalReviewClient, createFixtureSignalReviewClient } from "./signalReviewClient.js";
 
 export function createWorkbenchClients({ endpoint, accounts, adaptGraphView }) {
   if (endpoint) {
@@ -17,10 +18,13 @@ export function createWorkbenchClients({ endpoint, accounts, adaptGraphView }) {
       reviewClient: createBffReviewClient({ endpoint }), updateClient: createBffUpdateClient({ endpoint }),
       sessionClient: createBffSessionClient({ endpoint }), companySearchClient: createBffCompanySearchClient({ endpoint }),
       guidedAnswerClient: createBffGuidedAnswerClient({ endpoint }), dashboardClient: createBffDashboardClient({ endpoint }),
+      signalReviewClient: createBffSignalReviewClient({ endpoint }),
     };
   }
+  const graphClient = createFixtureGraphClient({ accounts });
   return {
-    graphClient: createFixtureGraphClient({ accounts }), dailyClient: createFixtureDailyClient({ accounts }),
+    graphClient, dailyClient: createFixtureDailyClient({ accounts }),
+    signalReviewClient: createFixtureSignalReviewClient({ graphClient }),
     importClient: createFixtureImportClient(), reviewClient: createFixtureReviewClient(),
     updateClient: createFixtureUpdateClient(), sessionClient: createFixtureSessionClient(),
     companySearchClient: createFixtureCompanySearchClient({ accounts }),

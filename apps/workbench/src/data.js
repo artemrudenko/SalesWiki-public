@@ -146,7 +146,7 @@ export const graphViews = [
       detectedOn: "2026-08-29",
       latestEvidenceOn: "2026-08-21",
       causeStatus: "unknown",
-      cause: "Unknown — this synthetic demo has no review-event history.",
+      cause: "Unknown — the stored evidence does not explain why the review was missed.",
       nextCheck: "Confirm the current evaluation date with the account owner, then reconcile the Aug 18 and Aug 21 sources with the account summary before acting.",
     },
     missing: [

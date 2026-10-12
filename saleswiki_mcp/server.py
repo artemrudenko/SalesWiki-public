@@ -66,6 +66,22 @@ def build_tools(service: CompanyBriefService, actor) -> dict[str, Callable]:
             "status": "draft", "proposal_id": proposal_id,
         }
 
+    def signal_review(target: str) -> dict:
+        value = service.signal_review(actor, target)
+        return {"text": f"Your context check: {value.get('state', value['status'])}. Stored card freshness is unchanged.", **value}
+
+    def record_signal_review(target: str, action: str, expected_revision: int,
+                             outcome: str = "", cause: str = "unknown", cause_status: str = "unknown",
+                             decision_impact: str = "not_assessed", next_action: str = "verify_source",
+                             follow_up_on: str = "", evidence_ids: list[str] | None = None) -> dict:
+        value = service.record_signal_review(actor, {
+            "target": target, "action": action, "expected_revision": expected_revision,
+            "outcome": outcome, "cause": cause, "cause_status": cause_status,
+            "decision_impact": decision_impact, "next_action": next_action,
+            "follow_up_on": follow_up_on, "evidence_ids": [] if evidence_ids is None else evidence_ids,
+        })
+        return {"text": f"Context check: {value['status']}. Card changes still need a proposal and approval.", **value}
+
     def deal_risk(company: str = "") -> dict:
         return service.deal_risk(actor, company or None)
 
@@ -184,6 +200,8 @@ def build_tools(service: CompanyBriefService, actor) -> dict[str, Callable]:
         "saleswiki.dashboard": dashboard,
         "saleswiki.guided_answer": guided_answer,
         "saleswiki.flag_stale_or_wrong": flag_stale_or_wrong,
+        "saleswiki.signal_review": signal_review,
+        "saleswiki.record_signal_review": record_signal_review,
         "saleswiki.deal_risk": deal_risk,
         "saleswiki.call_prep": call_prep,
         "saleswiki.lead_priority": lead_priority,
@@ -204,6 +222,8 @@ def build_tools(service: CompanyBriefService, actor) -> dict[str, Callable]:
 
 
 TOOL_DESCRIPTIONS = {
+    "saleswiki.signal_review": "Read your own quality checks for an accessible company. Operational history only; source access is checked on every read.",
+    "saleswiki.record_signal_review": "Take or complete your own company-context check using enumerated outcomes and authorized source IDs. Records operational events only; never changes card freshness, scoring or evidence.",
     "saleswiki.company_brief": "Role-aware company brief: conclusion, summary, authorized detail, restricted notes, sources and next action.",
     "saleswiki.company_search": "Role-aware exact and substring company finder. Returns only accessible company labels and stable IDs; it never returns hidden match counts or card content.",
     "saleswiki.entity_graph": "Role-aware, layout-neutral company knowledge graph. Returns authorized nodes, relationships and evidence as the saleswiki.graph-view v1 contract; v1 supports company roots at depth 1.",

@@ -40,13 +40,17 @@ import { adaptGraphView } from "./graphAdapter";
 import { getFixtureRoleProfile, graphDemoScenarios, isFixtureAccountVisible } from "./graphClient";
 import { createImportDrafts, summarizeImportDrafts } from "./importDrafts";
 import { buildFixtureDashboard, formatObservationRange } from "./dashboardInsights";
+import { summarizePriorities } from "./prioritySummary.js";
+import { shapeFixtureAccount } from "./fixtureView.js";
 import { Sidebar } from "./components/Sidebar";
 import { createWorkbenchClients } from "./clientFactory";
 import { GuidedTour, TourChooser } from "./components/GuidedTour";
 import { buildTourSteps } from "./tourPlan";
+import { SignalReviewModal } from "./components/SignalReviewModal";
+import { SignalReviewStatus } from "./components/SignalReviewStatus";
 
 const graphEndpoint = import.meta.env.VITE_SALESWIKI_GRAPH_ENDPOINT?.trim();
-const { graphClient, dailyClient, importClient, reviewClient, updateClient, sessionClient, companySearchClient, guidedAnswerClient, dashboardClient } = createWorkbenchClients({ endpoint: graphEndpoint, accounts, adaptGraphView });
+const { graphClient, dailyClient, importClient, reviewClient, updateClient, sessionClient, companySearchClient, guidedAnswerClient, dashboardClient, signalReviewClient } = createWorkbenchClients({ endpoint: graphEndpoint, accounts, adaptGraphView });
 
 const iconByKind = {
   company: Buildings,
@@ -120,13 +124,14 @@ function MyDay({ result, dashboard, commercial, onOpenAccount, onRetry }) {
   const deals = result.data.sections.find((section) => section.heading === "Deal Risk")?.table?.rows ?? [];
   const actions = (result.data.workbench?.actions ?? [...leads.map((row) => ({ kind: "Lead", name: row[0], reason: row[4], next: row[5], score: row[1], tone: row[2] })), ...deals.map((row) => ({ kind: "Deal at risk", name: row[0], reason: row[4], next: row[5], score: row[1], tone: "risk" }))].slice(0, 7)).map((action) => ({
     ...action,
-    needsReview: action.needsReview ?? /stale context|freshness not established/i.test(action.reason ?? ""),
+    needsReview: action.needsReview || action.score === "—" || /stale context|freshness not established/i.test(action.reason ?? ""),
   }));
   const reviewActions = actions.filter((action) => action.needsReview);
+  const prioritySummary = summarizePriorities(actions);
   const profile = result.data.workbench?.profile;
   return <section className="daily-view">
     <div className="daily-view__heading" data-tour-target="today-queue"><div><span className="eyebrow">{profile?.eyebrow ?? "Your daily queue"}</span><h1>{result.data.title ?? "Today for me"}{profile && <em className="daily-role">{profile.label}</em>}</h1><p>{result.data.conclusion}</p></div><span className="daily-view__freshness">Freshness: {result.data.freshness}</span></div>
-    <section className="workspace-pulse" aria-label="Workspace pulse"><div><span>READY TO ACT</span><strong>{actions.length}</strong><small>role-visible priorities</small></div><div><span>FRESHNESS</span><strong>{result.data.freshness === "fresh" ? "Current" : result.data.freshness}</strong><small>last reviewed {result.data.as_of}</small></div><div><span>ACCESS</span><strong>{result.data.restricted.length ? "Scoped" : "Open"}</strong><small>{result.data.restricted.length ? "some detail stays protected" : "no hidden alerts"}</small></div></section>
+    <section className="workspace-pulse" aria-label="Workspace pulse"><div><span>PRIORITIES</span><strong>{prioritySummary.total}</strong><small>{prioritySummary.ready} ready · {prioritySummary.needsReview} need a check</small></div><div><span>FRESHNESS</span><strong>{result.data.freshness === "fresh" ? "Current" : result.data.freshness}</strong><small>last reviewed {result.data.as_of}</small></div><div><span>ACCESS</span><strong>{result.data.restricted.length ? "Scoped" : "Open"}</strong><small>{result.data.restricted.length ? "some detail stays protected" : "no hidden alerts"}</small></div></section>
     {reviewActions.length > 0 && <section className="verification-card" aria-label="Priorities needing current context"><WarningOctagon size={17} /><div><strong>Check before acting or deprioritizing</strong><p>Review the current context for {reviewActions.map((action) => action.name).join(", ")}. Recorded scores are not current assessments.</p></div></section>}
     <div className="daily-actions">{actions.map((action) => <article className={`daily-card daily-card--${action.tone}`} key={`${action.kind}-${action.name}`}><div><span>{action.kind} · {action.needsReview ? `needs review · last score ${action.score}` : action.score === "—" ? "needs review" : `score ${action.score}`}</span><h2>{action.title ?? action.name}</h2><p><strong>{action.title ? "Account:" : "Why now:"}</strong> {action.title ? action.name : action.reason}</p><p><strong>{action.title ? "Why now:" : "Next:"}</strong> {action.title ? action.reason : action.next}</p>{action.title && <p><strong>Next:</strong> {action.next}</p>}{action.needsReview && <section className="verification-card" aria-label={`Context needs verification for ${action.name}`}><WarningOctagon size={17} /><div><strong>Recorded signal needs checking</strong><p>{action.verificationReason ?? "Verify current context before acting or deprioritizing."}</p></div></section>}</div><button onClick={() => onOpenAccount(action.accountId ?? action.name)}>Open account <ArrowRight size={16} /></button></article>)}</div>
     <DashboardInsights dashboard={dashboard} commercial={commercial} onOpenAccount={onOpenAccount} />
@@ -189,7 +194,7 @@ function Topbar({ account, accountId, setAccountId, canBrowseAccounts, search, s
   );
 }
 
-function DetailPanel({ account, selectedNode, onPropose, onMonitor, onBrief, monitoringPlan }) {
+function DetailPanel({ account, selectedNode, onPropose, onMonitor, onBrief, onSignalReview, reviewPerson, signalReviewRevision, monitoringPlan }) {
   const Icon = iconByKind[selectedNode.data.kind] ?? FileText;
   const relatedSources = selectedNode.data.kind === "source"
     ? account.sources.filter((source) => source.short === selectedNode.data.label)
@@ -216,17 +221,22 @@ function DetailPanel({ account, selectedNode, onPropose, onMonitor, onBrief, mon
         <section className={`temperature-card temperature-card--${account.temperature}`} aria-label="Priority signal"><span>Priority signal</span><strong>{account.temperature === "unknown" ? "Needs current evidence" : account.temperature.replace("-", " ")}</strong><p>{account.temperatureReason}</p></section>
         {account.reviewStatus === "needs-review" && <section className="verification-card" aria-label="Context needs verification"><WarningOctagon size={17} /><div><strong>Check before deprioritizing</strong><p>{account.verificationReason}</p></div></section>}
         {account.reviewLifecycle && <section className="review-context" aria-label="Review context">
-          <span className="eyebrow">Review context · synthetic example</span>
+          <span className="eyebrow">Stored review context · synthetic example</span>
           <p>{reviewSources.length} {reviewSources.length === 1 ? "source is" : "sources are"} dated after the last full account review; newest evidence is {account.reviewLifecycle.latestEvidenceOn}.</p>
           <dl>
             <div><dt>Last full review</dt><dd>{account.reviewLifecycle.lastReviewedOn}</dd></div>
             <div><dt>Review window</dt><dd>{account.reviewLifecycle.cadence}</dd></div>
             <div><dt>Review due</dt><dd>{account.reviewLifecycle.dueOn}</dd></div>
             <div><dt>Flag recorded</dt><dd>{account.reviewLifecycle.detectedOn}</dd></div>
-            <div><dt>Cause</dt><dd>{account.reviewLifecycle.cause}</dd></div>
+            <div><dt>Due-to-detected gap</dt><dd>{account.reviewLifecycle.dueToDetectedDays === null ? "Not established" : `${account.reviewLifecycle.dueToDetectedDays} days`}</dd></div>
+            <div><dt>Stored reviewer</dt><dd>{account.reviewLifecycle.assignedReviewer}</dd></div>
+            <div><dt>Stored decision impact</dt><dd>{account.reviewLifecycle.decisionImpact}</dd></div>
+            <div><dt>Stored outcome</dt><dd>{account.reviewLifecycle.outcome}</dd></div>
+            <div><dt>Recorded cause</dt><dd>{account.reviewLifecycle.cause}</dd></div>
           </dl>
           <p><strong>Possible next check:</strong> {account.reviewLifecycle.nextCheck}</p>
         </section>}
+        {reviewPerson && <SignalReviewStatus accountId={account.id} person={reviewPerson} client={signalReviewClient} revision={signalReviewRevision} onOpen={onSignalReview} />}
       </>}
 
       <div className="detail-section">
@@ -466,7 +476,7 @@ function HelpPanel({ onClose }) {
       <details className="help-topic"><summary>Explore safely</summary><p>Search returns accessible companies only. Some graph detail can be hidden when it belongs to another team or a protected boundary.</p></details>
       <details className="help-topic"><summary>Ask assistant</summary><p>Choose a focused question for the current account. It is not free-form AI chat: each answer comes from permitted, cited SalesWiki data.</p></details>
       <details className="help-topic"><summary>Understand evidence</summary><p><strong>Verified</strong> is ready to use. <strong>Needs review</strong> is a signal that should be checked before acting. Every conclusion should lead back to a dated source.</p></details>
-      <details className="help-topic"><summary>Understand stale information</summary><p>A stale signal means the information is past its review window or has not been confirmed recently. It does not prove the information is wrong, explain why it went stale, or lower an account's priority by itself. Check the dated sources before acting or deprioritizing the account. In this synthetic example, due and detected dates are illustrative; the cause remains unknown because no review-event history supports it.</p><p>To investigate why reviews fall behind in a private pilot, record when the check was due, noticed, assigned and resolved, along with the observed trigger and result. Treat a cause as unknown unless the source and review history support it.</p><p>These design choices are informed by public guidance on <a href="https://www.gov.uk/government/publications/the-government-data-quality-framework/the-government-data-quality-framework-guidance" target="_blank" rel="noreferrer">measuring data quality over time</a>, the <a href="https://www.gov.uk/government/publications/implement-a-data-quality-action-plan/data-quality-issues-framework" target="_blank" rel="noreferrer">impact of data-quality issues</a>, and <a href="https://knowledge.hubspot.com/data-management/use-data-quality-tools" target="_blank" rel="noreferrer">reviewing data quality in a CRM</a>. These are method references, not evidence about a specific account or an endorsement of SalesWiki.</p></details>
+      <details className="help-topic"><summary>Understand stale information</summary><p>A stale signal means the information is past its review window or has not been confirmed recently. It does not prove the information is wrong, explain why it went stale, or lower an account's priority by itself. Check the dated sources before acting or deprioritizing the account. In this synthetic example, due and detected dates are illustrative; the cause remains unknown because no review-event history supports it.</p><p>The review panel also separates the due-to-detected gap from the assigned reviewer, decision impact and review outcome. “Not recorded” means this demo has no supporting event history; it is not a diagnosis. In a private pilot, record when the check was due, noticed, assigned and resolved, along with the observed trigger, result and evidence reference. Treat a cause as unknown unless the source and review history support it.</p><p>These design choices are informed by public guidance on <a href="https://www.gov.uk/government/publications/the-government-data-quality-framework/the-government-data-quality-framework-guidance" target="_blank" rel="noreferrer">measuring data quality over time</a>, the <a href="https://www.gov.uk/government/publications/implement-a-data-quality-action-plan/data-quality-issues-framework" target="_blank" rel="noreferrer">impact of data-quality issues</a>, and <a href="https://knowledge.hubspot.com/data-management/use-data-quality-tools" target="_blank" rel="noreferrer">reviewing data quality in a CRM</a>. These are method references, not evidence about a specific account or an endorsement of SalesWiki.</p></details>
       <details className="help-topic"><summary>Review and monitoring</summary><p>Monitoring is a local demo plan only. Review is visible to roles that can inspect proposals; approval records a decision, and a separate governed worker applies approved changes later.</p></details>
       <p className="governed-note"><ShieldCheck size={15} />This demo uses synthetic data and server-owned demo roles. It does not connect to a customer system.</p>
     </div>
@@ -524,6 +534,8 @@ export function App() {
   const [view, setView] = useState("today");
   const [starterOpen, setStarterOpen] = useState(false);
   const [monitorOpen, setMonitorOpen] = useState(false);
+  const [signalReviewOpen, setSignalReviewOpen] = useState(false);
+  const [signalReviewRevision, setSignalReviewRevision] = useState(0);
   const [accountId, setAccountId] = useState(accounts[0].id);
   const [filter, setFilter] = useState("all");
   const [selectedNodeId, setSelectedNodeId] = useState(accounts[0].nodes[0].id);
@@ -560,7 +572,7 @@ export function App() {
   const fixtureRole = sessionResult.status === "ready" ? sessionResult.data.person.role : "sales-owner";
   const canReview = sessionResult.status === "ready" && sessionResult.data.can_review;
   const fixtureProfile = getFixtureRoleProfile(fixtureRole);
-  const fixtureDashboard = useMemo(() => ({ ...buildFixtureDashboard(accounts.filter((account) => isFixtureAccountVisible(account.id, fixtureRole)), monitoringPlans), profile: fixtureProfile }), [fixtureRole, fixtureProfile, monitoringPlans]);
+  const fixtureDashboard = useMemo(() => ({ ...buildFixtureDashboard(accounts.filter((account) => isFixtureAccountVisible(account.id, fixtureRole)).map((account) => shapeFixtureAccount(account, fixtureRole)), monitoringPlans), profile: fixtureProfile }), [fixtureRole, fixtureProfile, monitoringPlans]);
   const dashboard = graphClient.source === "fixture" ? fixtureDashboard : dashboardResult.data;
 
   useEffect(() => { window.localStorage.setItem("saleswiki-monitoring-plans", JSON.stringify(monitoringPlans)); }, [monitoringPlans]);
@@ -635,6 +647,7 @@ export function App() {
         setImportOpen(false);
         setAskOpen(false);
         setHelpOpen(false);
+        setSignalReviewOpen(false);
         setTourChooserOpen(false);
         setActiveTour(null);
       }
@@ -774,6 +787,7 @@ export function App() {
     setView(step.view);
     setAskOpen(step.panel === "assistant");
     setMonitorOpen(step.panel === "monitor");
+    setSignalReviewOpen(step.panel === "signal-review");
     setProposalOpen(false);
     setImportOpen(step.panel === "import");
   }
@@ -836,11 +850,12 @@ export function App() {
             </div>
             <EvidenceTrace sources={account.sources} selectedSource={selectedNode.data.kind === "source" ? selectedNode.data.label : ""} onSelect={selectSource} />
           </div>
-          <DetailPanel account={account} selectedNode={selectedNode} onPropose={() => setProposalOpen(true)} onMonitor={() => setMonitorOpen(true)} onBrief={() => setAskOpen(true)} monitoringPlan={monitoringPlans[account.id]} />
+          <DetailPanel account={account} selectedNode={selectedNode} onPropose={() => setProposalOpen(true)} onMonitor={() => setMonitorOpen(true)} onBrief={() => setAskOpen(true)} onSignalReview={() => setSignalReviewOpen(true)} reviewPerson={sessionResult.status === "ready" ? sessionResult.data.person : null} signalReviewRevision={signalReviewRevision} monitoringPlan={monitoringPlans[account.id]} />
         </section> : <div className="workspace-state-wrap"><StateSurface result={graphResult} onChoose={chooseCandidate} onRetry={retryState} /></div>}
       </div>
       {devControlsVisible && <DemoStateControl scenario={scenario} onChange={changeScenario} />}
       {proposalOpen && <ProposalModal account={account ?? accountFallback} onClose={() => setProposalOpen(false)} onSubmit={submitProposal} />}
+      {signalReviewOpen && account && sessionResult.status === "ready" && <SignalReviewModal key={`${account.id}:${sessionResult.data.person.id}`} account={account} person={sessionResult.data.person} client={signalReviewClient} touring={Boolean(activeTour)} onClose={() => setSignalReviewOpen(false)} onSaved={(title) => { recordActivity(title, account.name); setSignalReviewRevision((value) => value + 1); }} onInspect={(nodeId) => { setSelectedNodeId(nodeId); setFilter("all"); setSignalReviewOpen(false); }} onPropose={() => { setSignalReviewOpen(false); setProposalOpen(true); }} />}
       {importOpen && <ImportModal account={account ?? accountFallback} onClose={() => setImportOpen(false)} onSubmit={submitImport} />}
       {starterOpen && <PolishStarter onClose={() => setStarterOpen(false)} />}
       {monitorOpen && <MonitorModal account={account ?? accountFallback} initialPlan={monitoringPlans[(account ?? accountFallback).id]} onClose={() => setMonitorOpen(false)} onSave={({ topics, cadence }) => { const selectedAccount = account ?? accountFallback; setMonitoringPlans((plans) => ({ ...plans, [selectedAccount.id]: { topics, cadence } })); setMonitorOpen(false); recordActivity("Monitoring plan saved", `${selectedAccount.name}: ${topics.length} signals, ${cadence}`); setToast(`Monitoring plan saved: ${topics.length} signal types, ${cadence}`); window.setTimeout(() => setToast(""), 3200); }} />}

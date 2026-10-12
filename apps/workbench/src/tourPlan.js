@@ -19,6 +19,7 @@ const baseSteps = (role) => [
   { id: "explore", target: "account-switcher", role, view: "explore", accountId: tourAccount(role), title: "Open the context behind the decision", body: "The explorer keeps relationships, evidence and decision context together. The graph is a navigation aid; every conclusion remains tied to a dated source.", why: "A person can understand why an account is on the list before choosing an action." },
   { id: "graph", target: "graph", role, view: "explore", accountId: tourAccount(role), title: "Navigate linked cards, not another document pile", body: "Reusable cards for people, activity, commercial context and source-backed claims form a one-hop map around the permitted account.", why: "The same relationship can support sales and marketing without each team keeping its own copy." },
   { id: "evidence", target: "evidence", role, view: "explore", accountId: tourAccount(role), title: "Keep evidence stable while conclusions change", body: "The evidence trace links the current decision context to dated source records. Sources are preserved; compiled cards and conclusions can change through a governed path.", why: "The team can revisit an earlier decision without losing the material that supported it." },
+  { id: "context-check", target: "signal-review", role, view: "explore", accountId: tourAccount(role), panel: "signal-review", title: "Give the check an owner and a next step", body: "Compare the dated sources, take the check yourself, then record what you found and whether your next decision changes. A possible cause needs evidence; unknown is a valid answer. This tour opens the form without saving anything.", why: "A recorded check can lead to an update proposal. It does not automatically refresh the card, change priority or send reminders." },
   { id: "graph-controls", target: "graph-controls", role, view: "explore", accountId: tourAccount(role), title: "Inspect the graph without losing the recommended layout", body: "Filters narrow the view by knowledge type. Nodes can be moved for investigation, and Reset layout returns the reusable safe arrangement.", why: "The graph remains readable as accounts gain more people and activity." },
   { id: "assistant", target: "assistant", role, view: "explore", accountId: tourAccount(role), panel: "assistant", title: "Turn evidence into a next step you can inspect", body: "The assistant offers role-relevant questions instead of free-form chat. It narrows the options using permitted context and returns the citations behind its answer.", why: "The system supports the decision; the person can still challenge the evidence and choose the action." },
   { id: "monitoring", target: "monitoring-plan", role, view: "explore", accountId: tourAccount(role), panel: "monitor", title: "Configure the signals worth revisiting", body: "The monitoring screen makes a review cadence and signal scope explicit. In this demo it saves only a local browser preference; it does not start a vendor connection or notifications.", why: "A future monitor should be intentional, scoped and explainable — not an uncontrolled background scraper." },
@@ -35,10 +36,10 @@ const reviewStep = (role, full = false) => ({
 });
 
 const roleStepIds = {
-  "sales-owner": ["today", "dashboard", "explore", "evidence", "assistant", "monitoring"],
+  "sales-owner": ["today", "dashboard", "explore", "evidence", "context-check", "assistant", "monitoring"],
   sales: ["today", "search", "explore", "evidence", "assistant", "import"],
-  marketing: ["today", "dashboard", "explore", "evidence", "assistant", "import"],
-  curator: ["today", "search", "explore", "evidence", "import"],
+  marketing: ["today", "dashboard", "explore", "evidence", "context-check", "assistant", "import"],
+  curator: ["today", "search", "explore", "evidence", "context-check", "import"],
   hos: ["today", "dashboard", "search", "explore", "evidence"],
   revops: ["today", "dashboard", "search", "explore", "evidence"],
   admin: ["today", "search", "explore", "evidence", "import"],
@@ -72,6 +73,7 @@ export function buildTourSteps({ mode, role }) {
     return [
       salesSteps[0],
       staleSignalStep,
+      { ...salesSteps.find((step) => step.id === "context-check"), accountId: "demo-company-atlas-foods" },
       roleContrastStep,
       { ...marketingSteps.find((step) => step.id === "graph"), title: "Use the same account map for a marketing decision", body: "Olivia navigates the shared Atlas cards, connecting the audit signal, audience context and reusable proof without opening sales-confidential deal detail." },
       marketingSteps.find((step) => step.id === "evidence"),

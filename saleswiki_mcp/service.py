@@ -26,6 +26,7 @@ from .read_support import (
     strip_first_heading as _strip_first_heading,
 )
 from .retrieval import Card, Retriever
+from .signal_review import SignalReviewService
 
 
 def _default_now() -> str:
@@ -42,12 +43,14 @@ class CompanyBriefService:
         now: Callable[[], str] | None = None,
         field_map: dict | None = None,
         approval_key: bytes | None = None,
+        signal_reviews: SignalReviewService | None = None,
     ) -> None:
         self._retriever = retriever
         self._policy = policy
         self._audit = audit
         self._proposals = proposals
         self._now = now or _default_now
+        self._signal_reviews = signal_reviews
         self._fields = (field_map or config.field_extraction()).get("types", {})
         # Write-governance is a separate service; this class is the read facade
         # that delegates proposal/approval/review to it (public API unchanged).
@@ -421,16 +424,18 @@ class CompanyBriefService:
         restricted: list[str] = []
         rows: list[list[str]] = []
         needs_review_count = 0
+        emitted_cards: list[Card] = []
         for lead in leads:
             if not self._readable(actor, lead, "lead_priority"):
                 continue  # fail-safe: never emit a lead the actor may not read
+            emitted_cards.append(lead)
             band = self._field(lead, "score_band") or "unscored"
             score = self._field(lead, "score") or "—"
             stage = self._field(lead, "stage") or "—"
             why = self._field(lead, "why_now") or "no signal recorded"
             action = self._field(lead, "recommended_action") or "confirm the next step"
-            if lead.freshness != "fresh":
-                needs_review_count += 1
+            row_needs_review = lead.freshness != "fresh"
+            if row_needs_review:
                 review_note = (
                     "Stale context — verify current details; recorded signal: "
                     if lead.freshness == "stale"
@@ -448,13 +453,21 @@ class CompanyBriefService:
                 # a "Linked deal: Linked deal risk: ..." stutter in the renderer).
                 deal_cell = f"at risk — {risk}"
                 citations.append(Citation(deal.boundary, deal.rel_path))
+                emitted_cards.append(deal)
+                if deal.freshness != "fresh":
+                    row_needs_review = True
+                    status = "stale" if deal.freshness == "stale" else "freshness not established"
+                    deal_cell = f"Last recorded risk ({status}; updated {deal.updated or 'not recorded'}) — {risk}"
+                    action = f"Verify current linked-deal context, then {action}"
             elif deal is not None:
                 deal_cell = "restricted for your role"
                 restricted.append(f"Linked deal for {lead.display} restricted for your role.")
             else:
                 deal_cell = "no linked deal"
+            if row_needs_review:
+                needs_review_count += 1
             rows.append([lead.display, score, band, stage, why, action, deal_cell])
-        fresh, as_of = self._freshness(leads)
+        fresh, as_of = self._freshness(emitted_cards)
         conclusion = (
             f"{len(rows)} lead(s) shown in score-band order; {needs_review_count} need current-context review. Staleness does not reduce rank."
             if needs_review_count
@@ -466,7 +479,7 @@ class CompanyBriefService:
             sections=[Section("Leads", table=Table(["Lead", "Score", "Score band", "Stage", "Why now", "Next action", "Linked deal"], rows))],
             citations=citations, restricted=restricted, freshness=fresh, as_of=as_of,
             next_action=(
-                "verify stale lead context before acting; keep the existing score-band order."
+                "verify stale lead context or linked-deal context before acting; keep the existing score-band order."
                 if needs_review_count
                 else "book the highest-band leads this week."
             ),
@@ -494,14 +507,16 @@ class CompanyBriefService:
         self._log_digest(actor, "content_opportunities", "(content)")
         citations: list[Citation] = []
         rows: list[list[str]] = []
+        emitted_cards: list[Card] = []
         for pain in pains:
             if not self._readable(actor, pain, "content_opportunities"):
                 continue  # fail-safe: never emit a pain card the actor may not read
+            emitted_cards.append(pain)
             angle = self._field(pain, "content_angle") or "no angle recorded"
             asset = self._field(pain, "suggested_asset") or "blog post"
             rows.append([pain.display, angle, asset])
             citations.append(Citation(pain.boundary, pain.rel_path))
-        fresh, as_of = self._freshness(pains)
+        fresh, as_of = self._freshness(emitted_cards)
         ans = Answer(
             title="Content Opportunities", access="allowed",
             conclusion=f"{len(rows)} content opportunity(ies) from known pains.",
@@ -791,6 +806,16 @@ class CompanyBriefService:
         return self._gov.get_proposal(actor, proposal_id)
 
     # -- helpers -----------------------------------------------------------
+    def signal_review(self, actor, target: str) -> dict:
+        if self._signal_reviews is None:
+            return {"status": "unavailable", "access": "blocked"}
+        return self._signal_reviews.get(actor, target)
+
+    def record_signal_review(self, actor, request: dict) -> dict:
+        if self._signal_reviews is None:
+            return {"status": "unavailable", "access": "blocked"}
+        return self._signal_reviews.record(actor, request)
+
     @staticmethod
     def _resource(card: Card) -> Resource:
         return Resource(
@@ -854,6 +879,7 @@ def build_default_service(
     audit_path=None,
     proposal_path=None,
     now: Callable[[], str] | None = None,
+    signal_review_path=None,
 ) -> CompanyBriefService:
     registry = config.boundary_registry()
     retriever = Retriever(Path(vault_root), registry)
@@ -873,4 +899,6 @@ def build_default_service(
         config.access_policy(),
         grants_provider=lambda: proposals.active_grants(now_fn(), verify=verify_approval),
     )
-    return CompanyBriefService(retriever, policy, audit, proposals, now=now_fn, approval_key=approval_key)
+    reviews = SignalReviewService(retriever, policy, audit,
+                                  Path(signal_review_path) if signal_review_path else proposal_file.with_name("signal-reviews.jsonl"), now_fn)
+    return CompanyBriefService(retriever, policy, audit, proposals, now=now_fn, approval_key=approval_key, signal_reviews=reviews)

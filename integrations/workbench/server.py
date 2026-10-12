@@ -82,6 +82,10 @@ class GraphInvoker(Protocol):
 
     def invoke_guided_answer(self, *, intent: str, entity: str) -> dict: ...
 
+    def invoke_signal_review(self, *, target: str) -> dict: ...
+
+    def invoke_record_signal_review(self, **request) -> dict: ...
+
 
 def _child_env(**values: str) -> dict[str, str]:
     """Build an intentionally small child environment; do not forward secrets."""
@@ -160,6 +164,16 @@ class McpGraphInvoker:
     def invoke_update_proposal(self, *, target: str, note: str) -> dict:
         async def bounded() -> dict:
             return await asyncio.wait_for(self._invoke_governance_tool("saleswiki.flag_stale_or_wrong", {"target": target, "note": note}), timeout=self.timeout_seconds)
+        return asyncio.run(bounded())
+
+    def invoke_signal_review(self, *, target: str) -> dict:
+        async def bounded() -> dict:
+            return await asyncio.wait_for(self._invoke_governance_tool("saleswiki.signal_review", {"target": target}), timeout=self.timeout_seconds)
+        return asyncio.run(bounded())
+
+    def invoke_record_signal_review(self, **request) -> dict:
+        async def bounded() -> dict:
+            return await asyncio.wait_for(self._invoke_governance_tool("saleswiki.record_signal_review", request), timeout=self.timeout_seconds)
         return asyncio.run(bounded())
 
     async def _invoke_my_day_async(self) -> dict:
@@ -331,7 +345,7 @@ class WorkbenchApp:
                     self._json(403, {"error": "origin_not_allowed"}, route="preflight")
                     return
                 parsed = urlsplit(self.path)
-                if parsed.path not in {"/api/v1/session", "/api/v1/entity-graph", "/api/v1/dashboard", "/api/v1/guided-answer", "/api/v1/account-brief", "/api/v1/review-queue", "/api/v1/import-proposal", "/api/v1/review-proposal", "/api/v1/update-proposal", "/api/v1/demo-persona"}:
+                if parsed.path not in {"/api/v1/session", "/api/v1/entity-graph", "/api/v1/dashboard", "/api/v1/guided-answer", "/api/v1/account-brief", "/api/v1/review-queue", "/api/v1/import-proposal", "/api/v1/review-proposal", "/api/v1/update-proposal", "/api/v1/demo-persona", "/api/v1/signal-review"}:
                     self._json(404, {"error": "not_found"}, route="preflight")
                     return
                 request_id = uuid.uuid4().hex
@@ -375,11 +389,31 @@ class WorkbenchApp:
                     self._json(403, {"error": "origin_not_allowed"}, route="origin")
                     return
                 parsed = urlsplit(self.path)
-                if parsed.path not in {"/api/v1/import-proposal", "/api/v1/review-proposal", "/api/v1/update-proposal", "/api/v1/demo-persona"}:
+                if parsed.path not in {"/api/v1/import-proposal", "/api/v1/review-proposal", "/api/v1/update-proposal", "/api/v1/demo-persona", "/api/v1/signal-review"}:
                     self._method_not_allowed()
                     return
                 if parsed.query:
                     self._json(400, {"error": "invalid_request"}, route="write")
+                    return
+                if parsed.path == "/api/v1/signal-review":
+                    try:
+                        request = _parse_signal_review(self.headers, self.rfile)
+                    except ValueError:
+                        self._json(400, {"error": "invalid_signal_review"}, route="signal_review")
+                        return
+                    if not app.request_slots.acquire(blocking=False):
+                        self._json(503, {"error": "review_backend_busy"}, route="signal_review")
+                        return
+                    try:
+                        _actor, invoker = self._actor_and_invoker()
+                        result = invoker.invoke_record_signal_review(**request)
+                        _validate_signal_review_response(result, writing=True)
+                    except Exception:
+                        self._json(502, {"error": "review_backend_unavailable"}, route="signal_review")
+                        return
+                    finally:
+                        app.request_slots.release()
+                    self._json(200, result, route="signal_review")
                     return
                 if parsed.path == "/api/v1/demo-persona":
                     if not app.demo_sessions or not app.allow_fixture_persona_switching:
@@ -553,6 +587,29 @@ class WorkbenchApp:
                     finally:
                         app.request_slots.release()
                     self._json(200, queue, route="review_queue")
+                    return
+                if parsed.path == "/api/v1/signal-review":
+                    try:
+                        params = parse_qs(parsed.query, strict_parsing=True, max_num_fields=2)
+                        target = _one(params, "target")
+                        if set(params) != {"target"} or not target or len(target) > 160:
+                            raise ValueError
+                    except ValueError:
+                        self._json(400, {"error": "invalid_query"}, route="signal_review")
+                        return
+                    if not app.request_slots.acquire(blocking=False):
+                        self._json(503, {"error": "review_backend_busy"}, route="signal_review")
+                        return
+                    try:
+                        _actor, invoker = self._actor_and_invoker()
+                        result = invoker.invoke_signal_review(target=target)
+                        _validate_signal_review_response(result)
+                    except Exception:
+                        self._json(502, {"error": "review_backend_unavailable"}, route="signal_review")
+                        return
+                    finally:
+                        app.request_slots.release()
+                    self._json(200, result, route="signal_review")
                     return
                 if parsed.path == "/api/v1/account-brief":
                     query = _parse_graph_query(parsed.query)
@@ -753,6 +810,56 @@ def _validate_import_proposal(value: object) -> None:
     proposal_id = value.get("proposal_id")
     if not isinstance(proposal_id, str) or not proposal_id.startswith("proposal-") or len(proposal_id) > 40:
         raise ValueError("invalid import proposal")
+
+
+def _parse_signal_review(headers, stream) -> dict:
+    from saleswiki_mcp.signal_review import validate_request
+    content_type = headers.get("Content-Type", "").split(";", 1)[0].strip().lower()
+    try:
+        length = int(headers.get("Content-Length", ""))
+        if content_type != "application/json" or not 2 <= length <= 4096:
+            raise ValueError
+        return validate_request(json.loads(stream.read(length).decode("utf-8")))
+    except (ValueError, UnicodeDecodeError, TypeError) as exc:
+        raise ValueError("invalid_signal_review") from exc
+
+
+def _validate_signal_review_response(value, *, writing=False):
+    if not isinstance(value, dict):
+        raise ValueError("invalid_signal_review_response")
+    if value.get("status") in {"unavailable", "error", "conflict"}:
+        if set(value) != {"status", "access"} or value["access"] not in {"blocked", "allowed"}:
+            raise ValueError("invalid_signal_review_response")
+        return
+    if writing:
+        if (set(value) != {"status", "access", "revision", "state"} or value.get("status") != "recorded"
+                or value.get("access") != "allowed" or type(value.get("revision")) is not int
+                or value.get("state") not in {"in_progress", "completed"}):
+            raise ValueError("invalid_signal_review_response")
+        return
+    from saleswiki_mcp.signal_review import validate_request
+    expected = {"contract", "version", "status", "access", "target", "revision", "state", "events", "sources", "can_start", "can_complete", "scope", "card_freshness"}
+    if (set(value) != expected or value.get("contract") != "saleswiki.signal-review" or value.get("version") != 1
+            or value.get("status") != "ok" or value.get("access") != "allowed" or value.get("scope") != "own_checks"
+            or type(value.get("revision")) is not int or value["revision"] < 0
+            or value.get("state") not in {"not_started", "in_progress", "completed"}
+            or any(type(value.get(key)) is not bool for key in ("can_start", "can_complete"))
+            or not isinstance(value.get("events"), list) or len(value["events"]) > 20
+            or not isinstance(value.get("sources"), list)):
+        raise ValueError("invalid_signal_review_response")
+    for source in value["sources"]:
+        if not isinstance(source, dict) or set(source) != {"id", "label", "date"} or not all(isinstance(v, str) for v in source.values()):
+            raise ValueError("invalid_signal_review_response")
+    for event in value["events"]:
+        if not isinstance(event, dict):
+            raise ValueError("invalid_signal_review_response")
+        extra = {"recorded_at", "assigned_at", "revision", "state", "evidence_dates"}
+        request = {k: v for k, v in event.items() if k not in extra}
+        validate_request(request)
+        if set(event) != set(request) | extra or event["target"] != value["target"]:
+            raise ValueError("invalid_signal_review_response")
+        if not isinstance(event["evidence_dates"], dict) or set(event["evidence_dates"]) != set(event["evidence_ids"]) or not all(isinstance(d, str) for d in event["evidence_dates"].values()):
+            raise ValueError("invalid_signal_review_response")
 
 
 def _parse_update_proposal(headers, stream) -> dict:

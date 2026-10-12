@@ -1,3 +1,5 @@
+import { shapeFixtureAccount } from "./fixtureView.js";
+
 export const graphDemoScenarios = [
   { value: "ready", label: "Ready" },
   { value: "loading", label: "Loading" },
@@ -21,6 +23,7 @@ const fixturePersonas = [
   { id: "demo-ada-admin", name: "Ada Admin", role: "admin", team: "ops" },
 ];
 let fixturePerson = fixturePersonas[0];
+export const getFixturePerson = () => ({ ...fixturePerson });
 let fixtureProposalNumber = 50;
 let fixtureProposals = [
   { proposal_id: "proposal-0042", status: "draft", type: "ingest_resource", target: "bluepeak", note: "Workbench draft import for BluePeak Energy.", requester: "demo-ethan-ae", role: "sales", created: "2026-08-30T09:15:00Z" },
@@ -156,7 +159,7 @@ function graphViewResult(graphView, adaptGraphView) {
   return result("ready", { data: adaptGraphView(graphView), notices: [] });
 }
 
-function safeEndpoint(endpoint) {
+export function safeEndpoint(endpoint) {
   const value = String(endpoint ?? "").trim();
   if (!value) throw new Error("BFF graph client requires a public endpoint");
 
@@ -250,7 +253,7 @@ export function createFixtureGraphClient({ accounts, latencyMs = 180 } = {}) {
           message: "This graph reached the one-hop display limit. Narrow the view or request another page to inspect more relationships.",
         });
       }
-      return result("ready", { data: account, notices });
+      return result("ready", { data: shapeFixtureAccount(account, fixturePerson.role), notices });
     },
   };
 }

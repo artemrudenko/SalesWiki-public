@@ -98,6 +98,14 @@ function edgeStyle(edge, nodesById) {
   return { kind: base.kind, label: edge.label || base.label };
 }
 
+function daysBetween(start, end) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(start)) || !/^\d{4}-\d{2}-\d{2}$/.test(String(end))) return null;
+  const startMs = Date.parse(`${start}T00:00:00Z`);
+  const endMs = Date.parse(`${end}T00:00:00Z`);
+  if (!Number.isFinite(startMs) || !Number.isFinite(endMs)) return null;
+  return Math.round((endMs - startMs) / 86_400_000);
+}
+
 export function adaptGraphView(view) {
   requireContract(view);
   if (["aggregated", "blocked", "not-found", "ambiguous"].includes(view.access)) {
@@ -112,6 +120,7 @@ export function adaptGraphView(view) {
     short: item.title,
     date: item.as_of,
     code: item.citation.path || item.citation.handle,
+    boundary: item.citation.boundary,
     status: item.status === "verified" ? "Verified" : item.status === "needs-review" ? "Needs review" : "Restricted",
     summary: item.summary,
   }));
@@ -134,7 +143,11 @@ export function adaptGraphView(view) {
       cadence: String(review.cadence ?? "Not recorded"),
       dueOn: String(review.dueOn ?? ""),
       detectedOn: String(review.detectedOn ?? ""),
+      dueToDetectedDays: daysBetween(review.dueOn, review.detectedOn),
       latestEvidenceOn: String(review.latestEvidenceOn ?? ""),
+      assignedReviewer: String(review.assignedReviewer ?? "Not recorded"),
+      decisionImpact: String(review.decisionImpact ?? "Not recorded"),
+      outcome: String(review.outcome ?? "Not recorded"),
       causeStatus: String(review.causeStatus ?? "unknown"),
       cause: String(review.cause ?? "Cause not recorded."),
       nextCheck: String(review.nextCheck ?? ""),

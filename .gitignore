@@ -7,3 +7,9 @@ __pycache__/
 .env.*
 !.env.example
 .DS_Store
+# Operational records and signing keys belong to the local runtime only.
+demo/runtime/
+.proposals.jsonl
+signal-reviews.jsonl
+.approval_key
+*.approval_key

@@ -112,6 +112,12 @@ class PolicyEvaluator:
             return Decision("allow", f"{actor.role} may review proposals")
         return Decision("block", f"{actor.role} may not review proposals")
 
+    def can_record_quality_review(self, actor) -> Decision:
+        """Operational self-checks only; grants no content or card-write rights."""
+        if actor.role in self._rules.get("quality_review_roles", []):
+            return Decision("allow", "may record own quality checks")
+        return Decision("block", "quality check capability required")
+
     @staticmethod
     def _matches_ownership(actor, resource: Resource, include_team: bool) -> bool:
         if resource.owner and resource.owner == actor.id:
